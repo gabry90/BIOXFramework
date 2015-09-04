@@ -38,6 +38,12 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioExceptions.cs" />
+    <Compile Include="AudioEffect.cs" />
+    <Compile Include="EffectManager.cs" />
+    <Compile Include="AudioSong.cs" />
+    <Compile Include="AudioEvents.cs" />
+    <Compile Include="SongManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
