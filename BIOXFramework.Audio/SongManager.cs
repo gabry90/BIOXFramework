@@ -74,11 +74,6 @@ namespace BIOXFramework.Audio
             _songs.Remove(song);         
         }
 
-        public float GetVolume()
-        {
-            return MediaPlayer.Volume;
-        }
-
         public void ClearRegisteredSongs()
         {
             MediaPlayer.Stop();
