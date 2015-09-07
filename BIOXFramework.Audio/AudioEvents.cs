@@ -10,15 +10,21 @@ namespace BIOXFramework.Audio
         public string Name { get; private set; }
     }
 
-    public sealed class SongStoppedEventArgs : EventArgs
-    {
-        public SongStoppedEventArgs(string songName) { Name = songName; }
-        public string Name { get; private set; }
-    }
-
     public sealed class SongPausedEventArgs : EventArgs
     {
         public SongPausedEventArgs(string songName) { Name = songName; }
+        public string Name { get; private set; }
+    }
+
+    public sealed class SongResumedEventArgs : EventArgs
+    {
+        public SongResumedEventArgs(string songName) { Name = songName; }
+        public string Name { get; private set; }
+    }
+
+    public sealed class SongStoppedEventArgs : EventArgs
+    {
+        public SongStoppedEventArgs(string songName) { Name = songName; }
         public string Name { get; private set; }
     }
 
@@ -35,6 +41,12 @@ namespace BIOXFramework.Audio
     public sealed class SoundPausedEventArgs : EventArgs
     {
         public SoundPausedEventArgs(string effectName) { Name = effectName; }
+        public string Name { get; private set; }
+    }
+
+    public sealed class SoundResumedEventArgs : EventArgs
+    {
+        public SoundResumedEventArgs(string songName) { Name = songName; }
         public string Name { get; private set; }
     }
 

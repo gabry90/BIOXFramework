@@ -13,6 +13,7 @@ namespace BIOXFramework.Audio
 
         public EventHandler<SongPlayedEventArgs> Played;
         public EventHandler<SongPausedEventArgs> Paused;
+        public EventHandler<SongResumedEventArgs> Resumed;
         public EventHandler<SongStoppedEventArgs> Stopped;
 
         public string CurrentSong { get; private set; }
@@ -49,13 +50,13 @@ namespace BIOXFramework.Audio
         public void Register(string songName, string filePath)
         {
             if (string.IsNullOrEmpty(songName))
-                throw new SongNameException();
+                throw new SongManagerException("the song name is null or empty!");
 
             if (!File.Exists(filePath))
-                throw new SongPathException(filePath);
+                throw new SongManagerException(string.Format("the song \"{0}\" path is not exists or invalid!", filePath));
 
             if (_songs.FirstOrDefault(x => string.Equals(x.Name, songName)) != null)
-                throw new SongAlreadyRegistered(songName);
+                throw new SongManagerException(string.Format("the song \"{0}\" is already registered!", songName));
 
             _songs.Add(new AudioSong(songName, filePath));   
         }
@@ -63,11 +64,11 @@ namespace BIOXFramework.Audio
         public void Unregister(string songName)
         {
             if (string.IsNullOrEmpty(songName))
-                throw new SongNameException();
+                throw new SongManagerException("the song name is null or empty!");
 
             AudioSong song = _songs.FirstOrDefault(x => string.Equals(x.Name, songName));
             if (song == null)
-                throw new SongNotRegisteredException(songName);
+                throw new SongManagerException(string.Format("the song \"{0}\" is not registered!", songName));
 
             song.Dispose();
             _songs.Remove(song);         
@@ -89,11 +90,11 @@ namespace BIOXFramework.Audio
         public void Play(string songName)
         {
             if (string.IsNullOrEmpty(songName))
-                throw new SongNameException();
+                throw new SongManagerException("the song name is null or empty!");
 
             AudioSong song = _songs.FirstOrDefault(x => string.Equals(x.Name, songName));
             if (song == null)
-                throw new SongNotRegisteredException(songName);
+                throw new SongManagerException(string.Format("the song \"{0}\" is not registered!", songName));
 
             if (string.Equals(CurrentSong, song.Name))
             {
@@ -101,7 +102,8 @@ namespace BIOXFramework.Audio
                 {
                     case MediaState.Playing: return;
                     case MediaState.Paused: 
-                        MediaPlayer.Resume(); 
+                        MediaPlayer.Resume();
+                        SongResumedEventDispatcher(new SongResumedEventArgs(CurrentSong));
                         break;
                     case MediaState.Stopped:
                         InternalPlay(song);
@@ -172,6 +174,13 @@ namespace BIOXFramework.Audio
                 h(this, e);
         }
 
+        private void SongResumedEventDispatcher(SongResumedEventArgs e)
+        {
+            var h = Resumed;
+            if (h != null)
+                h(this, e);
+        }
+
         private void SongStoppedEventDispatcher(SongStoppedEventArgs e)
         {
             var h = Stopped;
@@ -185,11 +194,21 @@ namespace BIOXFramework.Audio
 
         protected override void Dispose(bool disposing)
         {
-            ClearRegisteredSongs();
-            if (Played != null) Played = null;
-            if (Paused != null) Paused = null;
-            if (Stopped != null) Stopped = null;
-            base.Dispose(disposing);
+            try
+            {
+                if (disposing)
+                {
+                    ClearRegisteredSongs();
+                    if (Played != null) Played = null;
+                    if (Paused != null) Paused = null;
+                    if (Resumed != null) Resumed = null;
+                    if (Stopped != null) Stopped = null;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         #endregion

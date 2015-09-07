@@ -18,7 +18,7 @@ namespace BIOXFramework.Audio
         public AudioSong(string name, string filePath)
         {
             try { Song = Song.FromUri(name, new Uri(filePath)); }
-            catch (Exception ex) { throw new SongLoadException(ex.Message); }
+            catch (Exception ex) { throw new SongManagerException(string.Format("cannot load \"{0}\" song: {1}", name, ex.Message)); }
             Name = name;
         }
 

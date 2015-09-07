@@ -63,9 +63,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BIOXFramework.Audio2D\BIOXFramework.Audio2D.csproj">
+    <ProjectReference Include="..\BIOXFramework.Audio\BIOXFramework.Audio.csproj">
       <Project>{3c3fce06-5fbe-41d4-85dd-010664abd541}</Project>
-      <Name>BIOXFramework.Audio2D</Name>
+      <Name>BIOXFramework.Audio</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

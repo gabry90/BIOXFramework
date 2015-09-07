@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{857FE24A-E37F-4ADC-94D9-4BA3E57E22D6}</ProjectGuid>
+    <ProjectGuid>{3C3FCE06-5FBE-41D4-85DD-010664ABD541}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BIOXFramework.Audio3D</RootNamespace>
-    <AssemblyName>BIOXFramework.Audio3D</AssemblyName>
+    <RootNamespace>BIOXFramework.Audio</RootNamespace>
+    <AssemblyName>BIOXFramework.Audio</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,9 +35,16 @@
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioExceptions.cs" />
+    <Compile Include="AudioSound.cs" />
+    <Compile Include="ISound3DEmitter.cs" />
+    <Compile Include="SoundManager.cs" />
+    <Compile Include="AudioSong.cs" />
+    <Compile Include="AudioEvents.cs" />
+    <Compile Include="SongManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
