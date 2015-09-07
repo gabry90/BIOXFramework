@@ -9,15 +9,15 @@ namespace BIOXFramework.Audio
         #region vars
 
         public Song Song;
-        public string Name { get; set; }
+        public string Name;
 
         #endregion
 
         #region constructors
 
-        public AudioSong(Game game, string name, string filePath)
+        public AudioSong(string name, string filePath)
         {
-            try { Song = game.Content.Load<Song>(filePath); }
+            try { Song = Song.FromUri(name, new Uri(filePath)); }
             catch (Exception ex) { throw new SongLoadException(ex.Message); }
             Name = name;
         }

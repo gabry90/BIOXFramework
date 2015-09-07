@@ -2,7 +2,7 @@
 
 namespace BIOXFramework.Audio
 {
-    #region song
+    #region songs
 
     public sealed class SongPlayedEventArgs : EventArgs
     {
@@ -24,21 +24,24 @@ namespace BIOXFramework.Audio
 
     #endregion
 
-    #region effect
+    #region sounds
 
-    public sealed class EffectPlayedEventArgs : EventArgs
+    public sealed class SoundPlayedEventArgs : EventArgs
     {
-
+        public SoundPlayedEventArgs(string effectName) { Name = effectName; }
+        public string Name { get; private set; }
     }
 
-    public sealed class EffectPausedEventArgs : EventArgs
+    public sealed class SoundPausedEventArgs : EventArgs
     {
-
+        public SoundPausedEventArgs(string effectName) { Name = effectName; }
+        public string Name { get; private set; }
     }
 
-    public sealed class EffectStoppedEventArgs : EventArgs
+    public sealed class SoundStoppedEventArgs : EventArgs
     {
-
+        public SoundStoppedEventArgs(string effectName) { Name = effectName; }
+        public string Name { get; private set; }
     }
 
     #endregion

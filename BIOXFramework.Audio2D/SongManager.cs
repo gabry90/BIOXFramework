@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SongManager : GameComponent, IDisposable
+    public sealed class SongManager : GameComponent
     {
         #region vars
 
@@ -29,7 +29,6 @@ namespace BIOXFramework.Audio
             set { MediaPlayer.Volume = value < 0f || value > 1f ? 0.5f : value; }
         }
 
-        private Game _game;
         private List<AudioSong> _songs;
 
         #endregion
@@ -39,7 +38,6 @@ namespace BIOXFramework.Audio
         public SongManager(Game game)
             : base(game)
         {
-            _game = game;
             _songs = new List<AudioSong>();
             CurrentSong = null;
         }
@@ -48,28 +46,28 @@ namespace BIOXFramework.Audio
 
         #region public methods
 
-        public void Register(string name, string filePath)
+        public void Register(string songName, string filePath)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(songName))
                 throw new SongNameException();
 
             if (!File.Exists(filePath))
-                throw new SongPathException();
+                throw new SongPathException(filePath);
 
-            if (_songs.FirstOrDefault(x => string.Equals(x.Name, name)) != null)
-                throw new SongAlreadyRegistered();
+            if (_songs.FirstOrDefault(x => string.Equals(x.Name, songName)) != null)
+                throw new SongAlreadyRegistered(songName);
 
-            _songs.Add(new AudioSong(_game, name, filePath));   
+            _songs.Add(new AudioSong(songName, filePath));   
         }
 
-        public void Unregister(string name)
+        public void Unregister(string songName)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(songName))
                 throw new SongNameException();
 
-            AudioSong song = _songs.FirstOrDefault(x => string.Equals(x.Name, name));
+            AudioSong song = _songs.FirstOrDefault(x => string.Equals(x.Name, songName));
             if (song == null)
-                throw new SongNotRegisteredException();
+                throw new SongNotRegisteredException(songName);
 
             song.Dispose();
             _songs.Remove(song);         
@@ -80,7 +78,7 @@ namespace BIOXFramework.Audio
             return MediaPlayer.Volume;
         }
 
-        public void ClearRegisteredSong()
+        public void ClearRegisteredSongs()
         {
             MediaPlayer.Stop();
             _songs.ForEach(x => x.Dispose());
@@ -95,7 +93,7 @@ namespace BIOXFramework.Audio
 
             AudioSong song = _songs.FirstOrDefault(x => string.Equals(x.Name, songName));
             if (song == null)
-                throw new SongNotRegisteredException();
+                throw new SongNotRegisteredException(songName);
 
             if (string.Equals(CurrentSong, song.Name))
             {
@@ -158,7 +156,7 @@ namespace BIOXFramework.Audio
 
         #endregion
 
-        #region dispatcher
+        #region dispatchers
 
         private void SongPlayedEventDispatcher(SongPlayedEventArgs e)
         {
@@ -185,13 +183,14 @@ namespace BIOXFramework.Audio
 
         #region dispose
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            ClearRegisteredSong();
+            ClearRegisteredSongs();
             if (Played != null) Played = null;
             if (Paused != null) Paused = null;
             if (Stopped != null) Stopped = null;
-         }
+            base.Dispose(disposing);
+        }
 
         #endregion
     }
