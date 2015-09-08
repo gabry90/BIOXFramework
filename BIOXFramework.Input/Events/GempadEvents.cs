@@ -5,19 +5,37 @@ namespace BIOXFramework.Input.Events
 {
     public class GamepadPressedEventArgs : EventArgs
     {
-        public GamepadPressedEventArgs(Buttons button) { Button = button; }
+        public GamepadPressedEventArgs(string name, Buttons button) 
+        {
+            Name = name;
+            Button = button;
+        }
+
+        public string Name { get; private set; }
         public Buttons Button { get; private set; }
     }
 
     public class GamepadPressingEventArgs : EventArgs
     {
-        public GamepadPressingEventArgs(Buttons button) { Button = button; }
+        public GamepadPressingEventArgs(string name, Buttons button) 
+        {
+            Name = name;
+            Button = button;
+        }
+
+        public string Name { get; private set; }
         public Buttons Button { get; private set; }
     }
 
-    public class GamepadReleaseEventArgs : EventArgs
+    public class GamepadReleasedEventArgs : EventArgs
     {
-        public GamepadReleaseEventArgs(Buttons button) { Button = button; }
+        public GamepadReleasedEventArgs(string name, Buttons button) 
+        {
+            Name = name;
+            Button = button;
+        }
+
+        public string Name { get; private set; }
         public Buttons Button { get; private set; }
     }
 }

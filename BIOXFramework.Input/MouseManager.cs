@@ -9,6 +9,7 @@ namespace BIOXFramework.Input
         public MouseManager(Game game)
             : base(game)
         {
+            
 
         }
     }
