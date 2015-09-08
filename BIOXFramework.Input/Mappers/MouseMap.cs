@@ -13,7 +13,7 @@ namespace BIOXFramework.Input.Mappers
         X2
     }
 
-    public sealed class MouseMapper
+    public sealed class MouseMap
     {
         public string Name { get; set; }
         public MouseButtons? Button { get; set; }
