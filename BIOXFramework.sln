@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIOXFramework.Test", "BIOXF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIOXFramework.Utility", "BIOXFramework.Utility\BIOXFramework.Utility.csproj", "{E529133E-9E7E-492B-A779-373F88D8C623}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIOXFramework.Services", "BIOXFramework.Services\BIOXFramework.Services.csproj", "{EAC53160-47B2-4538-B812-3D79BEDFE158}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,16 @@ Global
 		{E529133E-9E7E-492B-A779-373F88D8C623}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E529133E-9E7E-492B-A779-373F88D8C623}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E529133E-9E7E-492B-A779-373F88D8C623}.Release|x86.ActiveCfg = Release|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EAC53160-47B2-4538-B812-3D79BEDFE158}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

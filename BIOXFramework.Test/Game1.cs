@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using BIOXFramework.Audio;
+using BIOXFramework.Services;
 
 namespace BIOXFramework.Test
 {
@@ -13,9 +13,6 @@ namespace BIOXFramework.Test
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        //test
-        SongManager songManager;
 
         public Game1()
         {
@@ -32,9 +29,6 @@ namespace BIOXFramework.Test
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            songManager = new SongManager(this);
-            songManager.Register("musica_1", "");
-            songManager.Register("musica_2", "");
 
             base.Initialize();
         }
@@ -90,7 +84,6 @@ namespace BIOXFramework.Test
 
         protected override void Dispose(bool disposing)
         {
-            songManager.Dispose();
             base.Dispose(disposing);
         }
     }

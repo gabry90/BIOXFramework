@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using BIOXFramework.Services;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SoundManager : GameComponent
+    public sealed class SoundManager : GameComponent, IBIOXFrameworkService
     {
         #region vars
 

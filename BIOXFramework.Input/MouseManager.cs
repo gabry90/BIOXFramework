@@ -6,10 +6,11 @@ using Microsoft.Xna.Framework;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Input.Mappers;
 using Microsoft.Xna.Framework.Input;
+using BIOXFramework.Services;
 
 namespace BIOXFramework.Input
 {
-    public sealed class MouseManager : GameComponent
+    public sealed class MouseManager : GameComponent, IBIOXFrameworkService
     {
         #region vars
 

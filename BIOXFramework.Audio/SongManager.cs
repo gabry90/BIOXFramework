@@ -4,10 +4,11 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
+using BIOXFramework.Services;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SongManager : GameComponent
+    public sealed class SongManager : GameComponent, IBIOXFrameworkService
     {
         #region vars
 
