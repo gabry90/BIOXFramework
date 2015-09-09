@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -11,10 +12,10 @@ namespace BIOXFramework.Audio
     {
         #region vars
 
-        public EventHandler<SoundPlayedEventArgs> Played;
-        public EventHandler<SoundPausedEventArgs> Paused;
-        public EventHandler<SoundResumedEventArgs> Resumed;
-        public EventHandler<SoundStoppedEventArgs> Stopped;
+        public event EventHandler<SoundPlayedEventArgs> Played;
+        public event EventHandler<SoundPausedEventArgs> Paused;
+        public event EventHandler<SoundResumedEventArgs> Resumed;
+        public event EventHandler<SoundStoppedEventArgs> Stopped;
         public AudioListener Sound3DListener { get { return _listener; } }
 
         private List<AudioSound> _sounds;
@@ -243,7 +244,7 @@ namespace BIOXFramework.Audio
 
         public override void Update(GameTime gameTime)
         {
-            _sounds.ForEach(x =>
+            Parallel.ForEach(_sounds, x =>
             {
                 if (x.Emitter == null)
                     return; //sound is not 3D

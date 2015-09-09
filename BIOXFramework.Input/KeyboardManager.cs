@@ -13,9 +13,9 @@ namespace BIOXFramework.Input
     {
         #region vars
 
-        public EventHandler<KeyboardPressedEventArgs> Pressed;
-        public EventHandler<KeyboardPressingEventArgs> Pressing;
-        public EventHandler<KeyboardReleasedEventArgs> Released;
+        public event EventHandler<KeyboardPressedEventArgs> Pressed;
+        public event EventHandler<KeyboardPressingEventArgs> Pressing;
+        public event EventHandler<KeyboardReleasedEventArgs> Released;
         public bool EnableCapture;
         public int PressingDelay
         {
@@ -96,7 +96,7 @@ namespace BIOXFramework.Input
         public List<KeyboardMap> GetMaps()
         {
             List<KeyboardMap> maps = new List<KeyboardMap>();
-            _maps.ForEach(x => maps.Add(new KeyboardMap { Name = x.Name, Key = x.Key }));
+            Parallel.ForEach(_maps, x => maps.Add(new KeyboardMap { Name = x.Name, Key = x.Key }));
             return maps;
         }
 
@@ -108,7 +108,7 @@ namespace BIOXFramework.Input
             //get current keyboard state
             KeyboardState currentKeyboardState = Keyboard.GetState();   
 
-            //check key pressed, pressing and released events for each mapped key
+            //check key pressed, pressing and released events for each mapped keys
             Parallel.ForEach(_maps, map =>
             {
                 if (map.Key == null)
@@ -122,7 +122,7 @@ namespace BIOXFramework.Input
                     return;
                 }
 
-                if (_oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
+                if (currentKeyboardState.IsKeyDown(map.Key.Value))
                 {
                     //key is continous pressing
                     DateTime currentTime = DateTime.Now;

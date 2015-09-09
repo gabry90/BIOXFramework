@@ -11,10 +11,10 @@ namespace BIOXFramework.Audio
     {
         #region vars
 
-        public EventHandler<SongPlayedEventArgs> Played;
-        public EventHandler<SongPausedEventArgs> Paused;
-        public EventHandler<SongResumedEventArgs> Resumed;
-        public EventHandler<SongStoppedEventArgs> Stopped;
+        public event EventHandler<SongPlayedEventArgs> Played;
+        public event EventHandler<SongPausedEventArgs> Paused;
+        public event EventHandler<SongResumedEventArgs> Resumed;
+        public event EventHandler<SongStoppedEventArgs> Stopped;
 
         public string CurrentSong { get; private set; }
 
