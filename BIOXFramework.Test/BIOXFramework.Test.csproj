@@ -45,6 +45,11 @@
     <Compile Include="GameTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenes\AudioTestScene.cs" />
+    <Compile Include="Scenes\GuiTestScene.cs" />
+    <Compile Include="Scenes\InputTestScene.cs" />
+    <Compile Include="Scenes\Physics2DTestScene.cs" />
+    <Compile Include="Scenes\Physics3DTestScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

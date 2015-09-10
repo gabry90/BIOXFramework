@@ -38,7 +38,37 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BIOXScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneEvents.cs" />
+    <Compile Include="SceneExceptions.cs" />
+    <Compile Include="SceneManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BIOXFramework.Audio\BIOXFramework.Audio.csproj">
+      <Project>{3c3fce06-5fbe-41d4-85dd-010664abd541}</Project>
+      <Name>BIOXFramework.Audio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.GUI\BIOXFramework.GUI.csproj">
+      <Project>{516d521a-7618-466f-be97-5a3e987fd9e5}</Project>
+      <Name>BIOXFramework.GUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Input\BIOXFramework.Input.csproj">
+      <Project>{274beb25-1f10-4627-b5cb-13bfb59c9c49}</Project>
+      <Name>BIOXFramework.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Physics2D\BIOXFramework.Physics2D.csproj">
+      <Project>{c09b0ef7-d8d6-47c7-b635-c6bb0630621b}</Project>
+      <Name>BIOXFramework.Physics2D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Physics3D\BIOXFramework.Physics3D.csproj">
+      <Project>{be90e5a0-d541-4c8f-8ec2-eb55e6723527}</Project>
+      <Name>BIOXFramework.Physics3D</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Services\BIOXFramework.Services.csproj">
+      <Project>{eac53160-47b2-4538-b812-3d79bedfe158}</Project>
+      <Name>BIOXFramework.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

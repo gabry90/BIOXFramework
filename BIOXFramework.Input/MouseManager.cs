@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using BIOXFramework.Input.Events;
@@ -53,10 +52,10 @@ namespace BIOXFramework.Input
             lock (_maps)
             {
                 _maps.Clear();
-                Parallel.ForEach(Enum.GetValues(typeof(MouseButtons)).OfType<MouseButtons>().ToList(), x =>
+                foreach (MouseButtons button in Enum.GetValues(typeof(MouseButtons)))
                 {
-                    _maps.Add(new MouseMap { Name = x.ToString(), Button = x });
-                });
+                    _maps.Add(new MouseMap { Name = button.ToString(), Button = button });
+                }
             }
         }
 
@@ -113,7 +112,7 @@ namespace BIOXFramework.Input
         public List<MouseMap> GetMaps()
         {
             List<MouseMap> maps = new List<MouseMap>();
-            Parallel.ForEach(_maps, x => maps.Add(new MouseMap { Name = x.Name, Button = x.Button }));
+            foreach (MouseMap map in _maps) { maps.Add(new MouseMap { Name = map.Name, Button = map.Button }); };
             return maps;
         }
 
@@ -132,7 +131,7 @@ namespace BIOXFramework.Input
                     _oldMouseState = currentMouseState;
 
                 //check button pressed, pressing and released events for each mapped buttons
-                Parallel.ForEach(_maps, map =>
+                foreach (MouseMap map in _maps)
                 {
                     //avoid async operation that cause null value
                     if (map == null)
@@ -159,7 +158,7 @@ namespace BIOXFramework.Input
                             UpdateX2Button(map, _oldMouseState, currentMouseState);
                             return;
                     }
-                });
+                };
 
                 if (_oldMouseState.Position != currentMouseState.Position)  //mouse position changed
                     MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));

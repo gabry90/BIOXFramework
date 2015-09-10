@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BIOXFramework.Services
 {
@@ -46,7 +45,7 @@ namespace BIOXFramework.Services
 
         public static void Clear()
         {
-            Parallel.ForEach(_services, x => x.Value.Dispose());
+            foreach (KeyValuePair<Type, IBIOXFrameworkService> service in _services) { service.Value.Dispose(); }
             _services.Clear();
         }
 

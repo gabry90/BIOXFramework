@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -50,10 +49,10 @@ namespace BIOXFramework.Input
             lock (_maps)
             {
                 _maps.Clear();
-                Parallel.ForEach(Enum.GetValues(typeof(Keys)).OfType<Keys>().ToList(), x =>
+                foreach (Keys key in Enum.GetValues(typeof(Keys)))
                 {
-                    _maps.Add(new KeyboardMap { Name = x.ToString(), Key = x });
-                });
+                    _maps.Add(new KeyboardMap { Name = key.ToString(), Key = key });
+                };
             }
         }
 
@@ -110,7 +109,7 @@ namespace BIOXFramework.Input
         public List<KeyboardMap> GetMaps()
         {
             List<KeyboardMap> maps = new List<KeyboardMap>();
-            Parallel.ForEach(_maps, x => maps.Add(new KeyboardMap { Name = x.Name, Key = x.Key }));
+            foreach(KeyboardMap map in _maps) { maps.Add(new KeyboardMap { Name = map.Name, Key = map.Key }); };
             return maps;
         }
 
@@ -129,7 +128,7 @@ namespace BIOXFramework.Input
                     _oldKeyboardState = currentKeyboardState;
 
                 //check key pressed, pressing and released events for each mapped keys
-                Parallel.ForEach(_maps, map =>
+                foreach (KeyboardMap map in _maps)
                 {
                     //avoid async operation that cause null value
                     if (map == null)
@@ -164,7 +163,7 @@ namespace BIOXFramework.Input
                         //key is released
                         KeyboardReleasedEventDispatcher(new KeyboardReleasedEventArgs(map.Name, map.Key.Value));
                     }
-                });
+                };
 
                 //update old keyboard state
                 _oldKeyboardState = currentKeyboardState;

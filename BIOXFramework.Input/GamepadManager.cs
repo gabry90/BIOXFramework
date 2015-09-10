@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -50,10 +49,10 @@ namespace BIOXFramework.Input
             lock (_maps)
             {
                 _maps.Clear();
-                Parallel.ForEach(Enum.GetValues(typeof(Buttons)).OfType<Buttons>().ToList(), x =>
+                foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
                 {
-                    _maps.Add(new GamepadMap { Name = x.ToString(), Button = x });
-                });
+                    _maps.Add(new GamepadMap { Name = button.ToString(), Button = button });
+                };
             }
         }
 
@@ -110,7 +109,7 @@ namespace BIOXFramework.Input
         public List<GamepadMap> GetMaps()
         {
             List<GamepadMap> maps = new List<GamepadMap>();
-            Parallel.ForEach(_maps, x => maps.Add(new GamepadMap { Name = x.Name, Button = x.Button }));
+            foreach (GamepadMap map in _maps) { maps.Add(new GamepadMap { Name = map.Name, Button = map.Button }); };
             return maps;
         }
 
@@ -129,7 +128,7 @@ namespace BIOXFramework.Input
                     _oldGamepadState = currentGamepadState;
 
                 //check button pressed, pressing and released events for each mapped buttons
-                Parallel.ForEach(_maps, map =>
+                foreach (GamepadMap map in _maps)
                 {
                     //avoid async operation that cause null value
                     if (map == null)
@@ -164,7 +163,7 @@ namespace BIOXFramework.Input
                         //button is released
                         GamepadReleasedEventDispatcher(new GamepadReleasedEventArgs(map.Name, map.Button.Value));
                     }
-                });
+                };
 
                 //update old gamepad state
                 _oldGamepadState = currentGamepadState;

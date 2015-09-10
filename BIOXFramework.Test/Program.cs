@@ -2,6 +2,8 @@
 using BIOXFramework.Services;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
+using BIOXFramework.Scene;
+using BIOXFramework.Test.Scenes;
 
 namespace BIOXFramework.Test
 {
@@ -20,6 +22,7 @@ namespace BIOXFramework.Test
             using (var game = new GameTest())
             {
                 InitService(game);
+                InitScenes(game);
                 game.Run();
             }
         }
@@ -34,6 +37,16 @@ namespace BIOXFramework.Test
             ServiceManager.Register<KeyboardManager>(new KeyboardManager(game));
             ServiceManager.Register<MouseManager>(new MouseManager(game));
             ServiceManager.Register<GamepadManager>(new GamepadManager(game));
+        }
+
+        private static void InitScenes(GameTest game)
+        {
+            //register scenes
+            SceneManager.Register<InputTestScene>();
+            SceneManager.Register<AudioTestScene>();
+            SceneManager.Register<GuiTestScene>();
+            SceneManager.Register<Physics2DTestScene>();
+            SceneManager.Register<Physics3DTestScene>();
         }
     }
 #endif

@@ -253,25 +253,25 @@ namespace BIOXFramework.Audio
         {
             lock (_sounds)
             {
-                Parallel.ForEach(_sounds, x =>
+                foreach (AudioSound sound in _sounds)
                 {
                     //avoid async operation that cause null value
-                    if (x == null)
+                    if (sound == null)
                         return;
 
-                    if (x.Emitter == null)
+                    if (sound.Emitter == null)
                         return; //sound is not 3D
 
-                    if (x.SoundInstance == null || x.SoundInstance.IsDisposed || x.SoundInstance.State == SoundState.Stopped)
+                    if (sound.SoundInstance == null || sound.SoundInstance.IsDisposed || sound.SoundInstance.State == SoundState.Stopped)
                         return; //sound is not playing or is disposed
 
-                    _emitter.Position = x.Emitter.SoundEmitterPosition;
-                    _emitter.Forward = x.Emitter.SoundEmitterForward;
-                    _emitter.Up = x.Emitter.SoundEmitterUp;
-                    _emitter.Velocity = x.Emitter.SoundEmitterVelocity;
+                    _emitter.Position = sound.Emitter.SoundEmitterPosition;
+                    _emitter.Forward = sound.Emitter.SoundEmitterForward;
+                    _emitter.Up = sound.Emitter.SoundEmitterUp;
+                    _emitter.Velocity = sound.Emitter.SoundEmitterVelocity;
 
-                    x.SoundInstance.Apply3D(_listener, _emitter);
-                });
+                    sound.SoundInstance.Apply3D(_listener, _emitter);
+                }
             }
 
             base.Update(gameTime);
