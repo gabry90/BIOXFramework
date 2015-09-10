@@ -36,6 +36,7 @@ namespace BIOXFramework.Input
             : base(game)
         {
             _maps = new List<GamepadMap>();
+            SetDefaultMaps();
             EnableCapture = true;
             _pressingDelay = 1000;
         }
@@ -43,6 +44,18 @@ namespace BIOXFramework.Input
         #endregion
 
         #region public methods
+
+        public void SetDefaultMaps()
+        {
+            lock (_maps)
+            {
+                _maps.Clear();
+                Parallel.ForEach(Enum.GetValues(typeof(Buttons)).OfType<Buttons>().ToList(), x =>
+                {
+                    _maps.Add(new GamepadMap { Name = x.ToString(), Button = x });
+                });
+            }
+        }
 
         public void Register(string mapName, Buttons? button)
         {
@@ -55,7 +68,7 @@ namespace BIOXFramework.Input
             if (_maps.FirstOrDefault(x => string.Equals(x.Button, button)) != null)
                 throw new GamepadManagerException(string.Format("the button \"{0}\" is already registered in \"{1}\" map!", button.ToString(), mapName));
 
-            _maps.Add(new GamepadMap { Name = mapName, Button = button });
+            lock (_maps) { _maps.Add(new GamepadMap { Name = mapName, Button = button }); }
         }
 
         public void Unregister(string mapName)
@@ -67,7 +80,7 @@ namespace BIOXFramework.Input
             if (map == null)
                 throw new GamepadManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            _maps.Remove(map);
+            lock (_maps) { _maps.Remove(map); }
         }
 
         public void UpdateMap(string mapName, Buttons? button)
@@ -79,7 +92,7 @@ namespace BIOXFramework.Input
             if (map == null)
                 throw new GamepadManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            map.Button = button;
+            lock (_maps) { map.Button = button; }
         }
 
         public Buttons? GetMap(string mapName)
@@ -106,45 +119,56 @@ namespace BIOXFramework.Input
             if (!EnableCapture)
                 return; //ignoring gamepad input events
 
-            //get current gamepad state
-            GamePadState currentGamepadState = GamePad.GetState(PlayerIndex.One);
-
-            //check button pressed, pressing and released events for each mapped buttons
-            Parallel.ForEach(_maps, map =>
+            lock (_maps)
             {
-                if (map.Button == null)
-                    return; //button is not setted, so skip
+                //get current gamepad state
+                GamePadState currentGamepadState = GamePad.GetState(PlayerIndex.One);
 
-                if (_oldGamepadState.IsButtonUp(map.Button.Value) && currentGamepadState.IsButtonDown(map.Button.Value))
-                {
-                    //button is pressed for first time
-                    map.PressedTime = DateTime.Now;
-                    GamepadPressedEventDispatcher(new GamepadPressedEventArgs(map.Name, map.Button.Value));
-                    return;
-                }
+                //init old gamepad state
+                if (_oldGamepadState == null)
+                    _oldGamepadState = currentGamepadState;
 
-                if (currentGamepadState.IsButtonDown(map.Button.Value))
+                //check button pressed, pressing and released events for each mapped buttons
+                Parallel.ForEach(_maps, map =>
                 {
-                    //button is continous pressing
-                    DateTime currentTime = DateTime.Now;
-                    if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
+                    //avoid async operation that cause null value
+                    if (map == null)
+                        return;
+
+                    if (map.Button == null)
+                        return; //button is not setted, so skip
+
+                    if (_oldGamepadState.IsButtonUp(map.Button.Value) && currentGamepadState.IsButtonDown(map.Button.Value))
                     {
-                        //delay pressing time is over then pressing delay
-                        map.PressedTime = currentTime;
-                        GamepadPressingEventDispatcher(new GamepadPressingEventArgs(map.Name, map.Button.Value));
+                        //button is pressed for first time
+                        map.PressedTime = DateTime.Now;
+                        GamepadPressedEventDispatcher(new GamepadPressedEventArgs(map.Name, map.Button.Value));
+                        return;
                     }
-                    return;
-                }
 
-                if (_oldGamepadState.IsButtonDown(map.Button.Value) && currentGamepadState.IsButtonUp(map.Button.Value))
-                {
-                    //button is released
-                    GamepadReleasedEventDispatcher(new GamepadReleasedEventArgs(map.Name, map.Button.Value));
-                }
-            });
+                    if (currentGamepadState.IsButtonDown(map.Button.Value))
+                    {
+                        //button is continous pressing
+                        DateTime currentTime = DateTime.Now;
+                        if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
+                        {
+                            //delay pressing time is over then pressing delay
+                            map.PressedTime = currentTime;
+                            GamepadPressingEventDispatcher(new GamepadPressingEventArgs(map.Name, map.Button.Value));
+                        }
+                        return;
+                    }
 
-            //update old gamepad state
-            _oldGamepadState = currentGamepadState;
+                    if (_oldGamepadState.IsButtonDown(map.Button.Value) && currentGamepadState.IsButtonUp(map.Button.Value))
+                    {
+                        //button is released
+                        GamepadReleasedEventDispatcher(new GamepadReleasedEventArgs(map.Name, map.Button.Value));
+                    }
+                });
+
+                //update old gamepad state
+                _oldGamepadState = currentGamepadState;
+            }
 
             base.Update(gameTime);
         }
@@ -185,7 +209,7 @@ namespace BIOXFramework.Input
             {
                 if (disposing)
                 {
-                    _maps.Clear();
+                    lock (_maps) { _maps.Clear(); }
                     if (Pressed != null) Pressed = null;
                     if (Pressing != null) Pressing = null;
                     if (Released != null) Released = null;

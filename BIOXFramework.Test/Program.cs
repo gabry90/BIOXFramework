@@ -5,7 +5,7 @@ using BIOXFramework.Input;
 
 namespace BIOXFramework.Test
 {
-#if WINDOWS || LINUX
+#if WINDOWS
     /// <summary>
     /// The main class.
     /// </summary>
@@ -17,14 +17,14 @@ namespace BIOXFramework.Test
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new GameTest())
             {
                 InitService(game);
                 game.Run();
             }
         }
 
-        private static void InitService(Game1 game)
+        private static void InitService(GameTest game)
         {
             //register audio services
             ServiceManager.Register<SongManager>(new SongManager(game));

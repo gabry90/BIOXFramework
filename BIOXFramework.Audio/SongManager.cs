@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
@@ -59,7 +60,7 @@ namespace BIOXFramework.Audio
             if (_songs.FirstOrDefault(x => string.Equals(x.Name, songName)) != null)
                 throw new SongManagerException(string.Format("the song \"{0}\" is already registered!", songName));
 
-            _songs.Add(new AudioSong(songName, filePath));   
+            lock (_songs) { _songs.Add(new AudioSong(songName, filePath)); } 
         }
 
         public void Unregister(string songName)
@@ -71,16 +72,22 @@ namespace BIOXFramework.Audio
             if (song == null)
                 throw new SongManagerException(string.Format("the song \"{0}\" is not registered!", songName));
 
-            song.Dispose();
-            _songs.Remove(song);         
+            lock (_songs)
+            {
+                song.Dispose();
+                _songs.Remove(song);
+            }
         }
 
         public void ClearRegisteredSongs()
         {
-            MediaPlayer.Stop();
-            _songs.ForEach(x => x.Dispose());
-            _songs.Clear();
-            CurrentSong = null;
+            lock (_songs)
+            {
+                MediaPlayer.Stop();
+                Parallel.ForEach(_songs, x => x.Dispose());
+                _songs.Clear();
+                CurrentSong = null;
+            }
         }
 
         public void Play(string songName)

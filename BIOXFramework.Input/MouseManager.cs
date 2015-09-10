@@ -39,6 +39,7 @@ namespace BIOXFramework.Input
             : base(game)
         {
             _maps = new List<MouseMap>();
+            SetDefaultMaps();
             EnableCapture = true;
             _pressingDelay = 1000;
         }
@@ -46,6 +47,18 @@ namespace BIOXFramework.Input
         #endregion
 
         #region public methods
+
+        public void SetDefaultMaps()
+        {
+            lock (_maps)
+            {
+                _maps.Clear();
+                Parallel.ForEach(Enum.GetValues(typeof(MouseButtons)).OfType<MouseButtons>().ToList(), x =>
+                {
+                    _maps.Add(new MouseMap { Name = x.ToString(), Button = x });
+                });
+            }
+        }
 
         public void Register(string mapName, MouseButtons? button)
         {
@@ -58,7 +71,7 @@ namespace BIOXFramework.Input
             if (_maps.FirstOrDefault(x => string.Equals(x.Button, button)) != null)
                 throw new MouseManagerException(string.Format("the button \"{0}\" is already registered in \"{1}\" map!", button.ToString(), mapName));
 
-            _maps.Add(new MouseMap { Name = mapName, Button = button });
+            lock (_maps) { _maps.Add(new MouseMap { Name = mapName, Button = button }); }
         }
 
         public void Unregister(string mapName)
@@ -70,7 +83,7 @@ namespace BIOXFramework.Input
             if (map == null)
                 throw new MouseManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            _maps.Remove(map);
+            lock (_maps) { _maps.Remove(map); }
         }
 
         public void UpdateMap(string mapName, MouseButtons? button)
@@ -82,7 +95,7 @@ namespace BIOXFramework.Input
             if (map == null)
                 throw new MouseManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            map.Button = button;
+            lock (_maps) { map.Button = button; }
         }
 
         public MouseButtons? GetMap(string mapName)
@@ -109,45 +122,56 @@ namespace BIOXFramework.Input
             if (!EnableCapture)
                 return; //ignoring mouse input events
 
-            //get current mouse state
-            MouseState currentMouseState = Mouse.GetState();
-
-            //check button pressed, pressing and released events for each mapped buttons
-            Parallel.ForEach(_maps, map =>
+            lock (_maps)
             {
-                if (map.Button == null)
-                    return; //button is not setted, so skip
+                //get current mouse state
+                MouseState currentMouseState = Mouse.GetState();
 
-                switch (map.Button.Value)
+                //init old mouse state
+                if (_oldMouseState == null)
+                    _oldMouseState = currentMouseState;
+
+                //check button pressed, pressing and released events for each mapped buttons
+                Parallel.ForEach(_maps, map =>
                 {
-                    case MouseButtons.Left:     //update mouse left button events
-                        UpdateLeftButton(map, _oldMouseState, currentMouseState);
+                    //avoid async operation that cause null value
+                    if (map == null)
                         return;
-                    case MouseButtons.Rigth:    //update mouse right button events
-                        UpdateRightButton(map, _oldMouseState, currentMouseState);
-                        return;
-                    case MouseButtons.Middle:   //update mouse middle button events
-                        UpdateMiddleButton(map, _oldMouseState, currentMouseState);
-                        return;
-                    case MouseButtons.X1:       //update mouse X1 button events
-                        UpdateX1Button(map, _oldMouseState, currentMouseState);
-                        return;
-                    case MouseButtons.X2:       //update mouse X2 button events
-                        UpdateX2Button(map, _oldMouseState, currentMouseState);
-                        return;
-                }
-            });
 
-            if (_oldMouseState.Position != currentMouseState.Position)  //mouse position changed
-                MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+                    if (map.Button == null)
+                        return; //button is not setted, so skip
 
-            if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)
-                MouseWhellUpEventDispatcher(EventArgs.Empty);   //mouse scroll up
-            else if (currentMouseState.ScrollWheelValue < _oldMouseState.ScrollWheelValue)
-                MouseWhellDownEventDispatcher(EventArgs.Empty); //mouse scroll down
+                    switch (map.Button.Value)
+                    {
+                        case MouseButtons.Left:     //update mouse left button events
+                            UpdateLeftButton(map, _oldMouseState, currentMouseState);
+                            return;
+                        case MouseButtons.Rigth:    //update mouse right button events
+                            UpdateRightButton(map, _oldMouseState, currentMouseState);
+                            return;
+                        case MouseButtons.Middle:   //update mouse middle button events
+                            UpdateMiddleButton(map, _oldMouseState, currentMouseState);
+                            return;
+                        case MouseButtons.X1:       //update mouse X1 button events
+                            UpdateX1Button(map, _oldMouseState, currentMouseState);
+                            return;
+                        case MouseButtons.X2:       //update mouse X2 button events
+                            UpdateX2Button(map, _oldMouseState, currentMouseState);
+                            return;
+                    }
+                });
 
-            //update old mouse state
-            _oldMouseState = currentMouseState;
+                if (_oldMouseState.Position != currentMouseState.Position)  //mouse position changed
+                    MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+
+                if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)
+                    MouseWhellUpEventDispatcher(EventArgs.Empty);   //mouse scroll up
+                else if (currentMouseState.ScrollWheelValue < _oldMouseState.ScrollWheelValue)
+                    MouseWhellDownEventDispatcher(EventArgs.Empty); //mouse scroll down
+
+                //update old mouse state
+                _oldMouseState = currentMouseState;
+            }
 
             base.Update(gameTime);
         }
@@ -322,7 +346,7 @@ namespace BIOXFramework.Input
             {
                 if (disposing)
                 {
-                    _maps.Clear();
+                    lock (_maps) { _maps.Clear(); }
                     if (Pressed != null) Pressed = null;
                     if (Pressing != null) Pressing = null;
                     if (Released != null) Released = null;

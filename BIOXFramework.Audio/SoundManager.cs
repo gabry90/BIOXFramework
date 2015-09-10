@@ -50,7 +50,7 @@ namespace BIOXFramework.Audio
             if (_sounds.FirstOrDefault(x => string.Equals(x.Name, soundName)) != null)
                 throw new SoundManagerException(string.Format("the sound \"{0}\" is already registered!", soundName));
 
-            _sounds.Add(new AudioSound(soundName, filePath));
+            lock (_sounds) { _sounds.Add(new AudioSound(soundName, filePath)); }
         }
 
         public void Unregister(string soundName)
@@ -62,14 +62,20 @@ namespace BIOXFramework.Audio
             if (sound == null)
                 throw new SoundManagerException(string.Format("the sound \"{0}\" is already registered!", soundName));
 
-            sound.Dispose();
-            _sounds.Remove(sound);         
+            lock (_sounds)
+            {
+                sound.Dispose();
+                _sounds.Remove(sound);
+            }
         }
 
         public void ClearRegisteredSounds()
         {
-            _sounds.ForEach(x => x.Dispose());
-            _sounds.Clear();
+            lock (_sounds)
+            {
+                Parallel.ForEach(_sounds, x => x.Dispose());
+                _sounds.Clear();
+            }
         }
 
         public void Play(string soundName, bool loop)
@@ -245,21 +251,28 @@ namespace BIOXFramework.Audio
 
         public override void Update(GameTime gameTime)
         {
-            Parallel.ForEach(_sounds, x =>
+            lock (_sounds)
             {
-                if (x.Emitter == null)
-                    return; //sound is not 3D
+                Parallel.ForEach(_sounds, x =>
+                {
+                    //avoid async operation that cause null value
+                    if (x == null)
+                        return;
 
-                if (x.SoundInstance == null || x.SoundInstance.IsDisposed || x.SoundInstance.State == SoundState.Stopped)
-                    return; //sound is not playing or is disposed
+                    if (x.Emitter == null)
+                        return; //sound is not 3D
 
-                _emitter.Position = x.Emitter.SoundEmitterPosition;
-                _emitter.Forward = x.Emitter.SoundEmitterForward;
-                _emitter.Up = x.Emitter.SoundEmitterUp;
-                _emitter.Velocity = x.Emitter.SoundEmitterVelocity;
+                    if (x.SoundInstance == null || x.SoundInstance.IsDisposed || x.SoundInstance.State == SoundState.Stopped)
+                        return; //sound is not playing or is disposed
 
-                x.SoundInstance.Apply3D(_listener, _emitter);
-            });
+                    _emitter.Position = x.Emitter.SoundEmitterPosition;
+                    _emitter.Forward = x.Emitter.SoundEmitterForward;
+                    _emitter.Up = x.Emitter.SoundEmitterUp;
+                    _emitter.Velocity = x.Emitter.SoundEmitterVelocity;
+
+                    x.SoundInstance.Apply3D(_listener, _emitter);
+                });
+            }
 
             base.Update(gameTime);
         }

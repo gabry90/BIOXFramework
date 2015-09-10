@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BIOXFramework.Services
 {
     public static class ServiceManager
     {
+        #region vars
+
         public static event EventHandler<ServiceRegisteredEventArgs> ServiceRegistered;
         public static event EventHandler<ServiceUnregisteredEventArgs> ServiceUnregistered;
 
         private static Dictionary<Type, IBIOXFrameworkService> _services = new Dictionary<Type, IBIOXFrameworkService>();
+
+        #endregion
+
+        #region public methods
 
         public static void Register<T>(T service) where T : IBIOXFrameworkService
         {
@@ -37,6 +44,16 @@ namespace BIOXFramework.Services
             return (T)_services[typeof(T)];
         }
 
+        public static void Clear()
+        {
+            Parallel.ForEach(_services, x => x.Value.Dispose());
+            _services.Clear();
+        }
+
+        #endregion
+
+        #region dispatcher
+
         private static void ServiceRegisteredEventDispatcher(ServiceRegisteredEventArgs e)
         {
             var h = ServiceRegistered;
@@ -50,5 +67,7 @@ namespace BIOXFramework.Services
             if (h != null)
                 h(null, e);
         }
+
+        #endregion
     }
 }
