@@ -135,28 +135,28 @@ namespace BIOXFramework.Input
                 {
                     //avoid async operation that cause null value
                     if (map == null)
-                        return;
+                        continue;
 
                     if (map.Button == null)
-                        return; //button is not setted, so skip
+                        continue; //button is not setted, so skip
 
                     switch (map.Button.Value)
                     {
                         case MouseButtons.Left:     //update mouse left button events
                             UpdateLeftButton(map, _oldMouseState, currentMouseState);
-                            return;
+                            continue;
                         case MouseButtons.Rigth:    //update mouse right button events
                             UpdateRightButton(map, _oldMouseState, currentMouseState);
-                            return;
+                            continue;
                         case MouseButtons.Middle:   //update mouse middle button events
                             UpdateMiddleButton(map, _oldMouseState, currentMouseState);
-                            return;
+                            continue;
                         case MouseButtons.X1:       //update mouse X1 button events
                             UpdateX1Button(map, _oldMouseState, currentMouseState);
-                            return;
+                            continue;
                         case MouseButtons.X2:       //update mouse X2 button events
                             UpdateX2Button(map, _oldMouseState, currentMouseState);
-                            return;
+                            continue;
                     }
                 };
 

@@ -132,17 +132,17 @@ namespace BIOXFramework.Input
                 {
                     //avoid async operation that cause null value
                     if (map == null)
-                        return;
+                        continue;
 
                     if (map.Key == null)
-                        return; //key is not setted, so skip
+                        continue; //key is not setted, so skip
 
                     if (_oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
                     {
                         //key is pressed for first time
                         map.PressedTime = DateTime.Now;
                         KeyboardPressedEventDispatcher(new KeyboardPressedEventArgs(map.Name, map.Key.Value));
-                        return;
+                        continue;
                     }
 
                     if (currentKeyboardState.IsKeyDown(map.Key.Value))
@@ -155,7 +155,7 @@ namespace BIOXFramework.Input
                             map.PressedTime = currentTime;
                             KeyboardPressingEventDispatcher(new KeyboardPressingEventArgs(map.Name, map.Key.Value));
                         }
-                        return;
+                        continue;
                     }
 
                     if (_oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyUp(map.Key.Value))

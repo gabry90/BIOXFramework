@@ -86,8 +86,14 @@ namespace BIOXFramework.Scene
 
         public static void Clear(Game game)
         {
-            Unload(game);
-            lock (_scenes) { _scenes.Clear(); }
+            try
+            {
+                Unload(game);
+            }
+            finally
+            {
+                lock (_scenes) { _scenes.Clear(); }
+            }
         }
 
         #endregion

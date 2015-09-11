@@ -257,13 +257,13 @@ namespace BIOXFramework.Audio
                 {
                     //avoid async operation that cause null value
                     if (sound == null)
-                        return;
+                        continue;
 
                     if (sound.Emitter == null)
-                        return; //sound is not 3D
+                        continue; //sound is not 3D
 
                     if (sound.SoundInstance == null || sound.SoundInstance.IsDisposed || sound.SoundInstance.State == SoundState.Stopped)
-                        return; //sound is not playing or is disposed
+                        continue; //sound is not playing or is disposed
 
                     _emitter.Position = sound.Emitter.SoundEmitterPosition;
                     _emitter.Forward = sound.Emitter.SoundEmitterForward;
