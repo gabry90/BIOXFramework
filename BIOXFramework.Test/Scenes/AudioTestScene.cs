@@ -15,10 +15,10 @@ namespace BIOXFramework.Test.Scenes
         protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
         {
             if (e.Key == Microsoft.Xna.Framework.Input.Keys.Left)
-                SceneManager.Load<InputTestScene>(game);
+                sceneManager.Load<InputTestScene>(game);
 
             if (e.Key == Microsoft.Xna.Framework.Input.Keys.Right)
-                SceneManager.Load<GuiTestScene>(game);
+                sceneManager.Load<GuiTestScene>(game);
 
             base.OnKeyPressed(sender, e);
         }

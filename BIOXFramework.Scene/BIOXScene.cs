@@ -15,6 +15,7 @@ namespace BIOXFramework.Scene
     {
         #region vars
 
+        protected SceneManager sceneManager;
         protected SongManager songManager;
         protected SoundManager soundManager;
         protected KeyboardManager keyboardManager;
@@ -34,14 +35,15 @@ namespace BIOXFramework.Scene
             this.game = game;
             Visible = true;
             _components = new List<GameComponent>();
+            sceneManager = ServiceManager.Get<SceneManager>();
             songManager = ServiceManager.Get<SongManager>();
             soundManager = ServiceManager.Get<SoundManager>();
             keyboardManager = ServiceManager.Get<KeyboardManager>();
             mouseManager = ServiceManager.Get<MouseManager>();
 
             //init game base events
-            this.EnabledChanged += (o, e) => { SceneManager.SceneEnabledChangedEventDispatcher(new SceneEnabledChangedEventArgs(this.GetType(), this.Enabled)); };
-            this.VisibleChanged += (o, e) => { SceneManager.SceneVisibilityChangedEventDispatcher(new SceneVisibilityChangedEventArgs(this.GetType(), this.Visible)); };
+            this.EnabledChanged += (o, e) => { sceneManager.SceneEnabledChangedEventDispatcher(new SceneEnabledChangedEventArgs(this.GetType(), this.Enabled)); };
+            this.VisibleChanged += (o, e) => { sceneManager.SceneVisibilityChangedEventDispatcher(new SceneVisibilityChangedEventArgs(this.GetType(), this.Visible)); };
         }
 
         #endregion
@@ -68,12 +70,12 @@ namespace BIOXFramework.Scene
 
         public virtual void Pause()
         {
-            SceneManager.ScenePausedEventDispatcher(new ScenePausedEventArgs(this.GetType()));
+            sceneManager.ScenePausedEventDispatcher(new ScenePausedEventArgs(this.GetType()));
         }
 
         public virtual void Resume()
         {
-            SceneManager.SceneResumedEventDispatcher(new SceneResumedEventArgs(this.GetType()));
+            sceneManager.SceneResumedEventDispatcher(new SceneResumedEventArgs(this.GetType()));
         }
 
         protected void AttachSceneEventHandlers()
@@ -237,7 +239,7 @@ namespace BIOXFramework.Scene
 
             base.Initialize();
 
-            SceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
+            sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
         }
 
         protected override void LoadContent()
@@ -308,7 +310,7 @@ namespace BIOXFramework.Scene
                     }
 
                     //dispatch unloaded event
-                    SceneManager.SceneUnloadedEventDispatcher(new SceneUnloadedEventArgs(this.GetType()), game);
+                    sceneManager.SceneUnloadedEventDispatcher(new SceneUnloadedEventArgs(this.GetType()), game);
                 }
             }
             finally

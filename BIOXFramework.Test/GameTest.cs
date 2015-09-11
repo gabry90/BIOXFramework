@@ -16,8 +16,11 @@ namespace BIOXFramework.Test
     {
         public GraphicsDeviceManager graphics;
 
+        private SceneManager sceneManager;
+
         public GameTest()
         {
+            
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -28,8 +31,10 @@ namespace BIOXFramework.Test
 
         protected override void Initialize()
         {
+            sceneManager = ServiceManager.Get<SceneManager>();
+
             //load input scene with first scene
-            SceneManager.Load<InputTestScene>(this);
+            sceneManager.Load<InputTestScene>(this);
 
             base.Initialize();
         }
@@ -55,7 +60,7 @@ namespace BIOXFramework.Test
             {
                 if (disposing)
                 {
-                    SceneManager.Clear(this);
+                    sceneManager.Clear(this);
                     ServiceManager.Clear();
                 }
             }

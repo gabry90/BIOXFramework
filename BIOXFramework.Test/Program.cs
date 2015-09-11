@@ -4,6 +4,7 @@ using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Scene;
 using BIOXFramework.Test.Scenes;
+using BIOXFramework.Settings;
 
 namespace BIOXFramework.Test
 {
@@ -29,6 +30,12 @@ namespace BIOXFramework.Test
 
         private static void InitService(GameTest game)
         {
+            //register setting service
+            ServiceManager.Register<SettingsManager>(new SettingsManager());
+
+            //register scene service
+            ServiceManager.Register<SceneManager>(new SceneManager());
+
             //register audio services
             ServiceManager.Register<SongManager>(new SongManager(game));
             ServiceManager.Register<SoundManager>(new SoundManager(game));
@@ -42,11 +49,12 @@ namespace BIOXFramework.Test
         private static void InitScenes(GameTest game)
         {
             //register scenes
-            SceneManager.Register<InputTestScene>();
-            SceneManager.Register<AudioTestScene>();
-            SceneManager.Register<GuiTestScene>();
-            SceneManager.Register<Physics2DTestScene>();
-            SceneManager.Register<Physics3DTestScene>();
+            SceneManager manager = ServiceManager.Get<SceneManager>();
+            manager.Register<InputTestScene>();
+            manager.Register<AudioTestScene>();
+            manager.Register<GuiTestScene>();
+            manager.Register<Physics2DTestScene>();
+            manager.Register<Physics3DTestScene>();
         }
     }
 #endif

@@ -2,28 +2,29 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using BIOXFramework.Services;
 
 namespace BIOXFramework.Scene
 {
-    public static class SceneManager
+    public sealed class SceneManager : IBIOXFrameworkService
     {
         #region vars
 
-        public static event EventHandler<SceneLoadedEventArgs> Loaded;
-        public static event EventHandler<SceneUnloadedEventArgs> Unloaded;
-        public static event EventHandler<SceneVisibilityChangedEventArgs> VisibilityChanged;
-        public static event EventHandler<SceneEnabledChangedEventArgs> EnabledChanged;
-        public static event EventHandler<ScenePausedEventArgs> Paused;
-        public static event EventHandler<SceneResumedEventArgs> Resumed;
+        public event EventHandler<SceneLoadedEventArgs> Loaded;
+        public event EventHandler<SceneUnloadedEventArgs> Unloaded;
+        public event EventHandler<SceneVisibilityChangedEventArgs> VisibilityChanged;
+        public event EventHandler<SceneEnabledChangedEventArgs> EnabledChanged;
+        public event EventHandler<ScenePausedEventArgs> Paused;
+        public event EventHandler<SceneResumedEventArgs> Resumed;
 
-        private static List<Type> _scenes = new List<Type>();
-        private static BIOXScene _currentScene = null;
+        private List<Type> _scenes = new List<Type>();
+        private BIOXScene _currentScene = null;
 
         #endregion
 
         #region public methods
 
-        public static void Register<T>() where T : BIOXScene
+        public void Register<T>() where T : BIOXScene
         {
             if (_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is already registered!", typeof(T).FullName));
@@ -31,7 +32,7 @@ namespace BIOXFramework.Scene
             lock (_scenes) { _scenes.Add(typeof(T)); }
         }
 
-        public static void Unregister<T>(Game game) where T : BIOXScene
+        public void Unregister<T>(Game game) where T : BIOXScene
         {
             if (!_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is not registered!", typeof(T).FullName));
@@ -45,7 +46,7 @@ namespace BIOXFramework.Scene
             }
         }
 
-        public static void Load<T>(Game game) where T : BIOXScene
+        public void Load<T>(Game game) where T : BIOXScene
         {
             if (!_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is not registered!", typeof(T).FullName));
@@ -66,7 +67,7 @@ namespace BIOXFramework.Scene
             }
         }
 
-        public static void Unload(Game game)
+        public void Unload(Game game)
         {
             if (_currentScene == null)
                 throw new SceneManagerException("the current scene is not loaded!");
@@ -79,12 +80,12 @@ namespace BIOXFramework.Scene
             }
         }
 
-        public static BIOXScene GetCurrentScene()
+        public BIOXScene GetCurrentScene()
         {
             return _currentScene;
         }
 
-        public static void Clear(Game game)
+        public void Clear(Game game)
         {
             try
             {
@@ -100,46 +101,55 @@ namespace BIOXFramework.Scene
 
         #region dispatchers
 
-        internal static void SceneLoadedEventDispatcher(SceneLoadedEventArgs e)
+        internal void SceneLoadedEventDispatcher(SceneLoadedEventArgs e)
         {
             var h = Loaded;
             if (h != null)
                 h(null, e);
         }
 
-        internal static void SceneUnloadedEventDispatcher(SceneUnloadedEventArgs e, Game game)
+        internal void SceneUnloadedEventDispatcher(SceneUnloadedEventArgs e, Game game)
         {
             var h = Unloaded;
             if (h != null)
                 h(null, e);
         }
 
-        internal static void SceneVisibilityChangedEventDispatcher(SceneVisibilityChangedEventArgs e)
+        internal void SceneVisibilityChangedEventDispatcher(SceneVisibilityChangedEventArgs e)
         {
             var h = VisibilityChanged;
             if (h != null)
                 h(null, e);
         }
 
-        internal static void SceneEnabledChangedEventDispatcher(SceneEnabledChangedEventArgs e)
+        internal void SceneEnabledChangedEventDispatcher(SceneEnabledChangedEventArgs e)
         {
             var h = EnabledChanged;
             if (h != null)
                 h(null, e);
         }
 
-        internal static void ScenePausedEventDispatcher(ScenePausedEventArgs e)
+        internal void ScenePausedEventDispatcher(ScenePausedEventArgs e)
         {
             var h = Paused;
             if (h != null)
                 h(null, e);
         }
 
-        internal static void SceneResumedEventDispatcher(SceneResumedEventArgs e)
+        internal void SceneResumedEventDispatcher(SceneResumedEventArgs e)
         {
             var h = Resumed;
             if (h != null)
                 h(null, e);
+        }
+
+        #endregion
+
+        #region dispose
+
+        public void Dispose()
+        {
+
         }
 
         #endregion

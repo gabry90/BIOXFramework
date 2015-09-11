@@ -96,6 +96,10 @@
       <Project>{eac53160-47b2-4538-b812-3d79bedfe158}</Project>
       <Name>BIOXFramework.Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Settings\BIOXFramework.Settings.csproj">
+      <Project>{c690045d-b88d-47ec-bd0a-acd6eecd613e}</Project>
+      <Name>BIOXFramework.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIOXFramework.Utility\BIOXFramework.Utility.csproj">
       <Project>{e529133e-9e7e-492b-a779-373f88d8c623}</Project>
       <Name>BIOXFramework.Utility</Name>
