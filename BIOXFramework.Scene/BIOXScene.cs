@@ -8,6 +8,7 @@ using BIOXFramework.Services;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
+using System.Text;
 
 namespace BIOXFramework.Scene
 {
@@ -76,12 +77,6 @@ namespace BIOXFramework.Scene
 
         protected void AttachSceneEventHandlers()
         {
-            //attach game component events
-            this.EnabledChanged += OnEnabledChanged;
-            this.VisibleChanged += OnVisibilityChanged;
-            this.UpdateOrderChanged += OnUpdateOrderChanged;
-            this.DrawOrderChanged += OnDrawOrderChanged;
-
             //attach audio events
             songManager.Played += OnSongPlayed;
             songManager.Paused += OnSongPaused;
@@ -106,12 +101,6 @@ namespace BIOXFramework.Scene
 
         protected void DetachSceneEventHandlers()
         {
-            //detach game component events
-            this.EnabledChanged -= OnEnabledChanged;
-            this.VisibleChanged -= OnVisibilityChanged;
-            this.UpdateOrderChanged -= OnUpdateOrderChanged;
-            this.DrawOrderChanged -= OnDrawOrderChanged;
-
             //detach audio events
             songManager.Played -= OnSongPlayed;
             songManager.Paused -= OnSongPaused;
@@ -132,30 +121,6 @@ namespace BIOXFramework.Scene
             mouseManager.WhellUp -= OnMouseWhellUp;
             mouseManager.WhellDown -= OnMouseWhellDown;
             mouseManager.PositionChanged -= OnMousePositionChanged;
-        }
-
-        #endregion
-
-        #region game component events
-
-        protected virtual void OnVisibilityChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        protected virtual void OnEnabledChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        protected virtual void OnUpdateOrderChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        protected virtual void OnDrawOrderChanged(object sender, EventArgs e)
-        {
-
         }
 
         #endregion
@@ -314,6 +279,14 @@ namespace BIOXFramework.Scene
                 }
             }
             base.Draw(gameTime);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder content = new StringBuilder();
+            content.AppendFormat("Type: {0}", this.GetType().FullName);
+            content.AppendFormat("Hash code: {0}", this.GetHashCode());
+            return content.ToString();
         }
 
         #endregion
