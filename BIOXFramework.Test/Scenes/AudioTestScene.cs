@@ -1,6 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Scene;
+using BIOXFramework.Input.Events;
+using BIOXFramework.Audio;
 
 namespace BIOXFramework.Test.Scenes
 {
@@ -12,58 +15,65 @@ namespace BIOXFramework.Test.Scenes
             game.Window.Title = "Audio Test Scene";
         }
 
-        protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
+        protected override void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
-            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Left)
-                sceneManager.Load<InputTestScene>(game);
-
-            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Right)
-                sceneManager.Load<GuiTestScene>(game);
+            switch (e.Key)
+            {
+                case Keys.Escape :
+                    game.Exit();
+                    break;
+                case Keys.Left:
+                    sceneManager.Load<InputTestScene>(game);
+                    break;
+                case Keys.Right:
+                    sceneManager.Load<GuiTestScene>(game);
+                    break;
+            }
 
             base.OnKeyPressed(sender, e);
         }
 
-        protected override void OnSongPlayed(object sender, Audio.SongPlayedEventArgs e)
+        protected override void OnSongPlayed(object sender, SongPlayedEventArgs e)
         {
            base.OnSongPlayed(sender, e);
         }
 
-        protected override void OnSongPaused(object sender, Audio.SongPausedEventArgs e)
+        protected override void OnSongPaused(object sender, SongPausedEventArgs e)
         {
             base.OnSongPaused(sender, e);
         }
 
-        protected override void OnSongResumed(object sender, Audio.SongResumedEventArgs e)
+        protected override void OnSongResumed(object sender, SongResumedEventArgs e)
         {
             base.OnSongResumed(sender, e);
         }
 
-        protected override void OnSongStopped(object sender, Audio.SongStoppedEventArgs e)
+        protected override void OnSongStopped(object sender, SongStoppedEventArgs e)
         {
             base.OnSongStopped(sender, e);
         }
 
-        protected override void OnSoundPlayed(object sender, Audio.SoundPlayedEventArgs e)
+        protected override void OnSoundPlayed(object sender, SoundPlayedEventArgs e)
         {
             base.OnSoundPlayed(sender, e);
         }
 
-        protected override void OnSoundPaused(object sender, Audio.SoundPausedEventArgs e)
+        protected override void OnSoundPaused(object sender, SoundPausedEventArgs e)
         {
             base.OnSoundPaused(sender, e);
         }
 
-        protected override void OnSoundResumed(object sender, Audio.SoundResumedEventArgs e)
+        protected override void OnSoundResumed(object sender, SoundResumedEventArgs e)
         {
             base.OnSoundResumed(sender, e);
         }
 
-        protected override void OnSoundStopped(object sender, Audio.SoundStoppedEventArgs e)
+        protected override void OnSoundStopped(object sender, SoundStoppedEventArgs e)
         {
             base.OnSoundStopped(sender, e);
         }
 
-        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             game.GraphicsDevice.Clear(Color.Red);
             base.Draw(gameTime);

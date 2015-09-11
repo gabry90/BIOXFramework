@@ -12,6 +12,15 @@ using BIOXFramework.Test.Scenes;
 
 namespace BIOXFramework.Test
 {
+    /*
+     * SCENE TEST CYCLE 
+     * (Physics3DTestScene) ... <- InputTestScene ->
+     *      <- AudioTestScene ->
+     *      <- GuiTestScene ->
+     *      <- Physics2DTestScene ->
+     *      <- Physics3DTestScene -> ...(InputTestScene)
+     */
+
     public class GameTest : Game
     {
         public GraphicsDeviceManager graphics;

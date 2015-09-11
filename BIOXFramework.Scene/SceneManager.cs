@@ -12,8 +12,6 @@ namespace BIOXFramework.Scene
 
         public event EventHandler<SceneLoadedEventArgs> Loaded;
         public event EventHandler<SceneUnloadedEventArgs> Unloaded;
-        public event EventHandler<SceneVisibilityChangedEventArgs> VisibilityChanged;
-        public event EventHandler<SceneEnabledChangedEventArgs> EnabledChanged;
         public event EventHandler<ScenePausedEventArgs> Paused;
         public event EventHandler<SceneResumedEventArgs> Resumed;
 
@@ -111,20 +109,6 @@ namespace BIOXFramework.Scene
         internal void SceneUnloadedEventDispatcher(SceneUnloadedEventArgs e, Game game)
         {
             var h = Unloaded;
-            if (h != null)
-                h(null, e);
-        }
-
-        internal void SceneVisibilityChangedEventDispatcher(SceneVisibilityChangedEventArgs e)
-        {
-            var h = VisibilityChanged;
-            if (h != null)
-                h(null, e);
-        }
-
-        internal void SceneEnabledChangedEventDispatcher(SceneEnabledChangedEventArgs e)
-        {
-            var h = EnabledChanged;
             if (h != null)
                 h(null, e);
         }

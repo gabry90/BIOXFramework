@@ -40,10 +40,6 @@ namespace BIOXFramework.Scene
             soundManager = ServiceManager.Get<SoundManager>();
             keyboardManager = ServiceManager.Get<KeyboardManager>();
             mouseManager = ServiceManager.Get<MouseManager>();
-
-            //init game base events
-            this.EnabledChanged += (o, e) => { sceneManager.SceneEnabledChangedEventDispatcher(new SceneEnabledChangedEventArgs(this.GetType(), this.Enabled)); };
-            this.VisibleChanged += (o, e) => { sceneManager.SceneVisibilityChangedEventDispatcher(new SceneVisibilityChangedEventArgs(this.GetType(), this.Visible)); };
         }
 
         #endregion
@@ -80,6 +76,12 @@ namespace BIOXFramework.Scene
 
         protected void AttachSceneEventHandlers()
         {
+            //attach game component events
+            this.EnabledChanged += OnEnabledChanged;
+            this.VisibleChanged += OnVisibilityChanged;
+            this.UpdateOrderChanged += OnUpdateOrderChanged;
+            this.DrawOrderChanged += OnDrawOrderChanged;
+
             //attach audio events
             songManager.Played += OnSongPlayed;
             songManager.Paused += OnSongPaused;
@@ -104,6 +106,12 @@ namespace BIOXFramework.Scene
 
         protected void DetachSceneEventHandlers()
         {
+            //detach game component events
+            this.EnabledChanged -= OnEnabledChanged;
+            this.VisibleChanged -= OnVisibilityChanged;
+            this.UpdateOrderChanged -= OnUpdateOrderChanged;
+            this.DrawOrderChanged -= OnDrawOrderChanged;
+
             //detach audio events
             songManager.Played -= OnSongPlayed;
             songManager.Paused -= OnSongPaused;
@@ -124,6 +132,30 @@ namespace BIOXFramework.Scene
             mouseManager.WhellUp -= OnMouseWhellUp;
             mouseManager.WhellDown -= OnMouseWhellDown;
             mouseManager.PositionChanged -= OnMousePositionChanged;
+        }
+
+        #endregion
+
+        #region game component events
+
+        protected virtual void OnVisibilityChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        protected virtual void OnEnabledChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void OnUpdateOrderChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected virtual void OnDrawOrderChanged(object sender, EventArgs e)
+        {
+
         }
 
         #endregion

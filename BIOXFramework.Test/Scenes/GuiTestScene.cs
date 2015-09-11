@@ -1,6 +1,8 @@
 ﻿using System;
-using BIOXFramework.Scene;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using BIOXFramework.Scene;
+using BIOXFramework.Input.Events;
 
 namespace BIOXFramework.Test.Scenes
 {
@@ -12,10 +14,20 @@ namespace BIOXFramework.Test.Scenes
             game.Window.Title = "GUI Test Scene";
         }
 
-        protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
+        protected override void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
-            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Left)
-                sceneManager.Load<AudioTestScene>(game);
+            switch (e.Key)
+            {
+                case Keys.Escape:
+                    game.Exit();
+                    break;
+                case Keys.Left:
+                    sceneManager.Load<AudioTestScene>(game);
+                    break;
+                case Keys.Right:
+                    sceneManager.Load<Physics2DTestScene>(game);
+                    break;
+            }
 
             base.OnKeyPressed(sender, e);
         }

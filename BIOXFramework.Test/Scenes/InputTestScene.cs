@@ -1,6 +1,8 @@
 ﻿using System;
-using BIOXFramework.Scene;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using BIOXFramework.Scene;
+using BIOXFramework.Input.Events;
 
 namespace BIOXFramework.Test.Scenes
 {
@@ -14,33 +16,43 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
         {
-            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Right)
-                sceneManager.Load<AudioTestScene>(game);
+            switch (e.Key)
+            {
+                case Keys.Escape:
+                    game.Exit();
+                    break;
+                case Keys.Left:
+                    sceneManager.Load<Physics3DTestScene>(game);
+                    break;
+                case Keys.Right:
+                    sceneManager.Load<AudioTestScene>(game);
+                    break;
+            }
 
             base.OnKeyPressed(sender, e);
         }
 
-        protected override void OnKeyPressing(object sender, Input.Events.KeyboardPressingEventArgs e)
+        protected override void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
             base.OnKeyPressing(sender, e);
         }
 
-        protected override void OnKeyReleased(object sender, Input.Events.KeyboardReleasedEventArgs e)
+        protected override void OnKeyReleased(object sender, KeyboardReleasedEventArgs e)
         {
             base.OnKeyReleased(sender, e);
         }
 
-        protected override void OnMousePressed(object sender, Input.Events.MousePressedEventArgs e)
+        protected override void OnMousePressed(object sender, MousePressedEventArgs e)
         {
             base.OnMousePressed(sender, e);
         }
 
-        protected override void OnMousePressing(object sender, Input.Events.MousePressingEventArgs e)
+        protected override void OnMousePressing(object sender, MousePressingEventArgs e)
         {
             base.OnMousePressing(sender, e);
         }
 
-        protected override void OnMouseReleased(object sender, Input.Events.MouseReleasedEventArgs e)
+        protected override void OnMouseReleased(object sender, MouseReleasedEventArgs e)
         {
             base.OnMouseReleased(sender, e);
         }
@@ -55,7 +67,7 @@ namespace BIOXFramework.Test.Scenes
             base.OnMouseWhellDown(sender, e);
         }
 
-        protected override void OnMousePositionChanged(object sender, Input.Events.MousePositionChangedEventArgs e)
+        protected override void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
             base.OnMousePositionChanged(sender, e);
         }
