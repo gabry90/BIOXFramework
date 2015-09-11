@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Input.Mappers;
-using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Services;
 
 namespace BIOXFramework.Input
@@ -53,9 +53,7 @@ namespace BIOXFramework.Input
             {
                 _maps.Clear();
                 foreach (MouseButtons button in Enum.GetValues(typeof(MouseButtons)))
-                {
                     _maps.Add(new MouseMap { Name = button.ToString(), Button = button });
-                }
             }
         }
 
@@ -131,14 +129,17 @@ namespace BIOXFramework.Input
                     _oldMouseState = currentMouseState;
 
                 //check button pressed, pressing and released events for each mapped buttons
-                foreach (MouseMap map in _maps)
+                for (int i = 0; i < _maps.Count; i++)
                 {
-                    //avoid async operation that cause null value
-                    if (map == null)
-                        continue;
+                    MouseMap map = _maps[i];
 
-                    if (map.Button == null)
-                        continue; //button is not setted, so skip
+                    /*
+                        skip if
+                        map is null OR
+                        map button is not setted
+                    */
+                    if (map == null || map.Button == null)
+                        continue;
 
                     switch (map.Button.Value)
                     {
@@ -158,7 +159,7 @@ namespace BIOXFramework.Input
                             UpdateX2Button(map, _oldMouseState, currentMouseState);
                             continue;
                     }
-                };
+                }
 
                 if (_oldMouseState.Position != currentMouseState.Position)  //mouse position changed
                     MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));

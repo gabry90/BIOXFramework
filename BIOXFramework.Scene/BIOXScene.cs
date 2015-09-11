@@ -226,11 +226,14 @@ namespace BIOXFramework.Scene
             //attach scene event handlers
             AttachSceneEventHandlers();
 
-            //add components to scene
-            _components.Add(soundManager);
-            _components.Add(songManager);
-            _components.Add(keyboardManager);
-            _components.Add(mouseManager);
+            lock (_components)
+            {
+                //add components to scene
+                _components.Add(soundManager);
+                _components.Add(songManager);
+                _components.Add(keyboardManager);
+                _components.Add(mouseManager);
+            }
 
             base.Initialize();
 
@@ -253,10 +256,10 @@ namespace BIOXFramework.Scene
             {
                 lock (_components)
                 {
-                    foreach (GameComponent component in _components)
+                    for (int i = 0; i < _components.Count; i ++)
                     {
-                        if (component.Enabled)
-                            component.Update(gameTime);
+                        if (_components[i].Enabled)
+                            _components[i].Update(gameTime);
                     }
                 }
             }
@@ -269,10 +272,10 @@ namespace BIOXFramework.Scene
             {
                 lock (_components)
                 {
-                    foreach (GameComponent component in _components)
+                    for (int i = 0; i < _components.Count; i++)
                     {
-                        if (component is DrawableGameComponent)
-                            ((DrawableGameComponent)component).Draw(gameTime);
+                        if (_components[i] is DrawableGameComponent)
+                            ((DrawableGameComponent)_components[i]).Draw(gameTime);
                     }
                 }
             }
@@ -292,11 +295,17 @@ namespace BIOXFramework.Scene
                     //dispose events
                     DetachSceneEventHandlers();
 
-                    //remove scene components
-                    _components.Remove(soundManager);
-                    _components.Remove(songManager);
-                    _components.Remove(keyboardManager);
-                    _components.Remove(mouseManager);
+                    Enabled = false;
+                    Visible = false;
+
+                    lock (_components)
+                    {
+                        //remove scene components
+                        _components.Remove(soundManager);
+                        _components.Remove(songManager);
+                        _components.Remove(keyboardManager);
+                        _components.Remove(mouseManager);
+                    }
 
                     //dispatch unloaded event
                     SceneManager.SceneUnloadedEventDispatcher(new SceneUnloadedEventArgs(this.GetType()), game);

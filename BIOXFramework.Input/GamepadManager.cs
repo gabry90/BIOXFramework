@@ -129,8 +129,10 @@ namespace BIOXFramework.Input
                         _oldGamepadState = currentGamepadState;
 
                     //check button pressed, pressing and released events for each mapped buttons
-                    foreach (GamepadMap map in _maps)
+                    for (int i = 0; i < _maps.Count; i++)
                     {
+                        GamepadMap map = _maps[i];
+
                         /* skip if
                            map is null OR
                            button is not setted OR

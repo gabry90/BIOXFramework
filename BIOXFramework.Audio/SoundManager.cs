@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -73,7 +72,7 @@ namespace BIOXFramework.Audio
         {
             lock (_sounds)
             {
-                Parallel.ForEach(_sounds, x => x.Dispose());
+                foreach (AudioSound sound in _sounds) { sound.Dispose(); }
                 _sounds.Clear();
             }
         }
@@ -253,17 +252,23 @@ namespace BIOXFramework.Audio
         {
             lock (_sounds)
             {
-                foreach (AudioSound sound in _sounds)
+                for (int i = 0; i < _sounds.Count; i++)
                 {
-                    //avoid async operation that cause null value
-                    if (sound == null)
+                    AudioSound sound = _sounds[i];
+
+                    /*
+                        skip if
+                        sound null value OR
+                        sound is not 3D OR
+                        sound is not playing OR 
+                        sound is disposed
+                    */
+                    if (sound == null ||
+                        sound.Emitter == null ||
+                        sound.SoundInstance == null ||
+                        sound.SoundInstance.IsDisposed ||
+                        sound.SoundInstance.State == SoundState.Stopped) 
                         continue;
-
-                    if (sound.Emitter == null)
-                        continue; //sound is not 3D
-
-                    if (sound.SoundInstance == null || sound.SoundInstance.IsDisposed || sound.SoundInstance.State == SoundState.Stopped)
-                        continue; //sound is not playing or is disposed
 
                     _emitter.Position = sound.Emitter.SoundEmitterPosition;
                     _emitter.Forward = sound.Emitter.SoundEmitterForward;

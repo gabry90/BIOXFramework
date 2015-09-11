@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
@@ -84,7 +83,7 @@ namespace BIOXFramework.Audio
             lock (_songs)
             {
                 MediaPlayer.Stop();
-                Parallel.ForEach(_songs, x => x.Dispose());
+                foreach (AudioSong song in _songs) { song.Dispose(); }
                 _songs.Clear();
                 CurrentSong = null;
             }

@@ -50,9 +50,7 @@ namespace BIOXFramework.Input
             {
                 _maps.Clear();
                 foreach (Keys key in Enum.GetValues(typeof(Keys)))
-                {
                     _maps.Add(new KeyboardMap { Name = key.ToString(), Key = key });
-                };
             }
         }
 
@@ -128,14 +126,17 @@ namespace BIOXFramework.Input
                     _oldKeyboardState = currentKeyboardState;
 
                 //check key pressed, pressing and released events for each mapped keys
-                foreach (KeyboardMap map in _maps)
+                for (int i = 0; i < _maps.Count; i++)
                 {
-                    //avoid async operation that cause null value
-                    if (map == null)
-                        continue;
+                    KeyboardMap map = _maps[i];
 
-                    if (map.Key == null)
-                        continue; //key is not setted, so skip
+                    /*
+                        skip if
+                        map is null OR
+                        map key is nto setted
+                    */
+                    if (map == null || map.Key == null)
+                        continue;
 
                     if (_oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
                     {
@@ -163,7 +164,7 @@ namespace BIOXFramework.Input
                         //key is released
                         KeyboardReleasedEventDispatcher(new KeyboardReleasedEventArgs(map.Name, map.Key.Value));
                     }
-                };
+                }
 
                 //update old keyboard state
                 _oldKeyboardState = currentKeyboardState;

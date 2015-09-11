@@ -14,6 +14,9 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
         {
+            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Right)
+                SceneManager.Load<AudioTestScene>(game);
+
             base.OnKeyPressed(sender, e);
         }
 

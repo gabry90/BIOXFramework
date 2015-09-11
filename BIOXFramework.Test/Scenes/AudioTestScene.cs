@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using BIOXFramework.Scene;
 
 namespace BIOXFramework.Test.Scenes
@@ -9,6 +10,17 @@ namespace BIOXFramework.Test.Scenes
             : base(game)
         {
             game.Window.Title = "Audio Test Scene";
+        }
+
+        protected override void OnKeyPressed(object sender, Input.Events.KeyboardPressedEventArgs e)
+        {
+            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Left)
+                SceneManager.Load<InputTestScene>(game);
+
+            if (e.Key == Microsoft.Xna.Framework.Input.Keys.Right)
+                SceneManager.Load<GuiTestScene>(game);
+
+            base.OnKeyPressed(sender, e);
         }
 
         protected override void OnSongPlayed(object sender, Audio.SongPlayedEventArgs e)
@@ -49,6 +61,12 @@ namespace BIOXFramework.Test.Scenes
         protected override void OnSoundStopped(object sender, Audio.SoundStoppedEventArgs e)
         {
             base.OnSoundStopped(sender, e);
+        }
+
+        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
+        {
+            game.GraphicsDevice.Clear(Color.Red);
+            base.Draw(gameTime);
         }
     }
 }
