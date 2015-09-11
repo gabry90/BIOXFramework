@@ -18,9 +18,9 @@ namespace BIOXFramework.Scene
         protected SoundManager soundManager;
         protected KeyboardManager keyboardManager;
         protected MouseManager mouseManager;
-
         protected Game game;
-        protected List<GameComponent> Components;
+
+        private List<GameComponent> _components;
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace BIOXFramework.Scene
             //init vars
             this.game = game;
             Visible = true;
-            Components = new List<GameComponent>();
+            _components = new List<GameComponent>();
             songManager = ServiceManager.Get<SongManager>();
             soundManager = ServiceManager.Get<SoundManager>();
             keyboardManager = ServiceManager.Get<KeyboardManager>();
@@ -45,65 +45,25 @@ namespace BIOXFramework.Scene
 
         #endregion
 
-        #region game implementations
-
-        public override void Initialize()
-        {
-            //attach scene event handlers
-            AttachSceneEventHandlers();
-
-            //add components to scene
-            Components.Add(soundManager);
-            Components.Add(songManager);
-            Components.Add(keyboardManager);
-            Components.Add(mouseManager);
-
-            base.Initialize();
-
-            SceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
-        }
-
-        protected override void LoadContent()
-        {
-            base.LoadContent();
-        }
-
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (Enabled)
-            {
-                Parallel.ForEach(Components, x =>
-                {
-                    GameComponent component = (GameComponent)x;
-                    if (component.Enabled)
-                        component.Update(gameTime);
-                });
-            }
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            if (Visible)
-            {
-                Parallel.ForEach(Components, x =>
-                {
-                    GameComponent component = (GameComponent)x;
-                    if (component is DrawableGameComponent && component.Enabled)
-                        ((DrawableGameComponent)component).Draw(gameTime);
-                });
-            }
-            base.Draw(gameTime);
-        }
-
-        #endregion
-
         #region scene methods
+
+        protected void AddComponent(GameComponent component)
+        {
+            lock (_components)
+            {
+                if (component != null && !_components.Contains(component))
+                    _components.Add(component);
+            }
+        }
+
+        protected void RemoveComponent(GameComponent component)
+        {
+            lock (_components)
+            {
+                if (component != null && _components.Contains(component))
+                    _components.Remove(component);
+            }
+        }
 
         public virtual void Pause()
         {
@@ -258,6 +218,68 @@ namespace BIOXFramework.Scene
 
         #endregion
 
+        #region game implementations
+
+        public override void Initialize()
+        {
+            //attach scene event handlers
+            AttachSceneEventHandlers();
+
+            //add components to scene
+            _components.Add(soundManager);
+            _components.Add(songManager);
+            _components.Add(keyboardManager);
+            _components.Add(mouseManager);
+
+            base.Initialize();
+
+            SceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+        }
+
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (Enabled)
+            {
+                lock (_components)
+                {
+                    foreach (GameComponent component in _components)
+                    {
+                        if (component.Enabled)
+                            component.Update(gameTime);
+                    }
+                }
+            }
+            base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (Visible)
+            {
+                lock (_components)
+                {
+                    foreach (GameComponent component in _components)
+                    {
+                        if (component is DrawableGameComponent && component.Enabled)
+                            ((DrawableGameComponent)component).Draw(gameTime);
+                    }
+                }
+            }
+            base.Draw(gameTime);
+        }
+
+        #endregion
+
         #region dispose
 
         protected override void Dispose(bool disposing)
@@ -270,10 +292,10 @@ namespace BIOXFramework.Scene
                     DetachSceneEventHandlers();
 
                     //remove scene components
-                    Components.Remove(soundManager);
-                    Components.Remove(songManager);
-                    Components.Remove(keyboardManager);
-                    Components.Remove(mouseManager);
+                    _components.Remove(soundManager);
+                    _components.Remove(songManager);
+                    _components.Remove(keyboardManager);
+                    _components.Remove(mouseManager);
 
                     //dispatch unloaded event
                     SceneManager.SceneUnloadedEventDispatcher(new SceneUnloadedEventArgs(this.GetType()), game);
