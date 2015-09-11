@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -270,7 +271,7 @@ namespace BIOXFramework.Scene
                 {
                     foreach (GameComponent component in _components)
                     {
-                        if (component is DrawableGameComponent && component.Enabled)
+                        if (component is DrawableGameComponent)
                             ((DrawableGameComponent)component).Draw(gameTime);
                     }
                 }

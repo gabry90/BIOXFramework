@@ -10,7 +10,6 @@ using BIOXFramework.Input.Mappers;
 using BIOXFramework.Scene;
 using BIOXFramework.Test.Scenes;
 
-
 namespace BIOXFramework.Test
 {
     public class GameTest : Game
