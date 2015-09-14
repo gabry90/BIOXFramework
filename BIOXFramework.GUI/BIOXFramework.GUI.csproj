@@ -38,9 +38,11 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GuiBase.cs" />
+    <Compile Include="Components\Cursor.cs" />
+    <Compile Include="Components\GuiBase.cs" />
     <Compile Include="GuiEvents.cs" />
     <Compile Include="GuiExceptions.cs" />
+    <Compile Include="GuiManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

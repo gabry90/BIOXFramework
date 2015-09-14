@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
 
-namespace BIOXFramework.GUI
+namespace BIOXFramework.GUI.Components
 {
     public class GuiBase : DrawableGameComponent
     {
@@ -37,6 +37,9 @@ namespace BIOXFramework.GUI
             this.game = game;
             spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
             InitializeServices();
+            AttachGUIEventsHandlers();
+            Enabled = true;
+            Visible = true;
         }
 
         #endregion
@@ -93,6 +96,10 @@ namespace BIOXFramework.GUI
 
             return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
+
+        #endregion
+
+        #region component implementations
 
         #endregion
 

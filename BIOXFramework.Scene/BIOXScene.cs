@@ -9,6 +9,7 @@ using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
 using System.Text;
 using BIOXFramework.GUI;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Scene
 {

@@ -28,6 +28,7 @@ namespace BIOXFramework.Input
         private List<MouseMap> _maps;
         private int _pressingDelay;
         private MouseState _oldMouseState;
+        private Game game;
 
         #endregion
 
@@ -36,6 +37,7 @@ namespace BIOXFramework.Input
         public MouseManager(Game game)
             : base(game)
         {
+            this.game = game;
             _maps = new List<MouseMap>();
             SetDefaultMaps();
             EnableCapture = true;
@@ -160,8 +162,12 @@ namespace BIOXFramework.Input
                     }
                 }
 
-                if (_oldMouseState.Position != currentMouseState.Position)  //mouse position changed
-                    MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+                if (_oldMouseState.Position != currentMouseState.Position)  
+                {
+                    //mouse position changed if is inside window
+                    if (game.GraphicsDevice.Viewport.Bounds.Contains(currentMouseState.Position))
+                        MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+                }
 
                 if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)
                     MouseWhellUpEventDispatcher(EventArgs.Empty);   //mouse scroll up

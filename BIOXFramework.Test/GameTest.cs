@@ -23,6 +23,7 @@ namespace BIOXFramework.Test
     public class GameTest : Game
     {
         public GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
 
         private SceneManager sceneManager;
 
@@ -56,6 +57,15 @@ namespace BIOXFramework.Test
             sceneManager.Load<InputTestScene>(this);
 
             base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            //add spriteBatch to services
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
+
+            base.LoadContent();
         }
 
         protected override void Dispose(bool disposing)
