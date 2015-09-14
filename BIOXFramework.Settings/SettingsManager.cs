@@ -2,12 +2,11 @@
 using System.IO;
 using System.Text;
 using System.Linq;
-using BIOXFramework.Services;
 using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.Settings
 {
-    public sealed class SettingsManager : IBIOXFrameworkService
+    public sealed class SettingsManager
     {
         #region vars
 

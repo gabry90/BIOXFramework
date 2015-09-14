@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using BIOXFramework.Services;
 
 namespace BIOXFramework.Scene
 {
-    public sealed class SceneManager : IBIOXFrameworkService
+    public sealed class SceneManager
     {
         #region vars
 

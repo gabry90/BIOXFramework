@@ -5,11 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Input.Mappers;
-using BIOXFramework.Services;
 
 namespace BIOXFramework.Input
 {
-    public sealed class KeyboardManager : GameComponent, IBIOXFrameworkService
+    public sealed class KeyboardManager : GameComponent
     {
         #region vars
 

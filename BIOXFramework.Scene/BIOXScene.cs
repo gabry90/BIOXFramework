@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-using BIOXFramework.Services;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
@@ -16,11 +15,11 @@ namespace BIOXFramework.Scene
     {
         #region vars
 
-        protected SceneManager sceneManager;
-        protected SongManager songManager;
-        protected SoundManager soundManager;
-        protected KeyboardManager keyboardManager;
-        protected MouseManager mouseManager;
+        protected static SceneManager sceneManager;
+        protected static SongManager songManager;
+        protected static SoundManager soundManager;
+        protected static KeyboardManager keyboardManager;
+        protected static MouseManager mouseManager;
         protected Game game;
 
         private List<GameComponent> _components;
@@ -36,11 +35,49 @@ namespace BIOXFramework.Scene
             this.game = game;
             Visible = true;
             _components = new List<GameComponent>();
-            sceneManager = ServiceManager.Get<SceneManager>();
-            songManager = ServiceManager.Get<SongManager>();
-            soundManager = ServiceManager.Get<SoundManager>();
-            keyboardManager = ServiceManager.Get<KeyboardManager>();
-            mouseManager = ServiceManager.Get<MouseManager>();
+            InitializeServices();
+        }
+
+        #endregion
+
+        #region private methods
+
+        protected virtual void InitializeServices()
+        {
+            if (sceneManager == null)
+            {
+                sceneManager = game.Services.GetService<SceneManager>();
+                if (sceneManager == null)
+                    throw new SceneManagerException("the BIOXScene required SceneManager game service!");
+            }
+
+            if (songManager == null)
+            {
+                songManager = game.Services.GetService<SongManager>();
+                if (songManager == null)
+                    songManager = new SongManager(game);
+            }
+                
+            if (soundManager == null)
+            {
+                soundManager = game.Services.GetService<SoundManager>();
+                if (soundManager == null)
+                    soundManager = new SoundManager(game);
+            }
+
+            if (keyboardManager == null)
+            {
+                keyboardManager = game.Services.GetService<KeyboardManager>();
+                if (keyboardManager == null)
+                    keyboardManager = new KeyboardManager(game);
+            }
+
+            if (mouseManager == null)
+            {
+                mouseManager = game.Services.GetService<MouseManager>();
+                if (mouseManager == null)
+                    mouseManager = new MouseManager(game);
+            }
         }
 
         #endregion
@@ -75,7 +112,7 @@ namespace BIOXFramework.Scene
             sceneManager.SceneResumedEventDispatcher(new SceneResumedEventArgs(this.GetType()));
         }
 
-        protected void AttachSceneEventHandlers()
+        protected virtual void AttachSceneEventHandlers()
         {
             //attach audio events
             songManager.Played += OnSongPlayed;
@@ -99,7 +136,7 @@ namespace BIOXFramework.Scene
             mouseManager.PositionChanged += OnMousePositionChanged;
         }
 
-        protected void DetachSceneEventHandlers()
+        protected virtual void DetachSceneEventHandlers()
         {
             //detach audio events
             songManager.Played -= OnSongPlayed;

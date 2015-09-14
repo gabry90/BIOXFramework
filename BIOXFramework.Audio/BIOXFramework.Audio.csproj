@@ -47,12 +47,6 @@
     <Compile Include="SongManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BIOXFramework.Services\BIOXFramework.Services.csproj">
-      <Project>{eac53160-47b2-4538-b812-3d79bedfe158}</Project>
-      <Name>BIOXFramework.Services</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

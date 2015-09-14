@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using BIOXFramework.Services;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Mappers;
@@ -28,8 +27,7 @@ namespace BIOXFramework.Test
         private SceneManager sceneManager;
 
         public GameTest()
-        {
-            
+        {        
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -38,29 +36,26 @@ namespace BIOXFramework.Test
             TargetElapsedTime = TimeSpan.FromMilliseconds(24);
         }
 
+        private void OnSceneLoaded(object sender, SceneLoadedEventArgs e)
+        {
+            Console.WriteLine("SCENE LOADED: " + e.Type.FullName);
+        }
+
+        private void OnSceneUnloaded(object sender, SceneUnloadedEventArgs e)
+        {
+            Console.WriteLine("SCENE UNLOADED: " + e.Type.FullName);
+        }
+
         protected override void Initialize()
         {
-            sceneManager = ServiceManager.Get<SceneManager>();
+            sceneManager = this.Services.GetService<SceneManager>();
+            sceneManager.Loaded += OnSceneLoaded;
+            sceneManager.Unloaded += OnSceneUnloaded;
 
             //load input scene with first scene
             sceneManager.Load<InputTestScene>(this);
 
             base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            base.LoadContent();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
         }
 
         protected override void Dispose(bool disposing)
@@ -69,8 +64,10 @@ namespace BIOXFramework.Test
             {
                 if (disposing)
                 {
+                    sceneManager.Loaded -= OnSceneLoaded;
+                    sceneManager.Unloaded -= OnSceneUnloaded;
+
                     sceneManager.Clear(this);
-                    ServiceManager.Clear();
                 }
             }
             finally

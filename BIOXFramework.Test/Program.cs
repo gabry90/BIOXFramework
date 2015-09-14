@@ -1,10 +1,9 @@
 ﻿using System;
-using BIOXFramework.Services;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Scene;
-using BIOXFramework.Test.Scenes;
 using BIOXFramework.Settings;
+using BIOXFramework.Test.Scenes;
 
 namespace BIOXFramework.Test
 {
@@ -30,26 +29,20 @@ namespace BIOXFramework.Test
 
         private static void InitService(GameTest game)
         {
-            //register setting service
-            ServiceManager.Register<SettingsManager>(new SettingsManager());
-
-            //register scene service
-            ServiceManager.Register<SceneManager>(new SceneManager());
-
-            //register audio services
-            ServiceManager.Register<SongManager>(new SongManager(game));
-            ServiceManager.Register<SoundManager>(new SoundManager(game));
-
-            //register input services
-            ServiceManager.Register<KeyboardManager>(new KeyboardManager(game));
-            ServiceManager.Register<MouseManager>(new MouseManager(game));
-            ServiceManager.Register<GamepadManager>(new GamepadManager(game));
+            //register services
+            game.Services.AddService<SettingsManager>(new SettingsManager());
+            game.Services.AddService<SceneManager>(new SceneManager());
+            game.Services.AddService<SongManager>(new SongManager(game));
+            game.Services.AddService<SoundManager>(new SoundManager(game));
+            game.Services.AddService<KeyboardManager>(new KeyboardManager(game));
+            game.Services.AddService<MouseManager>(new MouseManager(game));
+            game.Services.AddService<GamepadManager>(new GamepadManager(game));
         }
 
         private static void InitScenes(GameTest game)
         {
             //register scenes
-            SceneManager manager = ServiceManager.Get<SceneManager>();
+            SceneManager manager = game.Services.GetService<SceneManager>();
             manager.Register<InputTestScene>();
             manager.Register<AudioTestScene>();
             manager.Register<GuiTestScene>();

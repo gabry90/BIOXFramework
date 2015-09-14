@@ -38,7 +38,16 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuiBase.cs" />
+    <Compile Include="GuiEvents.cs" />
+    <Compile Include="GuiExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BIOXFramework.Input\BIOXFramework.Input.csproj">
+      <Project>{274beb25-1f10-4627-b5cb-13bfb59c9c49}</Project>
+      <Name>BIOXFramework.Input</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
