@@ -10,17 +10,20 @@ namespace BIOXFramework.GUI
     {
         #region vars
 
-        public EventHandler Click;
-        public EventHandler MouseEnter;
-        public EventHandler MouseLeave;
+        protected static MouseManager mouseManager;
+
+        public event EventHandler Click;
+        public event EventHandler MouseEnter;
+        public event EventHandler MouseLeave;
+        public event EventHandler Focused;
+        public event EventHandler LostFocus;
 
         public Texture2D Texture;
-        public Vector2 Position;
+        public Vector2 Position = Vector2.Zero;
 
-        internal static MouseManager mouseManager;
-
+        protected bool mouseInner = false;
+        protected bool focused = false;
         protected SpriteBatch spriteBatch;
-        protected Rectangle rectangle;
         protected SpriteFont font;
         protected Game game;
 
@@ -56,21 +59,25 @@ namespace BIOXFramework.GUI
             }
         }
 
-        protected virtual void AttachEvents()
+        protected virtual void AttachGUIEventsHandlers()
         {
             Click += OnClick;
             MouseEnter += OnMouseEnter;
             MouseLeave += OnMouseLeave;
+            Focused += OnFocused;
+            LostFocus += OnLostFocus;
 
             mouseManager.Pressed += OnMousePressed;
             mouseManager.PositionChanged += OnMousePositionChanged;
         }
 
-        protected virtual void DetachEvents()
+        protected virtual void DetachGUIEventsHandlers()
         {
             Click -= OnClick;
             MouseEnter -= OnMouseEnter;
             MouseLeave -= OnMouseLeave;
+            Focused -= OnFocused;
+            LostFocus -= OnLostFocus;
 
             mouseManager.Pressed -= OnMousePressed;
             mouseManager.PositionChanged -= OnMousePositionChanged;
@@ -93,69 +100,115 @@ namespace BIOXFramework.GUI
 
         protected virtual void OnMousePressed(object sender, MousePressedEventArgs e)
         {
+            if (!Visible || !Enabled || Texture == null)
+                return; //avoid null value and not enabled / visible property
 
+            if (mouseInner)
+            {
+                //gui component is clicked
+                ClickEventDispatcher(EventArgs.Empty);
+                if (!focused)
+                {
+                    focused = true;     //gui component is focused
+                    FocusedEventDispatcher(EventArgs.Empty);
+                }
+            }
+            else
+            {
+                if (focused)
+                {
+                    focused = false;    //gui component lost focus
+                    LostFocusEventDispatcher(EventArgs.Empty);
+                }
+            }
         }
 
         protected virtual void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
+            if (!Visible || !Enabled || Texture == null)
+                return; //avoid null value and not enabled / visible property
 
+            Rectangle textureRect = GetRectangle();
+            Rectangle mouseRect = new Rectangle(e.Position.X, e.Position.Y, 24, 24);
+
+            if (mouseRect.Intersects(textureRect))
+            {
+                if (!mouseInner)
+                {
+                    mouseInner = true;  //enter mouse inner gui component
+                    MouseEnterEventDispatcher(EventArgs.Empty);
+                }
+            }
+            else
+            {
+                if (mouseInner)
+                {
+                    mouseInner = false; //leave mouse outer gui component
+                    MouseLeaveEventDispatcher(EventArgs.Empty);
+                }
+            }
         }
 
         protected virtual void OnClick(object sender, EventArgs e)
         {
-
+            //add common logic here...
         }
 
         protected virtual void OnMouseEnter(object sender, EventArgs e)
         {
-
+            //add common logic here...
         }
 
         protected virtual void OnMouseLeave(object sender, EventArgs e)
         {
-
+            //add common logic here...
         }
 
-        #endregion
-
-        #region game implementation
-
-        public override void Initialize()
+        protected virtual void OnFocused(object sender, EventArgs e)
         {
-            base.Initialize();
+            //add common logic here...
         }
 
-        public override void Update(GameTime gameTime)
+        protected virtual void OnLostFocus(object sender, EventArgs e)
         {
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
+            //add common logic here...
         }
 
         #endregion
 
         #region dispatchers
 
-        protected void ClickEventDispatcher(object sender, EventArgs e)
+        protected void ClickEventDispatcher(EventArgs e)
         {
             var h = Click;
             if (h != null)
                 h(this, e);
         }
 
-        protected void MouseEnterEventDispatcher(object sender, EventArgs e)
+        protected void MouseEnterEventDispatcher(EventArgs e)
         {
             var h = MouseEnter;
             if (h != null)
                 h(this, e);
         }
 
-        protected void MouseLeaveEventDispatcher(object sender, EventArgs e)
+        protected void MouseLeaveEventDispatcher(EventArgs e)
         {
             var h = MouseLeave;
+            if (h != null)
+                h(this, e);
+        }
+
+        protected void FocusedEventDispatcher(EventArgs e)
+        {
+            var h = Focused;
+            if (h != null)
+                h(this, e);
+        }
+
+        protected void LostFocusEventDispatcher(EventArgs e)
+        {
+            var h = LostFocus;
             if (h != null)
                 h(this, e);
         }
@@ -170,11 +223,13 @@ namespace BIOXFramework.GUI
             {
                 if (disposing)
                 {
-                    DetachEvents();
+                    DetachGUIEventsHandlers();
 
                     if (Click != null) Click = null;
                     if (MouseEnter != null) MouseEnter = null;
                     if (MouseLeave != null) MouseLeave = null;
+                    if (Focused != null) Focused = null;
+                    if (LostFocus != null) LostFocus = null;
                 }
             }
             finally

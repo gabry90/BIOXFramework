@@ -66,8 +66,8 @@ namespace BIOXFramework.Test
                 {
                     sceneManager.Loaded -= OnSceneLoaded;
                     sceneManager.Unloaded -= OnSceneUnloaded;
-
                     sceneManager.Clear(this);
+                    graphics.Dispose();
                 }
             }
             finally
