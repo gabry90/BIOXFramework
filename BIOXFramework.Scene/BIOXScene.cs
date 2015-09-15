@@ -17,7 +17,14 @@ namespace BIOXFramework.Scene
     {
         #region vars
 
+        public bool IsCursorVisible
+        {
+            get { return guiManager.CurrentCursor.Visible; }
+            set { guiManager.CurrentCursor.Visible = value; }
+        }
+
         protected static SceneManager sceneManager;
+        protected static GuiManager guiManager;
         protected static SongManager songManager;
         protected static SoundManager soundManager;
         protected static KeyboardManager keyboardManager;
@@ -36,6 +43,7 @@ namespace BIOXFramework.Scene
         {
             this.game = game;
             Visible = true;
+            Enabled = true;
             _components = new List<GameComponent>();
             InitializeServices();
         }
@@ -69,6 +77,13 @@ namespace BIOXFramework.Scene
                 sceneManager = game.Services.GetService<SceneManager>();
                 if (sceneManager == null)
                     throw new SceneManagerException("the BIOXScene required SceneManager game service!");
+            }
+
+            if (guiManager == null)
+            {
+                guiManager = game.Services.GetService<GuiManager>();
+                if (guiManager == null)
+                    throw new SceneManagerException("the BIOXScene required GuiManager game service!");
             }
 
             if (songManager == null)
@@ -274,6 +289,7 @@ namespace BIOXFramework.Scene
                 _components.Add(soundManager);
                 _components.Add(keyboardManager);
                 _components.Add(mouseManager);
+                _components.Add(guiManager.CurrentCursor);
             }
 
             base.Initialize();
@@ -364,6 +380,7 @@ namespace BIOXFramework.Scene
                         _components.Remove(soundManager);
                         _components.Remove(keyboardManager);
                         _components.Remove(mouseManager);
+                        _components.Remove(guiManager.CurrentCursor);
                     }
 
                     //dispatch unloaded event

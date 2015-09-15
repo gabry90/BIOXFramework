@@ -11,6 +11,7 @@ namespace BIOXFramework.GUI.Components
     {
         #region vars
 
+        protected static GuiManager guiManager;
         protected static MouseManager mouseManager;
 
         public event EventHandler Click;
@@ -78,6 +79,13 @@ namespace BIOXFramework.GUI.Components
 
         protected virtual void InitializeServices()
         {
+            if (guiManager == null)
+            {
+                guiManager = game.Services.GetService<GuiManager>();
+                if (guiManager == null)
+                    throw new GuiException("the GuiBase required GuiManager game service!");
+            }
+
             if (mouseManager == null)
             {
                 mouseManager = game.Services.GetService<MouseManager>();
@@ -176,7 +184,8 @@ namespace BIOXFramework.GUI.Components
                 return; //avoid null value and not enabled / visible property
 
             Rectangle textureRect = GetRectangle();
-            Rectangle mouseRect = new Rectangle(e.Position.X, e.Position.Y, 24, 24);
+            Rectangle cursorRect = guiManager.CurrentCursor.GetRectangle();
+            Rectangle mouseRect = new Rectangle(e.Position.X, e.Position.Y, cursorRect.Size.X, cursorRect.Size.Y);
 
             if (mouseRect.Intersects(textureRect))
             {

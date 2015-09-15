@@ -15,13 +15,18 @@ namespace BIOXFramework.Test.Scenes
             : base(game)
         {
             game.Window.Title = "GUI Test Scene";
-            game.IsMouseVisible = false;
         }
 
         protected override void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
             switch (e.Key)
             {
+                case Keys.A:
+                    IsCursorVisible = false;
+                    break;
+                case Keys.B:
+                    IsCursorVisible = true;
+                    break;
                 case Keys.Escape:
                     game.Exit();
                     break;
@@ -34,12 +39,6 @@ namespace BIOXFramework.Test.Scenes
             }
 
             base.OnKeyPressed(sender, e);
-        }
-
-        protected override void LoadContent()
-        {
-            AddComponent(new Cursor(game, game.Content.Load<Texture2D>("UI image/cursor")));
-            base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)

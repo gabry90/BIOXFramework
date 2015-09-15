@@ -17,13 +17,15 @@ namespace BIOXFramework.GUI.Components
 
         protected override void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
-            Position = new Vector2(e.Position.X, e.Position.Y);
+            if (Visible)
+                Position = new Vector2(e.Position.X, e.Position.Y);
+
             base.OnMousePositionChanged(sender, e);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (Texture == null || (isTextureAtlas && textureAtlas != null))
+            if (!Visible || Texture == null || (isTextureAtlas && textureAtlas != null))
                 return;
 
             spriteBatch.Begin();

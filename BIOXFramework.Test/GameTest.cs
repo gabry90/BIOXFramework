@@ -8,6 +8,8 @@ using BIOXFramework.Input;
 using BIOXFramework.Input.Mappers;
 using BIOXFramework.Scene;
 using BIOXFramework.Test.Scenes;
+using BIOXFramework.GUI;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Test
 {
@@ -26,6 +28,7 @@ namespace BIOXFramework.Test
         public SpriteBatch spriteBatch;
 
         private SceneManager sceneManager;
+        private GuiManager guiManager;
 
         public GameTest()
         {        
@@ -33,7 +36,7 @@ namespace BIOXFramework.Test
             Content.RootDirectory = "Content";
 
             IsFixedTimeStep = true;
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             TargetElapsedTime = TimeSpan.FromMilliseconds(24);
         }
 
@@ -53,19 +56,18 @@ namespace BIOXFramework.Test
             sceneManager.Loaded += OnSceneLoaded;
             sceneManager.Unloaded += OnSceneUnloaded;
 
+            //add spriteBatch to services
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.Services.AddService(typeof(SpriteBatch), spriteBatch);
+
+            //set cursor for all scenes
+            guiManager = this.Services.GetService<GuiManager>();
+            guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"));
+
             //load input scene with first scene
             sceneManager.Load<InputTestScene>(this);
 
             base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            //add spriteBatch to services
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
-
-            base.LoadContent();
         }
 
         protected override void Dispose(bool disposing)

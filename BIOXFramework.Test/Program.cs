@@ -4,6 +4,9 @@ using BIOXFramework.Input;
 using BIOXFramework.Scene;
 using BIOXFramework.Settings;
 using BIOXFramework.Test.Scenes;
+using BIOXFramework.GUI;
+using BIOXFramework.GUI.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework.Test
 {
@@ -37,6 +40,7 @@ namespace BIOXFramework.Test
             game.Services.AddService<KeyboardManager>(new KeyboardManager(game));
             game.Services.AddService<MouseManager>(new MouseManager(game));
             game.Services.AddService<GamepadManager>(new GamepadManager(game));
+            game.Services.AddService<GuiManager>(new GuiManager());
         }
 
         private static void InitScenes(GameTest game)

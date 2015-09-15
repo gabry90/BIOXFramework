@@ -60,6 +60,9 @@ namespace BIOXFramework.Utility
 
         public override void Update(GameTime gameTime)
         {
+            if (!Enabled)
+                return;
+
             if (AutoAnimated)
                 _currentFrame = _currentFrame > _totalFrame ? 0 : _currentFrame + 1;
 
@@ -76,6 +79,9 @@ namespace BIOXFramework.Utility
 
         public override void Draw(GameTime gameTime)
         {
+            if (!Visible)
+                return;
+
             _spriteBatch.Begin();
             _spriteBatch.Draw(_texture, _destRect, _sourceRect, Color.White);
             _spriteBatch.End();
