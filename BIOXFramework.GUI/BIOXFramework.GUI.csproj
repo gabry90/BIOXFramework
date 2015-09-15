@@ -50,6 +50,10 @@
       <Project>{274beb25-1f10-4627-b5cb-13bfb59c9c49}</Project>
       <Name>BIOXFramework.Input</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Utility\BIOXFramework.Utility.csproj">
+      <Project>{e529133e-9e7e-492b-a779-373f88d8c623}</Project>
+      <Name>BIOXFramework.Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
       <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
       <Name>BIOXFramework</Name>

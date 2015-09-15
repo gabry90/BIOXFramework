@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
+using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
@@ -21,6 +22,9 @@ namespace BIOXFramework.GUI.Components
         public Texture2D Texture;
         public Vector2 Position = Vector2.Zero;
 
+        protected TextureAtlas textureAtlas;
+
+        protected bool isTextureAtlas = false;
         protected bool mouseInner = false;
         protected bool focused = false;
         protected SpriteBatch spriteBatch;
@@ -34,12 +38,22 @@ namespace BIOXFramework.GUI.Components
         public GuiBase(Game game)
             : base(game)
         {
-            this.game = game;
-            spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
-            InitializeServices();
-            AttachGUIEventsHandlers();
-            Enabled = true;
-            Visible = true;
+            InitGuiBase(game);
+        }
+
+        public GuiBase(Game game, Texture2D texture)
+            : base(game)
+        {
+            Texture = texture;
+            InitGuiBase(game);
+        }
+
+        public GuiBase(Game game, Texture2D texture, int columns, int rows)
+            : base(game)
+        {
+            isTextureAtlas = true;
+            textureAtlas = new TextureAtlas(game, texture, columns, rows);
+            InitGuiBase(game);
         }
 
         #endregion
@@ -51,6 +65,16 @@ namespace BIOXFramework.GUI.Components
         #endregion
 
         #region private / protected methods
+
+        private void InitGuiBase(Game game)
+        {
+            this.game = game;
+            spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
+            InitializeServices();
+            AttachGUIEventsHandlers();
+            Enabled = true;
+            Visible = true;
+        }
 
         protected virtual void InitializeServices()
         {
@@ -100,6 +124,22 @@ namespace BIOXFramework.GUI.Components
         #endregion
 
         #region component implementations
+
+        public override void Update(GameTime gameTime)
+        {
+            if (isTextureAtlas && textureAtlas != null)
+                textureAtlas.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (isTextureAtlas && textureAtlas != null)
+                textureAtlas.Draw(gameTime);
+
+            base.Draw(gameTime);
+        }
 
         #endregion
 

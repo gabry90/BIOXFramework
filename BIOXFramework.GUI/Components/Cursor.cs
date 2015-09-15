@@ -8,10 +8,12 @@ namespace BIOXFramework.GUI.Components
     public class Cursor : GuiBase
     {
         public Cursor(Game game, Texture2D texture)
-            : base(game)
-        {
-            this.Texture = texture;
-        }
+            : base(game, texture)
+        { }
+
+        public Cursor(Game game, Texture2D texture, int columns, int rows)
+            : base(game, texture, columns, rows)
+        { }
 
         protected override void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
@@ -21,6 +23,9 @@ namespace BIOXFramework.GUI.Components
 
         public override void Draw(GameTime gameTime)
         {
+            if (Texture == null || (isTextureAtlas && textureAtlas != null))
+                return;
+
             spriteBatch.Begin();
             spriteBatch.Draw(Texture, Position, Color.White);
             spriteBatch.End();
