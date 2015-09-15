@@ -7,6 +7,8 @@ namespace BIOXFramework.GUI.Components
 {
     public class Cursor : GuiBase, INonPausableComponent, IPersistentComponent
     {
+        #region constructors
+
         public Cursor(Game game, Texture2D texture)
             : base(game, texture)
         { }
@@ -15,6 +17,10 @@ namespace BIOXFramework.GUI.Components
             : base(game, texture, columns, rows)
         { }
 
+        #endregion
+
+        #region overridden base methods
+
         protected override void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
             if (Visible)
@@ -22,6 +28,10 @@ namespace BIOXFramework.GUI.Components
 
             base.OnMousePositionChanged(sender, e);
         }
+
+        #endregion
+
+        #region game implementations
 
         public override void Draw(GameTime gameTime)
         {
@@ -34,5 +44,14 @@ namespace BIOXFramework.GUI.Components
 
             base.Draw(gameTime);
         }
+
+        #endregion
+
+        #region interface implementations
+
+        public bool ForcePausableStatus { get; set; }
+        public bool ForceDisposing { get; set; }
+
+        #endregion
     }
 }

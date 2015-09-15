@@ -135,6 +135,9 @@ namespace BIOXFramework.Scene
 
         protected virtual void AttachSceneEventHandlers()
         {
+            //detach game events
+            game.Exiting += OnGameExiting;
+
             //attach audio events
             songManager.Played += OnSongPlayed;
             songManager.Paused += OnSongPaused;
@@ -159,6 +162,9 @@ namespace BIOXFramework.Scene
 
         protected virtual void DetachSceneEventHandlers()
         {
+            //detach game events
+            game.Exiting -= OnGameExiting;
+
             //detach audio events
             songManager.Played -= OnSongPlayed;
             songManager.Paused -= OnSongPaused;
@@ -278,6 +284,15 @@ namespace BIOXFramework.Scene
 
         #region component implementations
 
+        public virtual void OnGameExiting(object sender, EventArgs e)
+        {
+            lock (_components)
+            {
+                _components.ForEach(x => x.Dispose());
+                _components.Clear();
+            }
+        }
+
         public override void Initialize()
         {
             //attach scene event handlers
@@ -317,16 +332,17 @@ namespace BIOXFramework.Scene
             //update all scene components
             for (int i = 0; i < _components.Count; i ++)
             {
-                if ((!isPaused 
-                    || (
-                            isPaused
-                            && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent))
-                        )
-                    )
-                    && _components[i].Enabled)
+                if (!_components[i].Enabled) continue;
+                if (isPaused)
                 {
-                    _components[i].Update(gameTime);
+                    bool isNonPausableComponent = _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent));
+                    if (!isNonPausableComponent)
+                        continue;
+                    else if (isNonPausableComponent && ((INonPausableComponent)_components[i]).ForcePausableStatus)
+                        continue;
                 }
+
+                _components[i].Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -340,17 +356,17 @@ namespace BIOXFramework.Scene
             //draw all scene components
             for (int i = 0; i < _components.Count; i++)
             {
-                if ((!isPaused 
-                    || (
-                            isPaused
-                            && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent))
-                        )
-                    ) 
-                    && _components[i] is DrawableGameComponent
-                    && ((DrawableGameComponent)_components[i]).Visible)
+                if (!_components[i].Enabled || !(_components[i] is DrawableGameComponent)) continue;
+                if (isPaused)
                 {
-                    ((DrawableGameComponent)_components[i]).Draw(gameTime);
+                    bool isNonPausableComponent = _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent));
+                    if (!isNonPausableComponent)
+                        continue;
+                    else if (isNonPausableComponent && ((INonPausableComponent)_components[i]).ForcePausableStatus)
+                        continue;
                 }
+                
+                ((DrawableGameComponent)_components[i]).Draw(gameTime);
             }
 
             base.Draw(gameTime);
@@ -410,11 +426,19 @@ Visibile: {2}
 
                     lock (_components)
                     {
-                        //dispose componets only if not implement IPersistenceComponent interfaces
+                        //dispose all components
                         for (int i = 0; i < _components.Count; i++)
                         {
-                            if (!_components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
-                                _components[i].Dispose();
+                            bool isPersistentComponent = _components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent));
+                            if (!isPersistentComponent)
+                                continue;
+                            else
+                            {
+                                if (!((IPersistentComponent)_components[i]).ForceDisposing)
+                                    continue;
+                            }
+
+                             _components[i].Dispose();
                         }
 
                         //remove scene components

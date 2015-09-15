@@ -338,5 +338,12 @@ namespace BIOXFramework.Audio
         }
 
         #endregion
+
+        #region interface implementations
+
+        public bool ForcePausableStatus { get; set; }
+        public bool ForceDisposing { get; set; }
+
+        #endregion
     }
 }

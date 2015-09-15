@@ -136,5 +136,11 @@ namespace BIOXFramework.Scene
         }
 
         #endregion
+
+        #region interface implementations
+
+        public bool ForceDisposing { get; set; }
+
+        #endregion
     }
 }
