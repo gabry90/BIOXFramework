@@ -10,6 +10,7 @@ using BIOXFramework.Scene;
 using BIOXFramework.Test.Scenes;
 using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
+using BIOXFramework.Input.Events;
 
 namespace BIOXFramework.Test
 {
@@ -29,6 +30,7 @@ namespace BIOXFramework.Test
 
         private SceneManager sceneManager;
         private GuiManager guiManager;
+        private KeyboardManager keyboardManager;
 
         public GameTest()
         {        
@@ -50,11 +52,21 @@ namespace BIOXFramework.Test
             Console.WriteLine("SCENE UNLOADED: " + e.Type.FullName);
         }
 
+        private void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
+        {
+            if (e.Key == Keys.Escape)
+                Exit();
+        }
+
         protected override void Initialize()
         {
             sceneManager = this.Services.GetService<SceneManager>();
+            sceneManager.GameObj = this;
             sceneManager.Loaded += OnSceneLoaded;
             sceneManager.Unloaded += OnSceneUnloaded;
+
+            keyboardManager = this.Services.GetService<KeyboardManager>();
+            keyboardManager.Pressed += OnKeyPressed;
 
             //add spriteBatch to services
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -65,7 +77,7 @@ namespace BIOXFramework.Test
             guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"));
 
             //load input scene with first scene
-            sceneManager.Load<InputTestScene>(this);
+            sceneManager.Load<InputTestScene>();
 
             base.Initialize();
         }
@@ -78,7 +90,10 @@ namespace BIOXFramework.Test
                 {
                     sceneManager.Loaded -= OnSceneLoaded;
                     sceneManager.Unloaded -= OnSceneUnloaded;
-                    sceneManager.Clear(this);
+                    keyboardManager.Pressed -= OnKeyPressed;
+
+                    sceneManager.Dispose();
+                    spriteBatch.Dispose();
                     graphics.Dispose();
                 }
             }

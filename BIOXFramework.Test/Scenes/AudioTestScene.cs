@@ -19,14 +19,11 @@ namespace BIOXFramework.Test.Scenes
         {
             switch (e.Key)
             {
-                case Keys.Escape :
-                    game.Exit();
-                    break;
                 case Keys.Left:
-                    sceneManager.Load<InputTestScene>(game);
+                    sceneManager.Load<InputTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<GuiTestScene>(game);
+                    sceneManager.Load<GuiTestScene>();
                     break;
             }
 

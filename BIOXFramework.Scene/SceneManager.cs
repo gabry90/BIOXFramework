@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.Scene
 {
-    public sealed class SceneManager : IPersistentComponent
+    public sealed class SceneManager : IPersistentComponent, IDisposable
     {
         #region vars
 
@@ -13,6 +13,8 @@ namespace BIOXFramework.Scene
         public event EventHandler<SceneUnloadedEventArgs> Unloaded;
         public event EventHandler<ScenePausedEventArgs> Paused;
         public event EventHandler<SceneResumedEventArgs> Resumed;
+
+        public Game GameObj = null;
 
         private List<Type> _scenes = new List<Type>();
         private BIOXScene _currentScene = null;
@@ -29,7 +31,7 @@ namespace BIOXFramework.Scene
             lock (_scenes) { _scenes.Add(typeof(T)); }
         }
 
-        public void Unregister<T>(Game game) where T : BIOXScene
+        public void Unregister<T>() where T : BIOXScene
         {
             if (!_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is not registered!", typeof(T).FullName));
@@ -37,13 +39,13 @@ namespace BIOXFramework.Scene
             lock (_scenes)
             {
                 if (_currentScene != null && _currentScene.GetType() == typeof(T))
-                    Unload(game); //unload current scene before unregistering it
+                    Unload(); //unload current scene before unregistering it
 
                 _scenes.Remove(typeof(T));
             }
         }
 
-        public void Load<T>(Game game) where T : BIOXScene
+        public void Load<T>() where T : BIOXScene
         {
             if (!_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is not registered!", typeof(T).FullName));
@@ -55,24 +57,27 @@ namespace BIOXFramework.Scene
                     if (_currentScene.GetType() == typeof(T))
                         throw new SceneManagerException(string.Format("the scene \"{0}\" is already loaded!", typeof(T).FullName));
                     else
-                        Unload(game); //unload old scene
+                        Unload(); //unload old scene
                 }
 
                 //create new scene and add to it's to game components
-                _currentScene = (T)Activator.CreateInstance(typeof(T), game);
-                game.Components.Add(_currentScene);
+                _currentScene = (T)Activator.CreateInstance(typeof(T), GameObj);
+                GameObj.Components.Add(_currentScene);
             }
         }
 
-        public void Unload(Game game)
+        public void Unload()
         {
             if (_currentScene == null)
                 throw new SceneManagerException("the current scene is not loaded!");
 
+            if (GameObj == null)
+                throw new SceneManagerException("Game object not setted!");
+
             lock (_scenes)
             {
                 _currentScene.Dispose();
-                game.Components.Remove(_currentScene);
+                GameObj.Components.Remove(_currentScene);
                 _currentScene = null;
             }
         }
@@ -80,18 +85,6 @@ namespace BIOXFramework.Scene
         public BIOXScene GetCurrentScene()
         {
             return _currentScene;
-        }
-
-        public void Clear(Game game)
-        {
-            try
-            {
-                Unload(game);
-            }
-            finally
-            {
-                lock (_scenes) { _scenes.Clear(); }
-            }
         }
 
         #endregion
@@ -132,7 +125,14 @@ namespace BIOXFramework.Scene
 
         public void Dispose()
         {
-
+            try
+            {
+                Unload();
+            }
+            finally
+            {
+                lock (_scenes) { _scenes.Clear(); }
+            }
         }
 
         #endregion

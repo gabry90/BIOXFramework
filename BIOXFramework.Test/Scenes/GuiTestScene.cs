@@ -30,14 +30,11 @@ namespace BIOXFramework.Test.Scenes
                 case Keys.C:
                     Console.WriteLine(this);
                     break;
-                case Keys.Escape:
-                    game.Exit();
-                    break;
                 case Keys.Left:
-                    sceneManager.Load<AudioTestScene>(game);
+                    sceneManager.Load<AudioTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<Physics2DTestScene>(game);
+                    sceneManager.Load<Physics2DTestScene>();
                     break;
             }
 
