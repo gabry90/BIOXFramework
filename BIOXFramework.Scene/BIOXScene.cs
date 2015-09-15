@@ -75,7 +75,7 @@ namespace BIOXFramework.Scene
             {
                 songManager = game.Services.GetService<SongManager>();
                 if (songManager == null)
-                    songManager = new SongManager(game);
+                    songManager = new SongManager();
             }
                 
             if (soundManager == null)
@@ -272,7 +272,6 @@ namespace BIOXFramework.Scene
             {
                 //add components to scene
                 _components.Add(soundManager);
-                _components.Add(songManager);
                 _components.Add(keyboardManager);
                 _components.Add(mouseManager);
             }
@@ -299,20 +298,15 @@ namespace BIOXFramework.Scene
             if (!Enabled)
                 return;
 
-            lock (_components)
+            //update all scene components
+
+            for (int i = 0; i < _components.Count; i ++)
             {
-                for (int i = 0; i < _components.Count; i ++)
+                if ((!isPaused 
+                    || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(IPersistenceComponent))))
+                    && _components[i].Enabled)
                 {
-                    if (!isPaused || (isPaused && 
-                        _components[i] is MouseManager ||
-                        _components[i] is KeyboardManager ||
-                        _components[i] is SoundManager ||
-                        _components[i] is SongManager ||
-                        _components[i] is GuiBase))
-                    {   //excluding managers from paused status
-                        if (_components[i].Enabled)
-                            _components[i].Update(gameTime);
-                    }
+                    _components[i].Update(gameTime);
                 }
             }
 
@@ -324,19 +318,16 @@ namespace BIOXFramework.Scene
             if (!Visible)
                 return;
 
-            lock (_components)
+            //draw all scene components
+
+            for (int i = 0; i < _components.Count; i++)
             {
-                for (int i = 0; i < _components.Count; i++)
+                if ((!isPaused 
+                    || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(IPersistenceComponent)))) 
+                    && _components[i] is DrawableGameComponent
+                    && ((DrawableGameComponent)_components[i]).Visible)
                 {
-                    //excluding managers from paused status
-                    if ((!isPaused || (isPaused &&
-                        _components[i] is MouseManager ||
-                        _components[i] is KeyboardManager ||
-                        _components[i] is SoundManager ||
-                        _components[i] is SongManager ||
-                        _components[i] is GuiBase)) &&
-                        _components[i] is DrawableGameComponent)
-                        ((DrawableGameComponent)_components[i]).Draw(gameTime);
+                    ((DrawableGameComponent)_components[i]).Draw(gameTime);
                 }
             }
 
@@ -371,7 +362,6 @@ namespace BIOXFramework.Scene
                     {
                         //remove scene components
                         _components.Remove(soundManager);
-                        _components.Remove(songManager);
                         _components.Remove(keyboardManager);
                         _components.Remove(mouseManager);
                     }

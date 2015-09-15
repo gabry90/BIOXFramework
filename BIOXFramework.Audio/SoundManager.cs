@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SoundManager : GameComponent
+    public sealed class SoundManager : GameComponent, IPersistenceComponent
     {
         #region vars
 
@@ -247,35 +247,36 @@ namespace BIOXFramework.Audio
             return !sound.SoundInstance.IsDisposed ? sound.SoundInstance.IsLooped : false;
         }
 
+        #endregion
+
+        #region game implementations
+
         public override void Update(GameTime gameTime)
         {
-            lock (_sounds)
+            for (int i = 0; i < _sounds.Count; i++)
             {
-                for (int i = 0; i < _sounds.Count; i++)
-                {
-                    AudioSound sound = _sounds[i];
+                AudioSound sound = _sounds[i];
 
-                    /*
-                        skip if
-                        sound null value OR
-                        sound is not 3D OR
-                        sound is not playing OR 
-                        sound is disposed
-                    */
-                    if (sound == null ||
-                        sound.Emitter == null ||
-                        sound.SoundInstance == null ||
-                        sound.SoundInstance.IsDisposed ||
-                        sound.SoundInstance.State == SoundState.Stopped) 
-                        continue;
+                /*
+                    skip if
+                    sound null value OR
+                    sound is not 3D OR
+                    sound is not playing OR 
+                    sound is disposed
+                */
+                if (sound == null ||
+                    sound.Emitter == null ||
+                    sound.SoundInstance == null ||
+                    sound.SoundInstance.IsDisposed ||
+                    sound.SoundInstance.State == SoundState.Stopped) 
+                    continue;
 
-                    _emitter.Position = sound.Emitter.SoundEmitterPosition;
-                    _emitter.Forward = sound.Emitter.SoundEmitterForward;
-                    _emitter.Up = sound.Emitter.SoundEmitterUp;
-                    _emitter.Velocity = sound.Emitter.SoundEmitterVelocity;
+                _emitter.Position = sound.Emitter.SoundEmitterPosition;
+                _emitter.Forward = sound.Emitter.SoundEmitterForward;
+                _emitter.Up = sound.Emitter.SoundEmitterUp;
+                _emitter.Velocity = sound.Emitter.SoundEmitterVelocity;
 
-                    sound.SoundInstance.Apply3D(_listener, _emitter);
-                }
+                sound.SoundInstance.Apply3D(_listener, _emitter);
             }
 
             base.Update(gameTime);

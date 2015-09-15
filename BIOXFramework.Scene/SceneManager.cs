@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.Scene
 {
-    public sealed class SceneManager
+    public sealed class SceneManager : IPersistenceComponent
     {
         #region vars
 

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace BIOXFramework.Input
 {
-    public sealed class TouchManager : GameComponent
+    public sealed class TouchManager : GameComponent, IPersistenceComponent
     {
         public TouchManager(Game game)
             : base(game)

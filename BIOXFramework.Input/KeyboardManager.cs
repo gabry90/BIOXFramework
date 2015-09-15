@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class KeyboardManager : GameComponent
+    public sealed class KeyboardManager : GameComponent, IPersistenceComponent
     {
         #region vars
 
@@ -110,64 +110,65 @@ namespace BIOXFramework.Input
             return maps;
         }
 
+        #endregion
+
+        #region game implementations
+
         public override void Update(GameTime gameTime)
         {
             if (!EnableCapture)
                 return; //ignoring keyboard input events
 
-            lock (_maps)
+            //get current keyboard state
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+
+            //init old keyboard state
+            if (_oldKeyboardState == null)
+                _oldKeyboardState = currentKeyboardState;
+
+            //check key pressed, pressing and released events for each mapped keys
+            for (int i = 0; i < _maps.Count; i++)
             {
-                //get current keyboard state
-                KeyboardState currentKeyboardState = Keyboard.GetState();
+                KeyboardMap map = _maps[i];
 
-                //init old keyboard state
-                if (_oldKeyboardState == null)
-                    _oldKeyboardState = currentKeyboardState;
+                /*
+                    skip if
+                    map is null OR
+                    map key is nto setted
+                */
+                if (map == null || map.Key == null)
+                    continue;
 
-                //check key pressed, pressing and released events for each mapped keys
-                for (int i = 0; i < _maps.Count; i++)
+                if (_oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
                 {
-                    KeyboardMap map = _maps[i];
-
-                    /*
-                        skip if
-                        map is null OR
-                        map key is nto setted
-                    */
-                    if (map == null || map.Key == null)
-                        continue;
-
-                    if (_oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
-                    {
-                        //key is pressed for first time
-                        map.PressedTime = DateTime.Now;
-                        KeyboardPressedEventDispatcher(new KeyboardPressedEventArgs(map.Name, map.Key.Value));
-                        continue;
-                    }
-
-                    if (currentKeyboardState.IsKeyDown(map.Key.Value))
-                    {
-                        //key is continous pressing
-                        DateTime currentTime = DateTime.Now;
-                        if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
-                        {
-                            //delay pressing time is over then pressing delay
-                            map.PressedTime = currentTime;
-                            KeyboardPressingEventDispatcher(new KeyboardPressingEventArgs(map.Name, map.Key.Value));
-                        }
-                        continue;
-                    }
-
-                    if (_oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyUp(map.Key.Value))
-                    {
-                        //key is released
-                        KeyboardReleasedEventDispatcher(new KeyboardReleasedEventArgs(map.Name, map.Key.Value));
-                    }
+                    //key is pressed for first time
+                    map.PressedTime = DateTime.Now;
+                    KeyboardPressedEventDispatcher(new KeyboardPressedEventArgs(map.Name, map.Key.Value));
+                    continue;
                 }
 
-                //update old keyboard state
-                _oldKeyboardState = currentKeyboardState;
+                if (currentKeyboardState.IsKeyDown(map.Key.Value))
+                {
+                    //key is continous pressing
+                    DateTime currentTime = DateTime.Now;
+                    if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
+                    {
+                        //delay pressing time is over then pressing delay
+                        map.PressedTime = currentTime;
+                        KeyboardPressingEventDispatcher(new KeyboardPressingEventArgs(map.Name, map.Key.Value));
+                    }
+                    continue;
+                }
+
+                if (_oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyUp(map.Key.Value))
+                {
+                    //key is released
+                    KeyboardReleasedEventDispatcher(new KeyboardReleasedEventArgs(map.Name, map.Key.Value));
+                }
             }
+
+            //update old keyboard state
+            _oldKeyboardState = currentKeyboardState;
 
             base.Update(gameTime);
         }

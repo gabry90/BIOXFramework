@@ -2,7 +2,7 @@
 
 namespace BIOXFramework.GUI
 {
-    public sealed class GuiManager
+    public sealed class GuiManager: IPersistenceComponent
     {
         
     }

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SongManager : GameComponent
+    public sealed class SongManager : IPersistenceComponent, IDisposable
     {
         #region vars
 
@@ -36,8 +36,7 @@ namespace BIOXFramework.Audio
 
         #region constructors
 
-        public SongManager(Game game)
-            : base(game)
+        public SongManager()
         {
             _songs = new List<AudioSong>();
             CurrentSong = null;
@@ -193,23 +192,13 @@ namespace BIOXFramework.Audio
 
         #region dispose
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            try
-            {
-                if (disposing)
-                {
-                    ClearRegisteredSongs();
-                    if (Played != null) Played = null;
-                    if (Paused != null) Paused = null;
-                    if (Resumed != null) Resumed = null;
-                    if (Stopped != null) Stopped = null;
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
+            ClearRegisteredSongs();
+            if (Played != null) Played = null;
+            if (Paused != null) Paused = null;
+            if (Resumed != null) Resumed = null;
+            if (Stopped != null) Stopped = null;
         }
 
         #endregion

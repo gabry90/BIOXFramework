@@ -6,7 +6,7 @@ using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.Settings
 {
-    public sealed class SettingsManager
+    public sealed class SettingsManager : IPersistenceComponent
     {
         #region vars
 

@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class MouseManager : GameComponent
+    public sealed class MouseManager : GameComponent, IPersistenceComponent
     {
         #region vars
 
@@ -115,68 +115,69 @@ namespace BIOXFramework.Input
             return maps;
         }
 
+        #endregion
+
+        #region game implementations
+
         public override void Update(GameTime gameTime)
         {
             if (!EnableCapture)
                 return; //ignoring mouse input events
 
-            lock (_maps)
-            {
-                //get current mouse state
-                MouseState currentMouseState = Mouse.GetState();
+            //get current mouse state
+            MouseState currentMouseState = Mouse.GetState();
 
-                //init old mouse state
-                if (_oldMouseState == null)
-                    _oldMouseState = currentMouseState;
-
-                //check button pressed, pressing and released events for each mapped buttons
-                for (int i = 0; i < _maps.Count; i++)
-                {
-                    MouseMap map = _maps[i];
-
-                    /*
-                        skip if
-                        map is null OR
-                        map button is not setted
-                    */
-                    if (map == null || map.Button == null)
-                        continue;
-
-                    switch (map.Button.Value)
-                    {
-                        case MouseButtons.Left:     //update mouse left button events
-                            UpdateLeftButton(map, _oldMouseState, currentMouseState);
-                            continue;
-                        case MouseButtons.Rigth:    //update mouse right button events
-                            UpdateRightButton(map, _oldMouseState, currentMouseState);
-                            continue;
-                        case MouseButtons.Middle:   //update mouse middle button events
-                            UpdateMiddleButton(map, _oldMouseState, currentMouseState);
-                            continue;
-                        case MouseButtons.X1:       //update mouse X1 button events
-                            UpdateX1Button(map, _oldMouseState, currentMouseState);
-                            continue;
-                        case MouseButtons.X2:       //update mouse X2 button events
-                            UpdateX2Button(map, _oldMouseState, currentMouseState);
-                            continue;
-                    }
-                }
-
-                if (_oldMouseState.Position != currentMouseState.Position)  
-                {
-                    //mouse position changed if is inside window
-                    if (game.GraphicsDevice.Viewport.Bounds.Contains(currentMouseState.Position))
-                        MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
-                }
-
-                if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)
-                    MouseWhellUpEventDispatcher(EventArgs.Empty);   //mouse scroll up
-                else if (currentMouseState.ScrollWheelValue < _oldMouseState.ScrollWheelValue)
-                    MouseWhellDownEventDispatcher(EventArgs.Empty); //mouse scroll down
-
-                //update old mouse state
+            //init old mouse state
+            if (_oldMouseState == null)
                 _oldMouseState = currentMouseState;
+
+            //check button pressed, pressing and released events for each mapped buttons
+            for (int i = 0; i < _maps.Count; i++)
+            {
+                MouseMap map = _maps[i];
+
+                /*
+                    skip if
+                    map is null OR
+                    map button is not setted
+                */
+                if (map == null || map.Button == null)
+                    continue;
+
+                switch (map.Button.Value)
+                {
+                    case MouseButtons.Left:     //update mouse left button events
+                        UpdateLeftButton(map, _oldMouseState, currentMouseState);
+                        continue;
+                    case MouseButtons.Rigth:    //update mouse right button events
+                        UpdateRightButton(map, _oldMouseState, currentMouseState);
+                        continue;
+                    case MouseButtons.Middle:   //update mouse middle button events
+                        UpdateMiddleButton(map, _oldMouseState, currentMouseState);
+                        continue;
+                    case MouseButtons.X1:       //update mouse X1 button events
+                        UpdateX1Button(map, _oldMouseState, currentMouseState);
+                        continue;
+                    case MouseButtons.X2:       //update mouse X2 button events
+                        UpdateX2Button(map, _oldMouseState, currentMouseState);
+                        continue;
+                }
             }
+
+            if (_oldMouseState.Position != currentMouseState.Position)  
+            {
+                //mouse position changed if is inside window
+                if (game.GraphicsDevice.Viewport.Bounds.Contains(currentMouseState.Position))
+                    MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+            }
+
+            if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)
+                MouseWhellUpEventDispatcher(EventArgs.Empty);   //mouse scroll up
+            else if (currentMouseState.ScrollWheelValue < _oldMouseState.ScrollWheelValue)
+                MouseWhellDownEventDispatcher(EventArgs.Empty); //mouse scroll down
+
+            //update old mouse state
+            _oldMouseState = currentMouseState;
 
             base.Update(gameTime);
         }

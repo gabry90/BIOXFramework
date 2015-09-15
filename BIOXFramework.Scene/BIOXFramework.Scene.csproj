@@ -65,6 +65,10 @@
       <Project>{be90e5a0-d541-4c8f-8ec2-eb55e6723527}</Project>
       <Name>BIOXFramework.Physics3D</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
+      <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
+      <Name>BIOXFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

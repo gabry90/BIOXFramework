@@ -32,7 +32,7 @@ namespace BIOXFramework.Test
             //register services
             game.Services.AddService<SettingsManager>(new SettingsManager());
             game.Services.AddService<SceneManager>(new SceneManager());
-            game.Services.AddService<SongManager>(new SongManager(game));
+            game.Services.AddService<SongManager>(new SongManager());
             game.Services.AddService<SoundManager>(new SoundManager(game));
             game.Services.AddService<KeyboardManager>(new KeyboardManager(game));
             game.Services.AddService<MouseManager>(new MouseManager(game));

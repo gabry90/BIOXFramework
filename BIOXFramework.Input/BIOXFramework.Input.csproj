@@ -51,6 +51,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouchManager.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
+      <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
+      <Name>BIOXFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

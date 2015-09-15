@@ -44,6 +44,10 @@
       <Project>{e529133e-9e7e-492b-a779-373f88d8c623}</Project>
       <Name>BIOXFramework.Utility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
+      <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
+      <Name>BIOXFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

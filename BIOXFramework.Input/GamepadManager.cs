@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class GamepadManager : GameComponent
+    public sealed class GamepadManager : GameComponent, IPersistenceComponent
     {
         #region vars
 
@@ -111,66 +111,67 @@ namespace BIOXFramework.Input
             return maps;
         }
 
+        #endregion
+
+        #region game implementations
+
         public override void Update(GameTime gameTime)
         {
             if (!EnableCapture)
                 return; //ignoring gamepad input events
 
-            lock (_maps)
+            foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
             {
-                foreach (PlayerIndex player in Enum.GetValues(typeof(PlayerIndex)))
+                //get current gamepad state
+                GamePadState currentGamepadState = GamePad.GetState(player);
+
+                //init old gamepad state
+                if (_oldGamepadState == null)
+                    _oldGamepadState = currentGamepadState;
+
+                //check button pressed, pressing and released events for each mapped buttons
+                for (int i = 0; i < _maps.Count; i++)
                 {
-                    //get current gamepad state
-                    GamePadState currentGamepadState = GamePad.GetState(player);
+                    GamepadMap map = _maps[i];
 
-                    //init old gamepad state
-                    if (_oldGamepadState == null)
-                        _oldGamepadState = currentGamepadState;
+                    /* skip if
+                        map is null OR
+                        button is not setted OR
+                        player index is not same then object
+                    */
+                    if (map == null || map.Button == null || map.Player != player)
+                        continue;
 
-                    //check button pressed, pressing and released events for each mapped buttons
-                    for (int i = 0; i < _maps.Count; i++)
+                    if (_oldGamepadState.IsButtonUp(map.Button.Value) && currentGamepadState.IsButtonDown(map.Button.Value))
                     {
-                        GamepadMap map = _maps[i];
-
-                        /* skip if
-                           map is null OR
-                           button is not setted OR
-                           player index is not same then object
-                        */
-                        if (map == null || map.Button == null || map.Player != player)
-                            continue;
-
-                        if (_oldGamepadState.IsButtonUp(map.Button.Value) && currentGamepadState.IsButtonDown(map.Button.Value))
-                        {
-                            //button is pressed for first time
-                            map.PressedTime = DateTime.Now;
-                            GamepadPressedEventDispatcher(new GamepadPressedEventArgs(map.Name, map.Button.Value));
-                            continue;
-                        }
-
-                        if (currentGamepadState.IsButtonDown(map.Button.Value))
-                        {
-                            //button is continous pressing
-                            DateTime currentTime = DateTime.Now;
-                            if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
-                            {
-                                //delay pressing time is over then pressing delay
-                                map.PressedTime = currentTime;
-                                GamepadPressingEventDispatcher(new GamepadPressingEventArgs(map.Name, map.Button.Value));
-                            }
-                            continue;
-                        }
-
-                        if (_oldGamepadState.IsButtonDown(map.Button.Value) && currentGamepadState.IsButtonUp(map.Button.Value))
-                        {
-                            //button is released
-                            GamepadReleasedEventDispatcher(new GamepadReleasedEventArgs(map.Name, map.Button.Value));
-                        }
+                        //button is pressed for first time
+                        map.PressedTime = DateTime.Now;
+                        GamepadPressedEventDispatcher(new GamepadPressedEventArgs(map.Name, map.Button.Value));
+                        continue;
                     }
 
-                    //update old gamepad state
-                    _oldGamepadState = currentGamepadState;
+                    if (currentGamepadState.IsButtonDown(map.Button.Value))
+                    {
+                        //button is continous pressing
+                        DateTime currentTime = DateTime.Now;
+                        if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
+                        {
+                            //delay pressing time is over then pressing delay
+                            map.PressedTime = currentTime;
+                            GamepadPressingEventDispatcher(new GamepadPressingEventArgs(map.Name, map.Button.Value));
+                        }
+                        continue;
+                    }
+
+                    if (_oldGamepadState.IsButtonDown(map.Button.Value) && currentGamepadState.IsButtonUp(map.Button.Value))
+                    {
+                        //button is released
+                        GamepadReleasedEventDispatcher(new GamepadReleasedEventArgs(map.Name, map.Button.Value));
+                    }
                 }
+
+                //update old gamepad state
+                _oldGamepadState = currentGamepadState;
             }
 
             base.Update(gameTime);

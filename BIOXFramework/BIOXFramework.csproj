@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{516D521A-7618-466F-BE97-5A3E987FD9E5}</ProjectGuid>
+    <ProjectGuid>{A42F125F-6C12-4A67-9047-027EF6E42089}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BIOXFramework.GUI</RootNamespace>
-    <AssemblyName>BIOXFramework.GUI</AssemblyName>
+    <RootNamespace>BIOXFramework</RootNamespace>
+    <AssemblyName>BIOXFramework</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,30 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.456, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Cursor.cs" />
-    <Compile Include="Components\GuiBase.cs" />
-    <Compile Include="GuiEvents.cs" />
-    <Compile Include="GuiExceptions.cs" />
-    <Compile Include="GuiManager.cs" />
+    <Compile Include="IPersistenceComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BIOXFramework.Input\BIOXFramework.Input.csproj">
-      <Project>{274beb25-1f10-4627-b5cb-13bfb59c9c49}</Project>
-      <Name>BIOXFramework.Input</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
-      <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
-      <Name>BIOXFramework</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

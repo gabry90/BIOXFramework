@@ -6,7 +6,7 @@ using BIOXFramework.Input.Events;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class GuiBase : DrawableGameComponent
+    public class GuiBase : DrawableGameComponent, IPersistenceComponent
     {
         #region vars
 
