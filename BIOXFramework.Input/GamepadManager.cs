@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class GamepadManager : GameComponent, IPersistenceComponent
+    public sealed class GamepadManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 

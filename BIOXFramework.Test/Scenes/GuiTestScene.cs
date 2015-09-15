@@ -27,6 +27,9 @@ namespace BIOXFramework.Test.Scenes
                 case Keys.B:
                     IsCursorVisible = true;
                     break;
+                case Keys.C:
+                    Console.WriteLine(this);
+                    break;
                 case Keys.Escape:
                     game.Exit();
                     break;

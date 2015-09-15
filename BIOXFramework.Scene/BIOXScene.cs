@@ -315,11 +315,14 @@ namespace BIOXFramework.Scene
                 return;
 
             //update all scene components
-
             for (int i = 0; i < _components.Count; i ++)
             {
                 if ((!isPaused 
-                    || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(IPersistenceComponent))))
+                    || (
+                            isPaused
+                            && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent))
+                        )
+                    )
                     && _components[i].Enabled)
                 {
                     _components[i].Update(gameTime);
@@ -335,11 +338,14 @@ namespace BIOXFramework.Scene
                 return;
 
             //draw all scene components
-
             for (int i = 0; i < _components.Count; i++)
             {
                 if ((!isPaused 
-                    || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(IPersistenceComponent)))) 
+                    || (
+                            isPaused
+                            && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent))
+                        )
+                    ) 
                     && _components[i] is DrawableGameComponent
                     && ((DrawableGameComponent)_components[i]).Visible)
                 {
@@ -353,8 +359,36 @@ namespace BIOXFramework.Scene
         public override string ToString()
         {
             StringBuilder content = new StringBuilder();
-            content.AppendFormat("Type: {0}", this.GetType().FullName);
-            content.AppendFormat("Hash code: {0}", this.GetHashCode());
+            content.AppendFormat(@"
+------------------------------------------------
+                INSTANCE INFO
+------------------------------------------------
+Type: {0}
+Hash code: {1}           
+IsCursorVisible: {2}
+IsPaused: {3}
+------------------------------------------------
+                COMPONENTS INFO
+------------------------------------------------",
+            this.GetType().FullName,
+            this.GetHashCode(),
+            this.IsCursorVisible,
+            this.isPaused);
+
+            content.AppendLine();
+
+            for (int i = 0; i < _components.Count; i++)
+            {
+                content.AppendFormat(@"Type: {0}     
+Enabled: {1}    
+Visibile: {2}
+------------------------------------------------",
+                _components[i].GetType().FullName,
+                _components[i].Enabled,
+                _components[i] is DrawableGameComponent ? ((DrawableGameComponent)_components[i]).Visible.ToString() : "this object is not a DrawableGameComponent!");
+                content.AppendLine();
+            }
+
             return content.ToString();
         }
 
@@ -376,11 +410,15 @@ namespace BIOXFramework.Scene
 
                     lock (_components)
                     {
+                        //dispose componets only if not implement IPersistenceComponent interfaces
+                        for (int i = 0; i < _components.Count; i++)
+                        {
+                            if (!_components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                                _components[i].Dispose();
+                        }
+
                         //remove scene components
-                        _components.Remove(soundManager);
-                        _components.Remove(keyboardManager);
-                        _components.Remove(mouseManager);
-                        _components.Remove(guiManager.CurrentCursor);
+                        _components.Clear();
                     }
 
                     //dispatch unloaded event

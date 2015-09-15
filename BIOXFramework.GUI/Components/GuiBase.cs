@@ -7,7 +7,7 @@ using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class GuiBase : DrawableGameComponent, IPersistenceComponent
+    public class GuiBase : DrawableGameComponent
     {
         #region vars
 

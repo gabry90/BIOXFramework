@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.GUI
 {
-    public sealed class GuiManager: IPersistenceComponent
+    public sealed class GuiManager : IPersistentComponent
     {
         #region vars
 

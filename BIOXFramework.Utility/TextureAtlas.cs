@@ -85,6 +85,7 @@ namespace BIOXFramework.Utility
             _spriteBatch.Begin();
             _spriteBatch.Draw(_texture, _destRect, _sourceRect, Color.White);
             _spriteBatch.End();
+
             base.Draw(gameTime);
         }
 

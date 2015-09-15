@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class MouseManager : GameComponent, IPersistenceComponent
+    public sealed class MouseManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 

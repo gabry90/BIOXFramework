@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SongManager : IPersistenceComponent, IDisposable
+    public sealed class SongManager : INonPausableComponent, IPersistentComponent, IDisposable
     {
         #region vars
 

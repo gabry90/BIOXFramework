@@ -8,7 +8,7 @@ using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input
 {
-    public sealed class KeyboardManager : GameComponent, IPersistenceComponent
+    public sealed class KeyboardManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 

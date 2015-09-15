@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace BIOXFramework.Audio
 {
-    public sealed class SoundManager : GameComponent, IPersistenceComponent
+    public sealed class SoundManager : GameComponent, IPersistentComponent, INonPausableComponent
     {
         #region vars
 

@@ -5,7 +5,7 @@ using BIOXFramework.Input.Events;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class Cursor : GuiBase
+    public class Cursor : GuiBase, INonPausableComponent, IPersistentComponent
     {
         public Cursor(Game game, Texture2D texture)
             : base(game, texture)
