@@ -332,17 +332,8 @@ namespace BIOXFramework.Scene
             //update all scene components
             for (int i = 0; i < _components.Count; i ++)
             {
-                if (!_components[i].Enabled) continue;
-                if (isPaused)
-                {
-                    bool isNonPausableComponent = _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent));
-                    if (!isNonPausableComponent)
-                        continue;
-                    else if (isNonPausableComponent && ((INonPausableComponent)_components[i]).ForcePausableStatus)
-                        continue;
-                }
-
-                _components[i].Update(gameTime);
+                if (_components[i].Enabled && (!isPaused || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
+                    _components[i].Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -356,17 +347,8 @@ namespace BIOXFramework.Scene
             //draw all scene components
             for (int i = 0; i < _components.Count; i++)
             {
-                if (!_components[i].Enabled || !(_components[i] is DrawableGameComponent)) continue;
-                if (isPaused)
-                {
-                    bool isNonPausableComponent = _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent));
-                    if (!isNonPausableComponent)
-                        continue;
-                    else if (isNonPausableComponent && ((INonPausableComponent)_components[i]).ForcePausableStatus)
-                        continue;
-                }
-                
-                ((DrawableGameComponent)_components[i]).Draw(gameTime);
+                if (_components[i] is DrawableGameComponent && _components[i].Enabled && (!isPaused || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
+                    ((DrawableGameComponent)_components[i]).Draw(gameTime);
             }
 
             base.Draw(gameTime);
@@ -429,16 +411,8 @@ Visibile: {2}
                         //dispose all components
                         for (int i = 0; i < _components.Count; i++)
                         {
-                            bool isPersistentComponent = _components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent));
-                            if (!isPersistentComponent)
-                                continue;
-                            else
-                            {
-                                if (!((IPersistentComponent)_components[i]).ForceDisposing)
-                                    continue;
-                            }
-
-                             _components[i].Dispose();
+                            if (!_components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                                _components[i].Dispose();
                         }
 
                         //remove scene components

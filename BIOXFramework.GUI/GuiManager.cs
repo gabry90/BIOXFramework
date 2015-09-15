@@ -27,11 +27,5 @@ namespace BIOXFramework.GUI
         private Cursor _cursor;
 
         #endregion
-
-        #region interface implementations
-
-        public bool ForceDisposing { get; set; }
-
-        #endregion
     }
 }
