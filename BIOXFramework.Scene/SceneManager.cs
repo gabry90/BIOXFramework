@@ -50,6 +50,9 @@ namespace BIOXFramework.Scene
             if (!_scenes.Contains(typeof(T)))
                 throw new SceneManagerException(string.Format("the scene \"{0}\" is not registered!", typeof(T).FullName));
 
+            if (GameObj == null)
+                throw new SceneManagerException("Game object not setted!");
+
             lock (_scenes)
             {
                 if (_currentScene != null)
@@ -128,6 +131,9 @@ namespace BIOXFramework.Scene
             try
             {
                 Unload();
+                if (Loaded != null) Loaded = null;
+                if (Unloaded != null) Unloaded = null;
+                if (Paused != null) Paused = null;
             }
             finally
             {

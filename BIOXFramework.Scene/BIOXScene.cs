@@ -129,7 +129,12 @@ namespace BIOXFramework.Scene
             lock (_components)
             {
                 if (component != null && _components.Contains(component))
+                {
+                    if (!_components.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                        component.Dispose();
+
                     _components.Remove(component);
+                }
             }
         }
 

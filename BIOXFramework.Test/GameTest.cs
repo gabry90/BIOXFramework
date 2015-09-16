@@ -44,7 +44,7 @@ namespace BIOXFramework.Test
 
         private void OnSceneLoaded(object sender, SceneLoadedEventArgs e)
         {
-            Console.WriteLine("SCENE LOADED: " + e.Type.FullName);
+            Console.WriteLine("SCENE LOADED:   " + e.Type.FullName);
         }
 
         private void OnSceneUnloaded(object sender, SceneUnloadedEventArgs e)
