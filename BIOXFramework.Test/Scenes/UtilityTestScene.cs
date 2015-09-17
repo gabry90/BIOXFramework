@@ -4,19 +4,19 @@ using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Utility;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework.Test.Scenes
 {
     public class UtilityTestScene : BIOXScene
     {
         private Timer timer;
+        private TextureAtlas textureAtlas;
 
         public UtilityTestScene(GameTest game)
             : base(game)
         {
             game.Window.Title = "Utility Test Scene";
-            timer = new Timer(game);
-            timer.Interval = 1000;
         }
 
         protected override void AttachSceneEventHandlers()
@@ -31,12 +31,6 @@ namespace BIOXFramework.Test.Scenes
             timer.Tick -= OnTimerTick;
             timer.Stopped -= OnTimerStopped;
             base.DetachSceneEventHandlers();
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            AddComponent(timer);
         }
 
         private void OnTimerTick(object sender, EventArgs e)
@@ -54,10 +48,18 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.A:
-                    timer.Start();
+                    textureAtlas.CurrentFrame--;
                     break;
-                case Keys.B:
+                case Keys.D:
+                    textureAtlas.CurrentFrame++;
+                    break;
+                case Keys.Z:
+                    timer.Start();
+                    textureAtlas.AutoAnimated = true;
+                    break;
+                case Keys.X:
                     timer.Stop();
+                    textureAtlas.AutoAnimated = false;
                     break;
                 case Keys.Left:
                     sceneManager.Load<Physics3DTestScene>();
@@ -68,6 +70,24 @@ namespace BIOXFramework.Test.Scenes
             }
 
             base.OnKeyPressed(sender, e);
+        }
+
+        public override void Initialize()
+        {
+            timer = new Timer(game);
+            timer.Interval = 1000;
+            AddComponent(timer);
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            textureAtlas = new TextureAtlas(game, SceneContent.Load<Texture2D>("UI image/texture_atlas_example"), 4, 4);
+            textureAtlas.Position = new Vector2(0, 0);
+            textureAtlas.AnimationSpeed = 100;
+            AddComponent(textureAtlas);
+            base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)

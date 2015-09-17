@@ -7,6 +7,7 @@ using BIOXFramework.Test.Scenes;
 using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace BIOXFramework.Test
 {
@@ -33,6 +34,8 @@ namespace BIOXFramework.Test
         private static void InitService(GameTest game)
         {
             //register services
+            game.Content.RootDirectory = "Content";
+            game.Services.AddService<ContentManager>(game.Content);
             game.Services.AddService<SettingsManager>(new SettingsManager());
             game.Services.AddService<SceneManager>(new SceneManager());
             game.Services.AddService<SongManager>(new SongManager());

@@ -36,7 +36,6 @@ namespace BIOXFramework.Test
         public GameTest()
         {        
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
 
             IsFixedTimeStep = true;
             IsMouseVisible = false;
@@ -81,6 +80,12 @@ namespace BIOXFramework.Test
             sceneManager.Load<InputTestScene>();
 
             base.Initialize();
+        }
+
+        protected override void UnloadContent()
+        {
+            Content.Unload();
+            base.UnloadContent();
         }
 
         protected override void Dispose(bool disposing)

@@ -10,6 +10,7 @@ using BIOXFramework.Input.Events;
 using System.Text;
 using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
+using Microsoft.Xna.Framework.Content;
 
 namespace BIOXFramework.Scene
 {
@@ -29,6 +30,8 @@ namespace BIOXFramework.Scene
         protected static SoundManager soundManager;
         protected static KeyboardManager keyboardManager;
         protected static MouseManager mouseManager;
+
+        protected ContentManager SceneContent;
         protected Game game;
         protected bool isPaused = false;
 
@@ -66,12 +69,56 @@ namespace BIOXFramework.Scene
             sceneManager.SceneResumedEventDispatcher(new SceneResumedEventArgs(this.GetType()));
         }
 
+        public override string ToString()
+        {
+            StringBuilder content = new StringBuilder();
+            content.AppendFormat(@"
+------------------------------------------------
+                INSTANCE INFO
+------------------------------------------------
+Type: {0}
+Hash code: {1}           
+IsCursorVisible: {2}
+IsPaused: {3}
+------------------------------------------------
+                COMPONENTS INFO
+------------------------------------------------",
+            this.GetType().FullName,
+            this.GetHashCode(),
+            this.IsCursorVisible,
+            this.isPaused);
+
+            content.AppendLine();
+
+            for (int i = 0; i < _components.Count; i++)
+            {
+                content.AppendFormat(@"Type: {0}     
+Enabled: {1}    
+Visibile: {2}
+------------------------------------------------",
+                _components[i].GetType().FullName,
+                _components[i].Enabled,
+                _components[i] is DrawableGameComponent ? ((DrawableGameComponent)_components[i]).Visible.ToString() : "this object is not a DrawableGameComponent!");
+                content.AppendLine();
+            }
+
+            return content.ToString();
+        }
+
         #endregion
 
         #region private / protected methods
 
         protected virtual void InitializeServices()
         {
+            if (SceneContent == null)
+            {
+                ContentManager content = game.Services.GetService<ContentManager>();
+                if (content == null)
+                    throw new SceneManagerException("the BIOXScene required ContentManager game service!");
+                SceneContent = new ContentManager(content.ServiceProvider, content.RootDirectory);
+            }
+
             if (sceneManager == null)
             {
                 sceneManager = game.Services.GetService<SceneManager>();
@@ -303,14 +350,10 @@ namespace BIOXFramework.Scene
             //attach scene event handlers
             AttachSceneEventHandlers();
 
-            lock (_components)
-            {
-                //add components to scene
-                _components.Add(soundManager);
-                _components.Add(keyboardManager);
-                _components.Add(mouseManager);
-                _components.Add(guiManager.CurrentCursor);
-            }
+            //add components to scene
+            _components.Add(soundManager);
+            _components.Add(keyboardManager);
+            _components.Add(mouseManager);
 
             base.Initialize();
         }
@@ -319,20 +362,23 @@ namespace BIOXFramework.Scene
         {
             //add common logic here...
             base.LoadContent();
+
+            //add cursor over all components
+            _components.Add(guiManager.CurrentCursor);
+
+            //dispatch scene loaded event
             sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
         }
 
         protected override void UnloadContent()
         {
-            //add common logic here...
+            //unload current scene content
+            SceneContent.Unload();
             base.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (!Enabled)
-                return;
-
             //update all scene components
             for (int i = 0; i < _components.Count; i ++)
             {
@@ -345,9 +391,6 @@ namespace BIOXFramework.Scene
 
         public override void Draw(GameTime gameTime)
         {
-            if (!Visible)
-                return;
-
             //draw all scene components
             for (int i = 0; i < _components.Count; i++)
             {
@@ -356,42 +399,6 @@ namespace BIOXFramework.Scene
             }
 
             base.Draw(gameTime);
-        }
-
-        public override string ToString()
-        {
-            StringBuilder content = new StringBuilder();
-            content.AppendFormat(@"
-------------------------------------------------
-                INSTANCE INFO
-------------------------------------------------
-Type: {0}
-Hash code: {1}           
-IsCursorVisible: {2}
-IsPaused: {3}
-------------------------------------------------
-                COMPONENTS INFO
-------------------------------------------------",
-            this.GetType().FullName,
-            this.GetHashCode(),
-            this.IsCursorVisible,
-            this.isPaused);
-
-            content.AppendLine();
-
-            for (int i = 0; i < _components.Count; i++)
-            {
-                content.AppendFormat(@"Type: {0}     
-Enabled: {1}    
-Visibile: {2}
-------------------------------------------------",
-                _components[i].GetType().FullName,
-                _components[i].Enabled,
-                _components[i] is DrawableGameComponent ? ((DrawableGameComponent)_components[i]).Visible.ToString() : "this object is not a DrawableGameComponent!");
-                content.AppendLine();
-            }
-
-            return content.ToString();
         }
 
         #endregion
@@ -406,9 +413,6 @@ Visibile: {2}
                 {
                     //dispose events
                     DetachSceneEventHandlers();
-
-                    Enabled = false;
-                    Visible = false;
 
                     lock (_components)
                     {
