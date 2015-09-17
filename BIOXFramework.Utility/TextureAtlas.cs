@@ -1,9 +1,24 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework.Utility
 {
+    public enum TextureAtlasRegionOrientation
+    {
+        Left,
+        Right
+    }
+
+    public sealed class TextureAtlasRegion
+    {
+        public string Name;
+        public List<int> Frames;
+        public TextureAtlasRegionOrientation Orientation; 
+    }
+
     public sealed class TextureAtlas : DrawableGameComponent
     {
         #region vars
@@ -25,6 +40,7 @@ namespace BIOXFramework.Utility
             }
         }
 
+        public bool UseRegions = false;
         public Vector2 Position = Vector2.Zero;
         public bool AutoAnimated = false;
         public int AnimationSpeed = 1000;
@@ -38,6 +54,8 @@ namespace BIOXFramework.Utility
         private SpriteBatch _spriteBatch;
         private int _currentFrame;
         private DateTime _oldFrameProcessdate;
+        private List<TextureAtlasRegion> _regions;
+        private TextureAtlasRegion _currentRegion;
 
         #endregion
 
@@ -46,12 +64,52 @@ namespace BIOXFramework.Utility
         public TextureAtlas(Game game, Texture2D texture, int columns, int rows)
             : base(game)
         {
+            InitComponent(game, texture, columns, rows, null);
+        }
+
+        public TextureAtlas(Game game, Texture2D texture, int columns, int rows, List<TextureAtlasRegion> regions)
+            : base(game)
+        {
+            InitComponent(game, texture, columns, rows, regions);
+        }
+
+        #endregion
+
+        #region public methods
+
+        public void SetRegion(string regionName)
+        {
+            if (string.IsNullOrEmpty(regionName))
+                return;
+
+            TextureAtlasRegion region = _regions.FirstOrDefault(x => string.Equals(x.Name, regionName));
+            if (region != null)
+                _currentRegion = region;
+        }
+
+        #endregion
+
+        #region private methods
+
+        private void InitComponent(Game game, Texture2D texture, int columns, int rows, List<TextureAtlasRegion> regions)
+        {
             _spriteBatch = game.Services.GetService<SpriteBatch>();
             _texture = texture;
             _columns = columns;
             _rows = rows;
             _totalFrame = rows * columns;
             _currentFrame = 0;
+            _regions = regions;
+        }
+
+        private void UpdateTextureWithRegions()
+        {
+
+        }
+
+        private void UpdateTextureWithoutRegions()
+        {
+
         }
 
         #endregion
@@ -60,6 +118,11 @@ namespace BIOXFramework.Utility
 
         public override void Update(GameTime gameTime)
         {
+            if (UseRegions)
+                UpdateTextureWithRegions();
+            else
+                UpdateTextureWithoutRegions();
+
             if (AutoAnimated)
             {
                 DateTime currentFrameProcessDate = DateTime.Now;
@@ -74,8 +137,6 @@ namespace BIOXFramework.Utility
                     _currentFrame++;
                     if (_currentFrame >= _totalFrame)
                         _currentFrame = 1;
-
-                    Console.WriteLine("current frame: " + _currentFrame);
                 }
             }
 
@@ -109,7 +170,10 @@ namespace BIOXFramework.Utility
             try
             {
                 if (disposing)
+                {
                     _texture.Dispose();
+                    _regions.Clear();
+                }
             }
             finally
             {
