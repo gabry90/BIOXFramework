@@ -16,11 +16,12 @@ namespace BIOXFramework.Test
 {
     /*
      * SCENE TEST CYCLE 
-     * (Physics3DTestScene) ... <- InputTestScene ->
+     * (UtilityTestScene) ... <- InputTestScene ->
      *      <- AudioTestScene ->
      *      <- GuiTestScene ->
      *      <- Physics2DTestScene ->
-     *      <- Physics3DTestScene -> ...(InputTestScene)
+     *      <- Physics3DTestScene ->
+     *      <- UtilityTestScene -> ...(InputTestScene)
      */
 
     public class GameTest : Game

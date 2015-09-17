@@ -41,6 +41,9 @@
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BIOXFramework.Test.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="GameTest.cs" />
     <Compile Include="Program.cs" />
@@ -50,6 +53,7 @@
     <Compile Include="Scenes\InputTestScene.cs" />
     <Compile Include="Scenes\Physics2DTestScene.cs" />
     <Compile Include="Scenes\Physics3DTestScene.cs" />
+    <Compile Include="Scenes\UtilityTestScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

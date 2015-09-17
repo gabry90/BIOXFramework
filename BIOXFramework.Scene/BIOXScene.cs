@@ -313,14 +313,13 @@ namespace BIOXFramework.Scene
             }
 
             base.Initialize();
-
-            sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
         }
 
         protected override void LoadContent()
         {
             //add common logic here...
             base.LoadContent();
+            sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
         }
 
         protected override void UnloadContent()

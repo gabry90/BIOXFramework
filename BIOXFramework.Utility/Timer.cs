@@ -49,13 +49,16 @@ namespace BIOXFramework.Utility
 
         public void Stop()
         {
+            if (!Enabled)
+                return;
+
             Enabled = false;
             StoppedEventDispatcher(EventArgs.Empty);
         }
 
         #endregion
 
-        #region game implementations
+        #region component implementations
 
         public override void Initialize()
         {

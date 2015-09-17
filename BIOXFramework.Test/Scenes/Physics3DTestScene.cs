@@ -22,7 +22,7 @@ namespace BIOXFramework.Test.Scenes
                     sceneManager.Load<Physics2DTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<InputTestScene>();
+                    sceneManager.Load<UtilityTestScene>();
                     break;
             }
 

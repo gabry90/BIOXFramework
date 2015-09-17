@@ -19,7 +19,7 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.Left:
-                    sceneManager.Load<Physics3DTestScene>();
+                    sceneManager.Load<UtilityTestScene>();
                     break;
                 case Keys.Right:
                     sceneManager.Load<AudioTestScene>();
