@@ -6,6 +6,7 @@ using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Utility;
 using Microsoft.Xna.Framework.Graphics;
+using BIOXFramework.Physics2D.Collision;
 
 namespace BIOXFramework.Test.Scenes
 {
@@ -116,11 +117,16 @@ namespace BIOXFramework.Test.Scenes
             base.OnKeyPressing(sender, e);
         }
 
+        protected override void On2DObjectCollide(object sender, Physics2D.Collide2DEventArgs e)
+        {
+            base.On2DObjectCollide(sender, e);
+        }
+
         public override void Initialize()
         {
             timer = new Timer(game);
             timer.Interval = 1000;
-            AddComponent(timer);
+            AddGameComponent(timer);
 
             base.Initialize();
         }
@@ -136,8 +142,11 @@ namespace BIOXFramework.Test.Scenes
             };
             animatedTexture = new AnimatedTexture(game, SceneContent.Load<Texture2D>("UI image/texture_atlas_example"), textureRegions);
             animatedTexture.Position = new Vector2(0, 0);
+            animatedTexture.EnableCollisionDetection = true;
             animatedTexture.AnimationSpeed = 500;
-            AddComponent(animatedTexture);
+            AddDrawableGameComponent(animatedTexture);
+
+            collision2DManager.EnableCollisionDetection = true;
             base.LoadContent();
         }
 
@@ -145,6 +154,19 @@ namespace BIOXFramework.Test.Scenes
         {
             game.GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                    timer.Dispose(); //dispose timer here beacause standard service has not been disposed on BIOXScene
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
     }
 }

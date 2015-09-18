@@ -3,10 +3,11 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using BIOXFramework.Utility.Extensions;
+using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.Settings
 {
-    public sealed class SettingsManager : IPersistentComponent
+    public sealed class SettingsManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 
@@ -20,7 +21,8 @@ namespace BIOXFramework.Settings
 
         #region constructors
 
-        public SettingsManager()
+        public SettingsManager(Game game)
+            : base(game)
         {
             
         }

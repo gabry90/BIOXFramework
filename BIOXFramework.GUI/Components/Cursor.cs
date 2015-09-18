@@ -7,7 +7,7 @@ using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class Cursor : GuiBase, INonPausableComponent, IPersistentComponent
+    public class Cursor : GuiBase, IPersistentComponent
     {
         #region constructors
 

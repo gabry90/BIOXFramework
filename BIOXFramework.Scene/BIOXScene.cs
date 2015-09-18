@@ -11,6 +11,8 @@ using System.Text;
 using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
 using Microsoft.Xna.Framework.Content;
+using BIOXFramework.Physics2D.Collision;
+using BIOXFramework.Physics2D;
 
 namespace BIOXFramework.Scene
 {
@@ -30,12 +32,14 @@ namespace BIOXFramework.Scene
         protected static SoundManager soundManager;
         protected static KeyboardManager keyboardManager;
         protected static MouseManager mouseManager;
+        protected static Collision2DManager collision2DManager;
 
         protected ContentManager SceneContent;
         protected Game game;
         protected bool isPaused = false;
 
-        private List<GameComponent> _components;
+        private List<GameComponent> _gameComponents;
+        private List<DrawableGameComponent> _drawableGameComponents;
 
         #endregion
 
@@ -47,7 +51,8 @@ namespace BIOXFramework.Scene
             this.game = game;
             Visible = true;
             Enabled = true;
-            _components = new List<GameComponent>();
+            _gameComponents = new List<GameComponent>();
+            _drawableGameComponents = new List<DrawableGameComponent>();
             InitializeServices();
         }
 
@@ -81,7 +86,7 @@ Hash code: {1}
 IsCursorVisible: {2}
 IsPaused: {3}
 ------------------------------------------------
-                COMPONENTS INFO
+                BIOXOject INFO
 ------------------------------------------------",
             this.GetType().FullName,
             this.GetHashCode(),
@@ -90,15 +95,15 @@ IsPaused: {3}
 
             content.AppendLine();
 
-            for (int i = 0; i < _components.Count; i++)
+            for (int i = 0; i < _drawableGameComponents.Count; i++)
             {
                 content.AppendFormat(@"Type: {0}     
 Enabled: {1}    
 Visibile: {2}
 ------------------------------------------------",
-                _components[i].GetType().FullName,
-                _components[i].Enabled,
-                _components[i] is DrawableGameComponent ? ((DrawableGameComponent)_components[i]).Visible.ToString() : "this object is not a DrawableGameComponent!");
+                _drawableGameComponents[i].GetType().FullName,
+                _drawableGameComponents[i].Enabled,
+                _drawableGameComponents[i].Visible);
                 content.AppendLine();
             }
 
@@ -109,7 +114,7 @@ Visibile: {2}
 
         #region private / protected methods
 
-        protected virtual void InitializeServices()
+        private void InitializeServices()
         {
             if (SceneContent == null)
             {
@@ -137,7 +142,7 @@ Visibile: {2}
             {
                 songManager = game.Services.GetService<SongManager>();
                 if (songManager == null)
-                    songManager = new SongManager();
+                    songManager = new SongManager(game);
             }
                 
             if (soundManager == null)
@@ -160,27 +165,65 @@ Visibile: {2}
                 if (mouseManager == null)
                     mouseManager = new MouseManager(game);
             }
-        }
 
-        protected void AddComponent(GameComponent component)
-        {
-            lock (_components)
+            if (collision2DManager == null)
             {
-                if (component != null && !_components.Contains(component))
-                    _components.Add(component);
+                collision2DManager = game.Services.GetService<Collision2DManager>();
+                if (collision2DManager == null)
+                    collision2DManager = new Collision2DManager(game);
+
+                collision2DManager.EnableCollisionDetection = false; //disable for default
             }
         }
 
-        protected void RemoveComponent(GameComponent component)
+        protected void AddGameComponent(GameComponent component)
         {
-            lock (_components)
+            lock (_gameComponents)
             {
-                if (component != null && _components.Contains(component))
+                if (component != null && !_gameComponents.Contains(component))
                 {
-                    if (!_components.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                    _gameComponents.Add(component);
+                    collision2DManager.Components.Add(component);
+                }
+            }
+        }
+
+        protected void RemoveGameComponent(GameComponent component)
+        {
+            lock (_gameComponents)
+            {
+                if (component != null && _gameComponents.Contains(component))
+                {
+                    collision2DManager.Components.Remove(component);
+                    component.Dispose();
+                    _gameComponents.Remove(component);
+                }
+            }
+        }
+
+        protected void AddDrawableGameComponent(DrawableGameComponent component)
+        {
+            lock (_drawableGameComponents)
+            {
+                if (component != null && !_drawableGameComponents.Contains(component))
+                {
+                    collision2DManager.Components.Add(component);
+                    _drawableGameComponents.Add(component);
+                }
+            }
+        }
+
+        protected void RemoveDrawableGameComponent(DrawableGameComponent component)
+        {
+            lock (_drawableGameComponents)
+            {
+                if (component != null && _drawableGameComponents.Contains(component))
+                {
+                    collision2DManager.Components.Remove(component);
+                    if (!_drawableGameComponents.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                         component.Dispose();
 
-                    _components.Remove(component);
+                    _drawableGameComponents.Remove(component);
                 }
             }
         }
@@ -210,6 +253,9 @@ Visibile: {2}
             mouseManager.WhellUp += OnMouseWhellUp;
             mouseManager.WhellDown += OnMouseWhellDown;
             mouseManager.PositionChanged += OnMousePositionChanged;
+
+            //attach physics 2D events
+            collision2DManager.Collide += On2DObjectCollide;
         }
 
         protected virtual void DetachSceneEventHandlers()
@@ -237,6 +283,9 @@ Visibile: {2}
             mouseManager.WhellUp -= OnMouseWhellUp;
             mouseManager.WhellDown -= OnMouseWhellDown;
             mouseManager.PositionChanged -= OnMousePositionChanged;
+
+            //detach physics 2D events
+            collision2DManager.Collide -= On2DObjectCollide;
         }
 
         #endregion
@@ -334,14 +383,23 @@ Visibile: {2}
 
         #endregion
 
+        #region physics 2D events
+
+        protected virtual void On2DObjectCollide(object sender, Collide2DEventArgs e)
+        {
+
+        }
+
+        #endregion
+
         #region component implementations
 
         public virtual void OnGameExiting(object sender, EventArgs e)
         {
-            lock (_components)
+            lock (_gameComponents)
             {
-                _components.ForEach(x => x.Dispose());
-                _components.Clear();
+                _gameComponents.ForEach(x => x.Dispose());
+                _gameComponents.Clear();
             }
         }
 
@@ -350,10 +408,11 @@ Visibile: {2}
             //attach scene event handlers
             AttachSceneEventHandlers();
 
-            //add components to scene
-            _components.Add(soundManager);
-            _components.Add(keyboardManager);
-            _components.Add(mouseManager);
+            //add game component to scene
+            _gameComponents.Add(soundManager);
+            _gameComponents.Add(keyboardManager);
+            _gameComponents.Add(mouseManager);
+            _gameComponents.Add(collision2DManager);
 
             base.Initialize();
         }
@@ -363,8 +422,8 @@ Visibile: {2}
             //add common logic here...
             base.LoadContent();
 
-            //add cursor over all components
-            _components.Add(guiManager.CurrentCursor);
+            //add cursor over all drawable game component
+            _drawableGameComponents.Add(guiManager.CurrentCursor);
 
             //dispatch scene loaded event
             sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
@@ -379,11 +438,18 @@ Visibile: {2}
 
         public override void Update(GameTime gameTime)
         {
-            //update all scene components
-            for (int i = 0; i < _components.Count; i ++)
+            //update all game component
+            for (int i = 0; i < _gameComponents.Count; i ++)
             {
-                if (_components[i].Enabled && (!isPaused || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
-                    _components[i].Update(gameTime);
+                if (_gameComponents[i].Enabled && (!isPaused || (isPaused && _gameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
+                    _gameComponents[i].Update(gameTime);
+            }
+
+            //update all drawable component
+            for (int i = 0; i < _drawableGameComponents.Count; i++)
+            {
+                if (_drawableGameComponents[i].Enabled && (!isPaused || (isPaused && _drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
+                    _drawableGameComponents[i].Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -391,11 +457,11 @@ Visibile: {2}
 
         public override void Draw(GameTime gameTime)
         {
-            //draw all scene components
-            for (int i = 0; i < _components.Count; i++)
+            //draw all drawable game component
+            for (int i = 0; i < _drawableGameComponents.Count; i++)
             {
-                if (_components[i] is DrawableGameComponent && _components[i].Enabled && (!isPaused || (isPaused && _components[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
-                    ((DrawableGameComponent)_components[i]).Draw(gameTime);
+                if ( _drawableGameComponents[i].Enabled && (!isPaused || (isPaused && _drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
+                    _drawableGameComponents[i].Draw(gameTime);
             }
 
             base.Draw(gameTime);
@@ -414,17 +480,28 @@ Visibile: {2}
                     //dispose events
                     DetachSceneEventHandlers();
 
-                    lock (_components)
+                    //disposing all game component
+                    lock (_gameComponents)
                     {
-                        //dispose all components
-                        for (int i = 0; i < _components.Count; i++)
+                        for (int i = 0; i < _gameComponents.Count; i++)
                         {
-                            if (!_components[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
-                                _components[i].Dispose();
+                            collision2DManager.Components.Remove(_gameComponents[i]);
+                            if (!_gameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                                _gameComponents[i].Dispose();
                         }
+                        _gameComponents.Clear();
+                    }
 
-                        //remove scene components
-                        _components.Clear();
+                    //disposing all drawable game component
+                    lock (_drawableGameComponents)
+                    {
+                        for (int i = 0; i < _drawableGameComponents.Count; i++)
+                        {
+                            collision2DManager.Components.Remove(_drawableGameComponents[i]);
+                            if (!_drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                                _drawableGameComponents[i].Dispose();
+                        }
+                        _drawableGameComponents.Clear();
                     }
 
                     //dispatch unloaded event

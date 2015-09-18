@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.GUI
 {
-    public sealed class GuiManager : IPersistentComponent
+    public sealed class GuiManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 
@@ -27,5 +27,11 @@ namespace BIOXFramework.GUI
         private Cursor _cursor;
 
         #endregion
+
+        public GuiManager(Game game)
+            : base(game)
+        {
+
+        }
     }
 }

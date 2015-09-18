@@ -8,6 +8,7 @@ using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using BIOXFramework.Physics2D.Collision;
 
 namespace BIOXFramework.Test
 {
@@ -36,14 +37,15 @@ namespace BIOXFramework.Test
             //register services
             game.Content.RootDirectory = "Content";
             game.Services.AddService<ContentManager>(game.Content);
-            game.Services.AddService<SettingsManager>(new SettingsManager());
-            game.Services.AddService<SceneManager>(new SceneManager());
-            game.Services.AddService<SongManager>(new SongManager());
+            game.Services.AddService<SettingsManager>(new SettingsManager(game));
+            game.Services.AddService<SceneManager>(new SceneManager(game));
+            game.Services.AddService<SongManager>(new SongManager(game));
             game.Services.AddService<SoundManager>(new SoundManager(game));
             game.Services.AddService<KeyboardManager>(new KeyboardManager(game));
             game.Services.AddService<MouseManager>(new MouseManager(game));
             game.Services.AddService<GamepadManager>(new GamepadManager(game));
-            game.Services.AddService<GuiManager>(new GuiManager());
+            game.Services.AddService<GuiManager>(new GuiManager(game));
+            game.Services.AddService<Collision2DManager>(new Collision2DManager(game));
         }
 
         private static void InitScenes(GameTest game)

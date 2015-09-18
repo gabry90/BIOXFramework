@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.Scene
 {
-    public sealed class SceneManager : IPersistentComponent, IDisposable
+    public sealed class SceneManager : GameComponent, INonPausableComponent, IPersistentComponent
     {
         #region vars
 
@@ -18,6 +18,16 @@ namespace BIOXFramework.Scene
 
         private List<Type> _scenes = new List<Type>();
         private BIOXScene _currentScene = null;
+
+        #endregion
+
+        #region constructors
+
+        public SceneManager(Game game)
+            : base(game)
+        {
+
+        }
 
         #endregion
 
