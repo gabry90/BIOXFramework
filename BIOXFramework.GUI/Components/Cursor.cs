@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Input.Events;
+using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
@@ -13,8 +15,8 @@ namespace BIOXFramework.GUI.Components
             : base(game, texture)
         { }
 
-        public Cursor(Game game, Texture2D texture, int columns, int rows)
-            : base(game, texture, columns, rows)
+        public Cursor(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
+            : base(game, texture, regions)
         { }
 
         #endregion
@@ -35,7 +37,7 @@ namespace BIOXFramework.GUI.Components
 
         public override void Draw(GameTime gameTime)
         {
-            if (!Visible || Texture == null || (isTextureAtlas && textureAtlas != null))
+            if (!Visible || Texture == null || (isTextureAtlas && animatedTexture != null))
                 return;
 
             spriteBatch.Begin();

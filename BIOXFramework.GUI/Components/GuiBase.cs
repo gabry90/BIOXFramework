@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Input;
@@ -23,7 +24,7 @@ namespace BIOXFramework.GUI.Components
         public Texture2D Texture;
         public Vector2 Position = Vector2.Zero;
 
-        protected TextureAtlas textureAtlas;
+        protected AnimatedTexture animatedTexture;
 
         protected bool isTextureAtlas = false;
         protected bool mouseInner = false;
@@ -49,11 +50,11 @@ namespace BIOXFramework.GUI.Components
             InitGuiBase(game);
         }
 
-        public GuiBase(Game game, Texture2D texture, int columns, int rows)
+        public GuiBase(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
             : base(game)
         {
             isTextureAtlas = true;
-            textureAtlas = new TextureAtlas(game, texture, columns, rows);
+            animatedTexture = new AnimatedTexture(game, texture, regions);
             InitGuiBase(game);
         }
 
@@ -135,16 +136,16 @@ namespace BIOXFramework.GUI.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (isTextureAtlas && textureAtlas != null)
-                textureAtlas.Update(gameTime);
+            if (isTextureAtlas && animatedTexture != null)
+                animatedTexture.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (isTextureAtlas && textureAtlas != null)
-                textureAtlas.Draw(gameTime);
+            if (isTextureAtlas && animatedTexture != null)
+                animatedTexture.Draw(gameTime);
 
             base.Draw(gameTime);
         }
