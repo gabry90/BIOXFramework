@@ -150,11 +150,21 @@ namespace BIOXFramework.Settings
 
         #region dispose
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (Loaded != null) Loaded = null;
-            if (Saved != null) Saved = null;
-            _settings = null;
+            try
+            {
+                if (disposing)
+                {
+                    if (Loaded != null) Loaded = null;
+                    if (Saved != null) Saved = null;
+                    _settings = null;
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         #endregion

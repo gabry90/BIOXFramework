@@ -36,7 +36,7 @@ namespace BIOXFramework.Utility
 
     #endregion
 
-    public class AnimatedTexture : DrawableGameComponent, I2DCollidableComponent
+    public class AnimatedTexture : DrawableGameComponent
     {
         #region vars
 
@@ -46,7 +46,6 @@ namespace BIOXFramework.Utility
 
         public Texture2D Texture { get { return texture; } }
         public Rectangle Rectangle { get { return destRect; } }
-        public bool EnableCollisionDetection { get; set; }
 
         private SpriteBatch spriteBatch;
         private List<AnimatedTextureRegion> regions;
@@ -73,8 +72,6 @@ namespace BIOXFramework.Utility
             this.spriteBatch = game.Services.GetService<SpriteBatch>();
             this.texture = texture;
             this.regions = regions;
-
-            EnableCollisionDetection = false;
 
             SetRegion(regions.FirstOrDefault().Name); //set first region with default
         }

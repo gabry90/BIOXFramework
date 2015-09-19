@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -9,7 +8,6 @@ using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
 using System.Text;
 using BIOXFramework.GUI;
-using BIOXFramework.GUI.Components;
 using Microsoft.Xna.Framework.Content;
 using BIOXFramework.Physics2D.Collision;
 using BIOXFramework.Physics2D;

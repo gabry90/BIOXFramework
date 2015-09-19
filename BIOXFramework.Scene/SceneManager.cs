@@ -136,18 +136,22 @@ namespace BIOXFramework.Scene
 
         #region dispose
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             try
             {
-                Unload();
-                if (Loaded != null) Loaded = null;
-                if (Unloaded != null) Unloaded = null;
-                if (Paused != null) Paused = null;
+                if (disposing)
+                {
+                    Unload();
+                    if (Loaded != null) Loaded = null;
+                    if (Unloaded != null) Unloaded = null;
+                    if (Paused != null) Paused = null;
+                    lock (_scenes) { _scenes.Clear(); }
+                }
             }
             finally
             {
-                lock (_scenes) { _scenes.Clear(); }
+                base.Dispose(disposing);
             }
         }
 

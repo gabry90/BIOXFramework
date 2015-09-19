@@ -77,7 +77,7 @@ namespace BIOXFramework.Physics2D.Collision
 
             for (int x = 0; x < Components.Count; x++)
             {
-                if (processedComponents.Contains(Components[x]))
+                if (Components[x] == null || processedComponents.Contains(Components[x]))
                     continue;
 
                 I2DCollidableComponent component1 = Components[x] as I2DCollidableComponent;
@@ -96,7 +96,7 @@ namespace BIOXFramework.Physics2D.Collision
 
                 for (int y = 0; y < Components.Count; y++)
                 {
-                    if (processedComponents.Contains(Components[y]))
+                    if (Components[y] == null || processedComponents.Contains(Components[y]))
                         continue;
 
                     I2DCollidableComponent component2 = Components[y] as I2DCollidableComponent;
@@ -145,6 +145,7 @@ namespace BIOXFramework.Physics2D.Collision
                 if (disposing)
                 {
                     if (Collide != null) Collide = null;
+                    lock (Components) { Components.Clear(); }
                 }
             }
             finally
