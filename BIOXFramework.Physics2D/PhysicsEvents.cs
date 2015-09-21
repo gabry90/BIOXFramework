@@ -8,7 +8,7 @@ namespace BIOXFramework.Physics2D
         public Collide2DEventArgs(GameComponent component1, GameComponent component2)
         {
             Component1 = component1;
-            Component2 = Component2;
+            Component2 = component2;
         }
 
         public GameComponent Component1 { get; private set; }

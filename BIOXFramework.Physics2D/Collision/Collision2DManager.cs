@@ -112,9 +112,7 @@ namespace BIOXFramework.Physics2D.Collision
                 I2DCollidableComponent component1 = Components[x] as I2DCollidableComponent;
                 if (component1 == null
                     || !component1.EnableCollisionDetection
-                    || component1.Rectangle == null
                     || component1.Rectangle == Rectangle.Empty
-                    || component1.Texture == null
                     || component1.Texture.Bounds == Rectangle.Empty)
                 {
                     processedComponents.Add(Components[x]);
@@ -131,9 +129,7 @@ namespace BIOXFramework.Physics2D.Collision
                     I2DCollidableComponent component2 = Components[y] as I2DCollidableComponent;
                     if (component2 == null
                         || !component2.EnableCollisionDetection
-                        || component2.Rectangle == null
                         || component2.Rectangle == Rectangle.Empty
-                        || component2.Texture == null
                         || component2.Texture.Bounds == Rectangle.Empty)
                     {
                         processedComponents.Add(Components[y]);
@@ -154,13 +150,13 @@ namespace BIOXFramework.Physics2D.Collision
                         InCollisionEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
                     else if (collided && inCollision == null)   //collision for first time
                     {
-                        CollideEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
                         collidedComponents.Add(new Tuple<GameComponent, GameComponent>(Components[x], Components[y]));
+                        CollideEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
                     }
                     else if (!collided && inCollision != null)  //out of collision (only after collide)
                     {
-                        OutCollisionEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
                         collidedComponents.Remove(inCollision);
+                        OutCollisionEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
                     }
                 }
             }

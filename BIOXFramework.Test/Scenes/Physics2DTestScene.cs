@@ -95,6 +95,12 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void On2DObjectCollide(object sender, Collide2DEventArgs e)
         {
+            Player2D p1 = e.Component1 as Player2D;
+            Player2D p2 = e.Component1 as Player2D;
+
+            if (p1 != null) p1.EnableMovement = false;
+            if (p2 != null) p2.EnableMovement = false;
+
             Console.WriteLine(string.Format("COLLIDED: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectCollide(sender, e);
         }
@@ -107,6 +113,12 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
         {
+            Player2D p1 = e.Component1 as Player2D;
+            Player2D p2 = e.Component1 as Player2D;
+
+            if (p1 != null) p1.EnableMovement = true;
+            if (p2 != null) p2.EnableMovement = true;
+
             Console.WriteLine(string.Format("OUT OF COLLISION: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectOutCollision(sender, e);
         }
