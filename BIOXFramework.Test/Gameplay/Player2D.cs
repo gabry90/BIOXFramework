@@ -48,11 +48,13 @@ namespace BIOXFramework.Test.Gameplay
         public void SetAvailableDirections(params PlayerDirections[] directions)
         {
             directionsAvailable.Clear();
-            foreach (PlayerDirections direction in directions)
-            {
-                if (!directionsAvailable.Contains(direction))
-                    directionsAvailable.Add(direction);
-            }
+            directionsAvailable.AddRange(directions);
+        }
+
+        public void SetAvailableDirection(PlayerDirections direction)
+        {
+            if (!directionsAvailable.Contains(direction))
+                directionsAvailable.Add(direction);
         }
 
         public void Move(PlayerDirections direction)

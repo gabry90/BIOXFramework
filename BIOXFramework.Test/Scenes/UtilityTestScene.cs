@@ -148,18 +148,5 @@ namespace BIOXFramework.Test.Scenes
             game.GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                    timer.Dispose(); //dispose timer here beacause standard service has not been disposed on BIOXScene
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
-        }
     }
 }

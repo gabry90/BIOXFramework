@@ -96,7 +96,7 @@ namespace BIOXFramework.Test.Scenes
         protected override void On2DObjectCollide(object sender, Collide2DEventArgs e)
         {
             Player2D p1 = e.Component1 as Player2D;
-            Player2D p2 = e.Component1 as Player2D;
+            Player2D p2 = e.Component2 as Player2D;
 
             if (p1 != null) CheckDirectionCollision(p1);
             if (p2 != null) CheckDirectionCollision(p2);
@@ -114,7 +114,7 @@ namespace BIOXFramework.Test.Scenes
         protected override void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
         {
             Player2D p1 = e.Component1 as Player2D;
-            Player2D p2 = e.Component1 as Player2D;
+            Player2D p2 = e.Component2 as Player2D;
 
             if (p1 != null) CheckDirectionCollision(p1, true);
             if (p2 != null) CheckDirectionCollision(p2, true);
