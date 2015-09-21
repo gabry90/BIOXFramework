@@ -7,79 +7,18 @@ using BIOXFramework.Input.Events;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
 using BIOXFramework.Physics2D;
+using BIOXFramework.Test.Gameplay;
 
 namespace BIOXFramework.Test.Scenes
 {
     public class Physics2DTestScene : BIOXScene
     {
-        public enum PlayerMovements
-        {
-            Up,
-            Down,
-            Left,
-            right
-        }
 
-        private class Player : DrawableGameComponent, I2DCollidableComponent
-        {
-            public Player(Game game, string name)
-                : base(game)
-            {
-                Name = name;
-            }
 
-            public string Name { get; set; }
-            public Texture2D Texture { get { return AnimatedTexture.Texture; } }
-            public Rectangle Rectangle { get { return AnimatedTexture.Rectangle; } }
-            public bool EnableCollisionDetection { get; set; }
+        
 
-            public AnimatedTexture AnimatedTexture;
-
-            public void Move(PlayerMovements movement)
-            {
-                switch (movement)
-                {
-                    case PlayerMovements.Up:
-                        AnimatedTexture.SetRegion("up");
-                        AnimatedTexture.IncrementFrame();
-                        AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y - 10);
-                        break;
-                    case PlayerMovements.Down:
-                        AnimatedTexture.SetRegion("down");
-                        AnimatedTexture.IncrementFrame();
-                        AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y + 10);
-                        break;
-                    case PlayerMovements.Left:
-                        AnimatedTexture.SetRegion("left");
-                        AnimatedTexture.IncrementFrame();
-                        AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X - 10, AnimatedTexture.Position.Y);
-                        break;
-                    case PlayerMovements.right:
-                        AnimatedTexture.SetRegion("right");
-                        AnimatedTexture.IncrementFrame();
-                        AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X + 10, AnimatedTexture.Position.Y);
-                        break;
-                }
-
-            }
-
-            public override void Update(GameTime gameTime)
-            {
-                AnimatedTexture.Update(gameTime);
-
-                base.Update(gameTime);
-            }
-
-            public override void Draw(GameTime gameTime)
-            {
-                AnimatedTexture.Draw(gameTime);
-
-                base.Draw(gameTime);
-            }
-        }
-
-        private Player player1;
-        private Player player2;
+        private Player2D player1;
+        private Player2D player2;
 
         public Physics2DTestScene(GameTest game)
             : base(game)
@@ -168,8 +107,8 @@ namespace BIOXFramework.Test.Scenes
         {
             keyboardManager.PressingDelay = 100;
 
-            player1 = new Player(game, "player1");
-            player2 = new Player(game, "player2");
+            player1 = new Player2D(game, "player1");
+            player2 = new Player2D(game, "player2");
             player1.EnableCollisionDetection = true;
             player2.EnableCollisionDetection = true;
 

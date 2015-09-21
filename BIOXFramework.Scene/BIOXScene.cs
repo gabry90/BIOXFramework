@@ -35,6 +35,7 @@ namespace BIOXFramework.Scene
         protected ContentManager SceneContent;
         protected Game game;
         protected bool isPaused = false;
+        protected bool exitGameRequest = false;
 
         private List<GameComponent> _gameComponents;
         private List<DrawableGameComponent> _drawableGameComponents;
@@ -193,7 +194,8 @@ Visibile: {2}
                 if (component != null && _gameComponents.Contains(component))
                 {
                     collision2DManager.Components.Remove(component);
-                    component.Dispose();
+                    if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                        component.Dispose();
                     _gameComponents.Remove(component);
                 }
             }
@@ -218,7 +220,7 @@ Visibile: {2}
                 if (component != null && _drawableGameComponents.Contains(component))
                 {
                     collision2DManager.Components.Remove(component);
-                    if (!_drawableGameComponents.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                    if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                         component.Dispose();
 
                     _drawableGameComponents.Remove(component);
@@ -284,6 +286,11 @@ Visibile: {2}
 
             //detach physics 2D events
             collision2DManager.Collide -= On2DObjectCollide;
+        }
+
+        protected virtual void OnGameExiting(object sender, EventArgs e)
+        {
+            exitGameRequest = true;
         }
 
         #endregion
@@ -392,15 +399,6 @@ Visibile: {2}
 
         #region component implementations
 
-        public virtual void OnGameExiting(object sender, EventArgs e)
-        {
-            lock (_gameComponents)
-            {
-                _gameComponents.ForEach(x => x.Dispose());
-                _gameComponents.Clear();
-            }
-        }
-
         public override void Initialize()
         {
             //attach scene event handlers
@@ -478,13 +476,15 @@ Visibile: {2}
                     //dispose events
                     DetachSceneEventHandlers();
 
+                    //clear collission components reference for this scene
+                    collision2DManager.Components.Clear();
+
                     //disposing all game component
                     lock (_gameComponents)
                     {
                         for (int i = 0; i < _gameComponents.Count; i++)
                         {
-                            collision2DManager.Components.Remove(_gameComponents[i]);
-                            if (!_gameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                            if (exitGameRequest || !_gameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                                 _gameComponents[i].Dispose();
                         }
                         _gameComponents.Clear();
@@ -495,8 +495,7 @@ Visibile: {2}
                     {
                         for (int i = 0; i < _drawableGameComponents.Count; i++)
                         {
-                            collision2DManager.Components.Remove(_drawableGameComponents[i]);
-                            if (!_drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                            if (exitGameRequest || !_drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                                 _drawableGameComponents[i].Dispose();
                         }
                         _drawableGameComponents.Clear();

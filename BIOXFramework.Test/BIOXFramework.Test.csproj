@@ -45,6 +45,7 @@
     <StartupObject>BIOXFramework.Test.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Gameplay\Player2D.cs" />
     <Compile Include="GameTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
