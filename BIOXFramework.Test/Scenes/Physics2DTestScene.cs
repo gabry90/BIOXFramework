@@ -27,28 +27,28 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.W:
-                    player1.Move(PlayerMovements.Up);
+                    player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    player1.Move(PlayerMovements.Down);
+                    player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    player1.Move(PlayerMovements.Left);
+                    player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    player1.Move(PlayerMovements.right);
+                    player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    player2.Move(PlayerMovements.Up);
+                    player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    player2.Move(PlayerMovements.Down);
+                    player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    player2.Move(PlayerMovements.Left);
+                    player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    player2.Move(PlayerMovements.right);
+                    player2.Move(PlayerDirections.Right);
                     break;
                 case Keys.Left:
                     sceneManager.Load<GuiTestScene>();
@@ -66,28 +66,28 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.W:
-                    player1.Move(PlayerMovements.Up);
+                    player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    player1.Move(PlayerMovements.Down);
+                    player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    player1.Move(PlayerMovements.Left);
+                    player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    player1.Move(PlayerMovements.right);
+                    player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    player2.Move(PlayerMovements.Up);
+                    player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    player2.Move(PlayerMovements.Down);
+                    player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    player2.Move(PlayerMovements.Left);
+                    player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    player2.Move(PlayerMovements.right);
+                    player2.Move(PlayerDirections.Right);
                     break;
             }
             base.OnKeyPressing(sender, e);
@@ -98,8 +98,8 @@ namespace BIOXFramework.Test.Scenes
             Player2D p1 = e.Component1 as Player2D;
             Player2D p2 = e.Component1 as Player2D;
 
-            if (p1 != null) p1.EnableMovement = false;
-            if (p2 != null) p2.EnableMovement = false;
+            if (p1 != null) CheckDirectionCollision(p1);
+            if (p2 != null) CheckDirectionCollision(p2);
 
             Console.WriteLine(string.Format("COLLIDED: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectCollide(sender, e);
@@ -116,11 +116,36 @@ namespace BIOXFramework.Test.Scenes
             Player2D p1 = e.Component1 as Player2D;
             Player2D p2 = e.Component1 as Player2D;
 
-            if (p1 != null) p1.EnableMovement = true;
-            if (p2 != null) p2.EnableMovement = true;
+            if (p1 != null) CheckDirectionCollision(p1, true);
+            if (p2 != null) CheckDirectionCollision(p2, true);
 
             Console.WriteLine(string.Format("OUT OF COLLISION: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectOutCollision(sender, e);
+        }
+
+        public void CheckDirectionCollision(Player2D player, bool enableAll = false)
+        {
+            if (enableAll)
+            {
+                player.SetAvailableDirections(PlayerDirections.Down, PlayerDirections.Up, PlayerDirections.Left, PlayerDirections.Right);
+                return;
+            }
+
+            switch (player.PlayerDirection)
+            {
+                case PlayerDirections.Up:
+                    player.SetAvailableDirections(PlayerDirections.Down, PlayerDirections.Left, PlayerDirections.Right);
+                    break;
+                case PlayerDirections.Down:
+                    player.SetAvailableDirections(PlayerDirections.Up, PlayerDirections.Left, PlayerDirections.Right);
+                    break;
+                case PlayerDirections.Left:
+                    player.SetAvailableDirections(PlayerDirections.Down, PlayerDirections.Up, PlayerDirections.Right);
+                    break;
+                case PlayerDirections.Right:
+                    player.SetAvailableDirections(PlayerDirections.Down, PlayerDirections.Up, PlayerDirections.Left);
+                    break;
+            }
         }
 
         public override void Initialize()
@@ -129,8 +154,6 @@ namespace BIOXFramework.Test.Scenes
 
             player1 = new Player2D(game, "player1");
             player2 = new Player2D(game, "player2");
-            player1.EnableCollisionDetection = true;
-            player2.EnableCollisionDetection = true;
 
             base.Initialize();
         }

@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
 
 namespace BIOXFramework.Test.Gameplay
 {
-    public enum PlayerMovements
+    public enum PlayerDirections
     {
         Up,
         Down,
         Left,
-        right
+        Right
     }
 
     public class Player2D : DrawableGameComponent, I2DCollidableComponent
@@ -21,9 +22,12 @@ namespace BIOXFramework.Test.Gameplay
         public Rectangle Rectangle { get { return AnimatedTexture.Rectangle; } }
         public Rectangle InnerRectangle { get { return AnimatedTexture.InnerRectangle; } }
         public bool EnableCollisionDetection { get; set; }
-
+        public PlayerDirections PlayerDirection { get { return direction; } }
         public bool EnableMovement { get; set; }
         public bool EnableAnimation { get; set; }
+
+        private PlayerDirections direction;
+        private List<PlayerDirections> directionsAvailable;
 
         public Player2D(Game game, string name)
             : base(game)
@@ -32,14 +36,36 @@ namespace BIOXFramework.Test.Gameplay
             EnableCollisionDetection = true;
             EnableMovement = true;
             EnableAnimation = true;
+            directionsAvailable = new List<PlayerDirections>
+            {
+                PlayerDirections.Up,
+                PlayerDirections.Down,
+                PlayerDirections.Left,
+                PlayerDirections.Right
+            };
         }
 
-        public void Move(PlayerMovements movement)
+        public void SetAvailableDirections(params PlayerDirections[] directions)
         {
-            switch (movement)
+            directionsAvailable.Clear();
+            foreach (PlayerDirections direction in directions)
             {
-                case PlayerMovements.Up:
+                if (!directionsAvailable.Contains(direction))
+                    directionsAvailable.Add(direction);
+            }
+        }
+
+        public void Move(PlayerDirections direction)
+        {
+            this.direction = direction;
+
+            switch (direction)
+            {
+                case PlayerDirections.Up:
                 {
+                    if (!directionsAvailable.Contains(PlayerDirections.Up))
+                        break;
+
                     if (EnableAnimation)
                     {
                         AnimatedTexture.SetRegion("up");
@@ -48,8 +74,11 @@ namespace BIOXFramework.Test.Gameplay
                     if (EnableMovement) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y - 10);
                     break;
                 }
-                case PlayerMovements.Down:
+                case PlayerDirections.Down:
                 {
+                    if (!directionsAvailable.Contains(PlayerDirections.Down))
+                        break;
+
                     if (EnableAnimation)
                     {
                         AnimatedTexture.SetRegion("down");
@@ -58,8 +87,11 @@ namespace BIOXFramework.Test.Gameplay
                     if (EnableMovement) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y + 10);
                     break;
                 }
-                case PlayerMovements.Left:
+                case PlayerDirections.Left:
                 {
+                    if (!directionsAvailable.Contains(PlayerDirections.Left))
+                        break;
+
                     if (EnableAnimation)
                     {
                         AnimatedTexture.SetRegion("left");
@@ -68,8 +100,11 @@ namespace BIOXFramework.Test.Gameplay
                     if (EnableMovement) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X - 10, AnimatedTexture.Position.Y);
                     break;
                 }
-                case PlayerMovements.right:
+                case PlayerDirections.Right:
                 {
+                    if (!directionsAvailable.Contains(PlayerDirections.Right))
+                        break;
+
                     if (EnableAnimation)
                     {
                         AnimatedTexture.SetRegion("right");
