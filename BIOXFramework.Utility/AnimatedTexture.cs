@@ -77,6 +77,27 @@ namespace BIOXFramework.Utility
             SetRegion(regions.FirstOrDefault().Name); //set first region with default
         }
 
+
+        public AnimatedTexture(AnimatedTexture at)
+            : base(at.Game)
+        {
+            if (at.regions == null || at.regions.Count == 0)
+                throw new UtilityException("regions list cannot be null or empty!");
+
+            if (at.texture == null)
+                throw new UtilityException("texture cannot be null!");
+
+            this.spriteBatch = at.Game.Services.GetService<SpriteBatch>();
+            this.texture = at.texture;
+            this.regions = at.regions;
+            this.Position = at.Position;
+            this.AnimationSpeed = at.AnimationSpeed;
+            this.destRect = at.destRect;
+            this.sourceRect = at.sourceRect;
+
+            SetRegion(at.currentRegion.Name); //set first region with default
+        }
+
         #endregion
 
         #region public methods

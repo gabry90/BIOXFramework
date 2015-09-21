@@ -45,6 +45,17 @@ namespace BIOXFramework.Test.Gameplay
             };
         }
 
+        private Player2D(Player2D player)
+           : base(player.Game)
+        {
+            Name = player.Name;
+            EnableCollisionDetection = player.EnableCollisionDetection;
+            EnableMovement = player.EnableMovement;
+            EnableAnimation = player.EnableAnimation;
+            directionsAvailable = player.directionsAvailable;
+            AnimatedTexture = new AnimatedTexture(player.AnimatedTexture);
+        }
+
         public void SetAvailableDirections(params PlayerDirections[] directions)
         {
             directionsAvailable.Clear();
@@ -54,7 +65,14 @@ namespace BIOXFramework.Test.Gameplay
                     directionsAvailable.Add(direction);
             }
         }
+        public Player2D MoveEmulate(PlayerDirections direction)
+        {
+            Player2D t = new Player2D(this);
+            t.Move(direction);
+            t.AnimatedTexture.Update(null);
 
+            return t;
+        }
         public void Move(PlayerDirections direction)
         {
             this.direction = direction;

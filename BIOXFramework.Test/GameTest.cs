@@ -77,7 +77,7 @@ namespace BIOXFramework.Test
             guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"));
 
             //load input scene with first scene
-            sceneManager.Load<InputTestScene>();
+            sceneManager.Load<Physics2DTestScene>();
 
             base.Initialize();
         }

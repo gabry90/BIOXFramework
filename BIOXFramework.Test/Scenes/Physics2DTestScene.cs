@@ -27,28 +27,36 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.W:
-                    player1.Move(PlayerDirections.Up);
+                    if(collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Up),player1).Count==0)
+                        player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    player1.Move(PlayerDirections.Down);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Down), player1).Count==0)
+                        player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    player1.Move(PlayerDirections.Left);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Left), player1).Count==0)
+                        player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    player1.Move(PlayerDirections.Right);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Right), player1).Count==0)
+                        player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    player2.Move(PlayerDirections.Up);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Up), player2).Count==0)
+                        player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    player2.Move(PlayerDirections.Down);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Down), player2).Count==0)
+                        player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    player2.Move(PlayerDirections.Left);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Left), player2).Count==0)
+                        player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    player2.Move(PlayerDirections.Right);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Right), player2).Count==0)
+                        player2.Move(PlayerDirections.Right);
                     break;
                 case Keys.Left:
                     sceneManager.Load<GuiTestScene>();
@@ -63,31 +71,46 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
+
             switch (e.Key)
             {
                 case Keys.W:
-                    player1.Move(PlayerDirections.Up);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Up), player1).Count==0)
+                        player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    player1.Move(PlayerDirections.Down);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Down), player1).Count==0)
+                        player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    player1.Move(PlayerDirections.Left);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Left), player1).Count==0)
+                        player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    player1.Move(PlayerDirections.Right);
+                    if (collision2DManager.GetCollideComponents(player1.MoveEmulate(PlayerDirections.Right), player1).Count==0)
+                        player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    player2.Move(PlayerDirections.Up);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Up), player2).Count==0)
+                        player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    player2.Move(PlayerDirections.Down);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Down), player2).Count==0)
+                        player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    player2.Move(PlayerDirections.Left);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Left), player2).Count==0)
+                        player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    player2.Move(PlayerDirections.Right);
+                    if (collision2DManager.GetCollideComponents(player2.MoveEmulate(PlayerDirections.Right), player2).Count==0)
+                        player2.Move(PlayerDirections.Right);
+                    break;
+                case Keys.Left:
+                    sceneManager.Load<GuiTestScene>();
+                    break;
+                case Keys.Right:
+                    sceneManager.Load<Physics3DTestScene>();
                     break;
             }
             base.OnKeyPressing(sender, e);
@@ -95,11 +118,11 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void On2DObjectCollide(object sender, Collide2DEventArgs e)
         {
-            Player2D p1 = e.Component1 as Player2D;
-            Player2D p2 = e.Component1 as Player2D;
+            /*Player2D p1 = e.Component1 as Player2D;
+            Player2D p2 = e.Component2 as Player2D;
 
             if (p1 != null) CheckDirectionCollision(p1);
-            if (p2 != null) CheckDirectionCollision(p2);
+            if (p2 != null) CheckDirectionCollision(p2);*/
 
             Console.WriteLine(string.Format("COLLIDED: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectCollide(sender, e);
@@ -113,11 +136,11 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
         {
-            Player2D p1 = e.Component1 as Player2D;
-            Player2D p2 = e.Component1 as Player2D;
+            /*Player2D p1 = e.Component1 as Player2D;
+            Player2D p2 = e.Component2 as Player2D;
 
             if (p1 != null) CheckDirectionCollision(p1, true);
-            if (p2 != null) CheckDirectionCollision(p2, true);
+            if (p2 != null) CheckDirectionCollision(p2, true);*/
 
             Console.WriteLine(string.Format("OUT OF COLLISION: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectOutCollision(sender, e);

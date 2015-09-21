@@ -32,6 +32,40 @@ namespace BIOXFramework.Physics2D.Collision
         #endregion
 
         #region public methods
+        public List<GameComponent> GetCollideComponents(GameComponent gc, params GameComponent[] ExclusionList)
+        {
+           
+            List<GameComponent> ComponentsCollide = new List<GameComponent>();
+            if (!(gc is I2DCollidableComponent))
+                return null;
+            I2DCollidableComponent component1 = gc as I2DCollidableComponent;
+            Rectangle rect1 = component1.Rectangle;
+            Nullable<Rectangle> innerRect1 = component1.InnerRectangle;
+
+            for (int x = 0; x < Components.Count; x++)
+            {
+                if (Components[x] == null || Components[x] == gc || ExclusionList.Contains(Components[x])  )
+                    continue;
+
+                I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
+                if (component2 == null
+                    || !component2.EnableCollisionDetection
+                    || component2.Rectangle == Rectangle.Empty
+                    || component2.Texture.Bounds == Rectangle.Empty)
+                {
+                    continue;
+                }
+
+                Rectangle rect2 = component2.Rectangle; 
+                Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
+
+                if( DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component1.Texture, component2.Texture))
+                {
+                    ComponentsCollide.Add(Components[x]);
+                }  
+            }
+            return ComponentsCollide;
+        }
 
         public bool DetectFullCollision(ref Rectangle rectangleA, 
             ref Rectangle rectangleB,
