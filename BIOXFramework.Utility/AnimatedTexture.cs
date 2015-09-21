@@ -46,6 +46,7 @@ namespace BIOXFramework.Utility
 
         public Texture2D Texture { get { return texture; } }
         public Rectangle Rectangle { get { return destRect; } }
+        public Rectangle InnerRectangle { get { return sourceRect; } }
 
         private SpriteBatch spriteBatch;
         private List<AnimatedTextureRegion> regions;

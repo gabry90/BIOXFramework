@@ -256,6 +256,8 @@ Visibile: {2}
 
             //attach physics 2D events
             collision2DManager.Collide += On2DObjectCollide;
+            collision2DManager.InCollision += On2DObjectInCollision;
+            collision2DManager.OutCollision += On2DObjectOutCollision;
         }
 
         protected virtual void DetachSceneEventHandlers()
@@ -286,6 +288,8 @@ Visibile: {2}
 
             //detach physics 2D events
             collision2DManager.Collide -= On2DObjectCollide;
+            collision2DManager.InCollision -= On2DObjectInCollision;
+            collision2DManager.OutCollision -= On2DObjectOutCollision;
         }
 
         protected virtual void OnGameExiting(object sender, EventArgs e)
@@ -391,6 +395,16 @@ Visibile: {2}
         #region physics 2D events
 
         protected virtual void On2DObjectCollide(object sender, Collide2DEventArgs e)
+        {
+
+        }
+
+        protected virtual void On2DObjectInCollision(object sender, Collide2DEventArgs e)
+        {
+
+        }
+
+        protected virtual void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
         {
 
         }

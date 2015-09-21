@@ -13,10 +13,6 @@ namespace BIOXFramework.Test.Scenes
 {
     public class Physics2DTestScene : BIOXScene
     {
-
-
-        
-
         private Player2D player1;
         private Player2D player2;
 
@@ -99,8 +95,20 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void On2DObjectCollide(object sender, Collide2DEventArgs e)
         {
-
+            Console.WriteLine(string.Format("COLLIDED: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
             base.On2DObjectCollide(sender, e);
+        }
+
+        protected override void On2DObjectInCollision(object sender, Collide2DEventArgs e)
+        {
+            Console.WriteLine(string.Format("PERSISTENT COLLISION: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
+            base.On2DObjectInCollision(sender, e);
+        }
+
+        protected override void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
+        {
+            Console.WriteLine(string.Format("OUT OF COLLISION: {0} with {1}", e.Component1 == null ? "null" : e.Component1.GetType().Name, e.Component2 == null ? "null" : e.Component2.GetType().Name));
+            base.On2DObjectOutCollision(sender, e);
         }
 
         public override void Initialize()

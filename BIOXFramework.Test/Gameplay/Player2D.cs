@@ -25,7 +25,9 @@ namespace BIOXFramework.Test.Gameplay
         public AnimatedTexture AnimatedTexture;
         public Texture2D Texture { get { return AnimatedTexture.Texture; } }
         public Rectangle Rectangle { get { return AnimatedTexture.Rectangle; } }
+        public Rectangle InnerRectangle { get { return AnimatedTexture.InnerRectangle; } }
         public bool EnableCollisionDetection { get; set; }
+        public bool MovementLocked { get; set; }
 
         public void Move(PlayerMovements movement)
         {
@@ -34,22 +36,22 @@ namespace BIOXFramework.Test.Gameplay
                 case PlayerMovements.Up:
                     AnimatedTexture.SetRegion("up");
                     AnimatedTexture.IncrementFrame();
-                    AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y - 10);
+                    if (!MovementLocked) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y - 10);
                     break;
                 case PlayerMovements.Down:
                     AnimatedTexture.SetRegion("down");
                     AnimatedTexture.IncrementFrame();
-                    AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y + 10);
+                    if (!MovementLocked) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X, AnimatedTexture.Position.Y + 10);
                     break;
                 case PlayerMovements.Left:
                     AnimatedTexture.SetRegion("left");
                     AnimatedTexture.IncrementFrame();
-                    AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X - 10, AnimatedTexture.Position.Y);
+                    if (!MovementLocked) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X - 10, AnimatedTexture.Position.Y);
                     break;
                 case PlayerMovements.right:
                     AnimatedTexture.SetRegion("right");
                     AnimatedTexture.IncrementFrame();
-                    AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X + 10, AnimatedTexture.Position.Y);
+                    if (!MovementLocked) AnimatedTexture.Position = new Vector2(AnimatedTexture.Position.X + 10, AnimatedTexture.Position.Y);
                     break;
             }
         }

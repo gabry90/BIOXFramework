@@ -13,6 +13,7 @@ namespace BIOXFramework
     public interface I2DCollidableComponent 
     {
         Rectangle Rectangle { get; }
+        Rectangle InnerRectangle { get; }
         Texture2D Texture { get; }
         bool EnableCollisionDetection { get; set; }
     }
