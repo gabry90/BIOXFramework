@@ -38,6 +38,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Button.cs" />
     <Compile Include="Components\Cursor.cs" />
     <Compile Include="Components\GuiBase.cs" />
     <Compile Include="GuiEvents.cs" />

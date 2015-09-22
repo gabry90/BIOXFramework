@@ -37,7 +37,7 @@ namespace BIOXFramework.GUI.Components
 
         public override void Draw(GameTime gameTime)
         {
-            if (!Visible || Texture == null || (isTextureAtlas && animatedTexture != null))
+            if (Texture == null || (isAnimatedTexture && animatedTexture != null))
                 return;
 
             spriteBatch.Begin();

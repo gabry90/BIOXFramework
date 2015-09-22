@@ -26,7 +26,7 @@ namespace BIOXFramework.GUI.Components
 
         protected AnimatedTexture animatedTexture;
 
-        protected bool isTextureAtlas = false;
+        protected bool isAnimatedTexture = false;
         protected bool mouseInner = false;
         protected bool focused = false;
         protected SpriteBatch spriteBatch;
@@ -53,7 +53,7 @@ namespace BIOXFramework.GUI.Components
         public GuiBase(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
             : base(game)
         {
-            isTextureAtlas = true;
+            isAnimatedTexture = true;
             animatedTexture = new AnimatedTexture(game, texture, regions);
             InitGuiBase(game);
         }
@@ -74,8 +74,6 @@ namespace BIOXFramework.GUI.Components
             spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
             InitializeServices();
             AttachGUIEventsHandlers();
-            Enabled = true;
-            Visible = true;
         }
 
         protected virtual void InitializeServices()
@@ -136,7 +134,7 @@ namespace BIOXFramework.GUI.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (isTextureAtlas && animatedTexture != null)
+            if (isAnimatedTexture && animatedTexture != null)
                 animatedTexture.Update(gameTime);
 
             base.Update(gameTime);
@@ -144,7 +142,7 @@ namespace BIOXFramework.GUI.Components
 
         public override void Draw(GameTime gameTime)
         {
-            if (isTextureAtlas && animatedTexture != null)
+            if (isAnimatedTexture && animatedTexture != null)
                 animatedTexture.Draw(gameTime);
 
             base.Draw(gameTime);
@@ -156,8 +154,8 @@ namespace BIOXFramework.GUI.Components
 
         protected virtual void OnMousePressed(object sender, MousePressedEventArgs e)
         {
-            if (!Visible || !Enabled || Texture == null)
-                return; //avoid null value and not enabled / visible property
+            if (!Enabled || Texture == null)
+                return; //avoid null value
 
             if (mouseInner)
             {
@@ -181,8 +179,8 @@ namespace BIOXFramework.GUI.Components
 
         protected virtual void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
-            if (!Visible || !Enabled || Texture == null)
-                return; //avoid null value and not enabled / visible property
+            if (!Enabled || Texture == null)
+                return; //avoid null value
 
             Rectangle textureRect = GetRectangle();
             Rectangle cursorRect = guiManager.CurrentCursor.GetRectangle();

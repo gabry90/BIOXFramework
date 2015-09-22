@@ -33,23 +33,22 @@ namespace BIOXFramework.Physics2D.Collision
 
         #region public methods
 
-        public List<GameComponent> GetCollidedComponents(GameComponent gc, params GameComponent[] exclusionList)
+        public List<GameComponent> GetCollidedComponents(I2DCollidableComponent component, params GameComponent[] exclusionList)
         {
             List<GameComponent> componentsCollided = new List<GameComponent>();
 
-            I2DCollidableComponent component1 = gc as I2DCollidableComponent;
-            if (component1 == null
-                || !component1.EnableCollisionDetection
-                || component1.Rectangle == Rectangle.Empty
-                || component1.Texture.Bounds == Rectangle.Empty)
+            if (component == null
+                || !component.EnableCollisionDetection
+                || component.Rectangle == Rectangle.Empty
+                || component.Texture.Bounds == Rectangle.Empty)
                 return componentsCollided;
 
-            Rectangle rect1 = component1.Rectangle;
-            Nullable<Rectangle> innerRect1 = component1.InnerRectangle;
+            Rectangle rect1 = component.Rectangle;
+            Nullable<Rectangle> innerRect1 = component.InnerRectangle;
 
             for (int x = 0; x < Components.Count; x++)
             {
-                if (Components[x] == null || Components[x] == gc || exclusionList.Contains(Components[x]))
+                if (Components[x] == null || Components[x] == component || exclusionList.Contains(Components[x]))
                     continue;
 
                 I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
@@ -64,11 +63,27 @@ namespace BIOXFramework.Physics2D.Collision
                 Rectangle rect2 = component2.Rectangle; 
                 Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
 
-                if (DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component1.Texture, component2.Texture))
+                if (DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component.Texture, component2.Texture))
                     componentsCollided.Add(Components[x]);
             }
 
             return componentsCollided;
+        }
+
+        public bool DetectFullCollision(I2DCollidableComponent component1, I2DCollidableComponent component2)
+        {
+            if (component1 == null 
+                || component2 == null
+                || (!component1.EnableCollisionDetection 
+                && !component2.EnableCollisionDetection))
+                return false;
+
+            Rectangle rect1 = component1.Rectangle;
+            Rectangle rect2 = component2.Rectangle;
+            Nullable<Rectangle> innerRect1 = component1.InnerRectangle;
+            Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
+
+            return DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component1.Texture, component2.Texture);
         }
 
         public bool DetectFullCollision(ref Rectangle rectangleA, 

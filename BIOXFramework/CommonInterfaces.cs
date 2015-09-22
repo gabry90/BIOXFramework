@@ -9,7 +9,7 @@ namespace BIOXFramework
     //implement this interface for ignore paused status
     public interface INonPausableComponent { }
 
-    //implement this interface for enable collision detector for 2D objectno
+    //implement this interface for enable collision detector for 2D object
     public interface I2DCollidableComponent 
     {
         Rectangle Rectangle { get; }
