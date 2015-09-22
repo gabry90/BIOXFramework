@@ -59,7 +59,7 @@ namespace BIOXFramework.Test.Scenes
                     explosion.AutoAnimated = false;
                     break;
                 case Keys.Left:
-                    sceneManager.Load<Physics3DTestScene>();
+                    sceneManager.Load<PhysicsTestScene>();
                     break;
                 case Keys.Right:
                     sceneManager.Load<InputTestScene>();

@@ -55,8 +55,7 @@ namespace BIOXFramework.Test
             manager.Register<InputTestScene>();
             manager.Register<AudioTestScene>();
             manager.Register<GuiTestScene>();
-            manager.Register<Physics2DTestScene>();
-            manager.Register<Physics3DTestScene>();
+            manager.Register<PhysicsTestScene>();
             manager.Register<UtilityTestScene>();
         }
     }

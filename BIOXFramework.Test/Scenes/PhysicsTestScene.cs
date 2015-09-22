@@ -11,15 +11,15 @@ using BIOXFramework.Test.Gameplay;
 
 namespace BIOXFramework.Test.Scenes
 {
-    public class Physics2DTestScene : BIOXScene
+    public class PhysicsTestScene : BIOXScene
     {
         private Player2D player1;
         private Player2D player2;
 
-        public Physics2DTestScene(GameTest game)
+        public PhysicsTestScene(GameTest game)
             : base(game)
         {
-            game.Window.Title = "Physics 2D Test Scene";
+            game.Window.Title = "Physics Test Scene";
         }
 
         protected override void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
@@ -62,7 +62,7 @@ namespace BIOXFramework.Test.Scenes
                     sceneManager.Load<GuiTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<Physics3DTestScene>();
+                    sceneManager.Load<UtilityTestScene>();
                     break;
             }
 
@@ -110,7 +110,7 @@ namespace BIOXFramework.Test.Scenes
                     sceneManager.Load<GuiTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<Physics3DTestScene>();
+                    sceneManager.Load<UtilityTestScene>();
                     break;
             }
             base.OnKeyPressing(sender, e);

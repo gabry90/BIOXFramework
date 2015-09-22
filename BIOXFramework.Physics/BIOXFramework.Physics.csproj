@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BE90E5A0-D541-4C8F-8EC2-EB55E6723527}</ProjectGuid>
+    <ProjectGuid>{C09B0EF7-D8D6-47C7-B635-C6BB0630621B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BIOXFramework.Physics3D</RootNamespace>
-    <AssemblyName>BIOXFramework.Physics3D</AssemblyName>
+    <RootNamespace>BIOXFramework.Physics</RootNamespace>
+    <AssemblyName>BIOXFramework.Physics</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -38,8 +38,18 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collision\Collision2DManager.cs" />
+    <Compile Include="Physics2DExceptions.cs" />
+    <Compile Include="PhysicsEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
+      <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
+      <Name>BIOXFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\output\" /Y /I</PostBuildEvent>

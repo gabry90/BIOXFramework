@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BIOXFramework.Physics3D")]
-[assembly: AssemblyDescription("BIOXFramework physics 3d management")]
+[assembly: AssemblyTitle("BIOXFramework.Physics")]
+[assembly: AssemblyDescription("BIOXFramework physics management")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BIOX")]
-[assembly: AssemblyProduct("BIOXFramework.Physics3D")]
+[assembly: AssemblyProduct("BIOXFramework.Physics")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("BIOXFramework")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3a9fd270-d4b2-4346-95e7-88f02fa36399")]
+[assembly: Guid("52a40f87-f166-4e17-962c-abe1df7a035e")]
 
 // Version information for an assembly consists of the following four values:
 //

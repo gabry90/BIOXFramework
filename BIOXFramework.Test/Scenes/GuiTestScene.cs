@@ -34,7 +34,7 @@ namespace BIOXFramework.Test.Scenes
                     sceneManager.Load<AudioTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<Physics2DTestScene>();
+                    sceneManager.Load<PhysicsTestScene>();
                     break;
             }
 

@@ -20,7 +20,6 @@ namespace BIOXFramework.Test
      *      <- AudioTestScene ->
      *      <- GuiTestScene ->
      *      <- Physics2DTestScene ->
-     *      <- Physics3DTestScene ->
      *      <- UtilityTestScene -> ...(InputTestScene)
      */
 
@@ -77,7 +76,7 @@ namespace BIOXFramework.Test
             guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"), Vector2.Zero);
 
             //load input scene with first scene
-            sceneManager.Load<Physics2DTestScene>();
+            sceneManager.Load<PhysicsTestScene>();
 
             base.Initialize();
         }

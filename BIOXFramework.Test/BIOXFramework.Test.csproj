@@ -52,8 +52,7 @@
     <Compile Include="Scenes\AudioTestScene.cs" />
     <Compile Include="Scenes\GuiTestScene.cs" />
     <Compile Include="Scenes\InputTestScene.cs" />
-    <Compile Include="Scenes\Physics2DTestScene.cs" />
-    <Compile Include="Scenes\Physics3DTestScene.cs" />
+    <Compile Include="Scenes\PhysicsTestScene.cs" />
     <Compile Include="Scenes\UtilityTestScene.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,13 +84,9 @@
       <Project>{274beb25-1f10-4627-b5cb-13bfb59c9c49}</Project>
       <Name>BIOXFramework.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BIOXFramework.Physics2D\BIOXFramework.Physics2D.csproj">
+    <ProjectReference Include="..\BIOXFramework.Physics\BIOXFramework.Physics.csproj">
       <Project>{c09b0ef7-d8d6-47c7-b635-c6bb0630621b}</Project>
-      <Name>BIOXFramework.Physics2D</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BIOXFramework.Physics3D\BIOXFramework.Physics3D.csproj">
-      <Project>{be90e5a0-d541-4c8f-8ec2-eb55e6723527}</Project>
-      <Name>BIOXFramework.Physics3D</Name>
+      <Name>BIOXFramework.Physics</Name>
     </ProjectReference>
     <ProjectReference Include="..\BIOXFramework.Scene\BIOXFramework.Scene.csproj">
       <Project>{75e94e35-dc43-454b-9512-8c59e6fbe9d8}</Project>
