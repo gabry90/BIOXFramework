@@ -18,6 +18,9 @@ namespace BIOXFramework.GUI.Components
 
         public override void Draw(GameTime gameTime)
         {
+            if (Texture == null)
+                return;
+
             spriteBatch.Begin();
             spriteBatch.Draw(Texture, GetRectangle(), Color.White);
             spriteBatch.End();

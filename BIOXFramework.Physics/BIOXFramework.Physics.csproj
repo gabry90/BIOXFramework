@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collision\Collision2DManager.cs" />
+    <Compile Include="Gravity\GravityManager.cs" />
     <Compile Include="Physics2DExceptions.cs" />
     <Compile Include="PhysicsEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

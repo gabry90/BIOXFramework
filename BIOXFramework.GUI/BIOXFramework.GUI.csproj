@@ -42,6 +42,8 @@
     <Compile Include="Components\Button.cs" />
     <Compile Include="Components\Cursor.cs" />
     <Compile Include="Components\GuiBase.cs" />
+    <Compile Include="Components\Label.cs" />
+    <Compile Include="Components\Picture.cs" />
     <Compile Include="Components\StaticGuiBase.cs" />
     <Compile Include="GuiEvents.cs" />
     <Compile Include="GuiExceptions.cs" />
@@ -66,7 +68,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)\output\" /Y /I</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!--To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

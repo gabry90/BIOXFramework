@@ -46,3 +46,9 @@
 /processorParam:TextureFormat=Color
 /build:UI image/explosion.png
 
+#begin Fonts/curier_new.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/curier_new.spritefont
+

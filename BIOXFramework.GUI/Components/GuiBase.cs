@@ -27,7 +27,6 @@ namespace BIOXFramework.GUI.Components
         protected bool mouseInner = false;
         protected bool focused = false;
         protected SpriteBatch spriteBatch;
-        protected SpriteFont font;
         protected Game game;
 
         #endregion

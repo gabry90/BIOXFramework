@@ -11,6 +11,8 @@ namespace BIOXFramework.Test.Scenes
 {
     public class GuiTestScene : BIOXScene
     {
+        private Label label;
+
         public GuiTestScene(GameTest game)
             : base(game)
         {
@@ -39,6 +41,13 @@ namespace BIOXFramework.Test.Scenes
             }
 
             base.OnKeyPressed(sender, e);
+        }
+
+        protected override void LoadContent()
+        {
+            label = new Label(game, SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
+            AddDrawableGameComponent(label);
+            base.LoadContent();
         }
 
         public override void Draw(GameTime gameTime)
