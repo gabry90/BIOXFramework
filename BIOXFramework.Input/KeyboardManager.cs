@@ -134,7 +134,7 @@ namespace BIOXFramework.Input
                 /*
                     skip if
                     map is null OR
-                    map key is nto setted
+                    map key is not setted
                 */
                 if (map == null || map.Key == null)
                     continue;

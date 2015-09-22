@@ -85,25 +85,49 @@ Hash code: {1}
 IsCursorVisible: {2}
 IsPaused: {3}
 ------------------------------------------------
-                BIOXOject INFO
+                COMPONENTS INFO
 ------------------------------------------------",
             this.GetType().FullName,
             this.GetHashCode(),
             this.IsCursorVisible,
             this.isPaused);
 
-            content.AppendLine();
+            content.AppendFormat(@"
+Game Components: {0}
+------------------------------------------------", _drawableGameComponents.Count);
+
+            for (int i = 0; i < _gameComponents.Count; i++)
+            {
+                content.AppendFormat(@"
+Type:       {0}
+HashCode:   {1}
+Interfaces: {2}     
+Enabled:    {3}
+------------------------------------------------",
+                _gameComponents[i].GetType().FullName,
+                string.Join(", ", _gameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
+                _gameComponents[i].GetHashCode(),
+                _gameComponents[i].Enabled);
+            }
+
+            content.AppendFormat(@"
+Drawable Game Components: {0}
+------------------------------------------------", _drawableGameComponents.Count);
 
             for (int i = 0; i < _drawableGameComponents.Count; i++)
             {
-                content.AppendFormat(@"Type: {0}     
-Enabled: {1}    
-Visibile: {2}
+                content.AppendFormat(@"
+Type:       {0}
+HashCode:   {1}
+Interfaces: {2}     
+Enabled:    {3}
+Visibile:   {4}
 ------------------------------------------------",
                 _drawableGameComponents[i].GetType().FullName,
+                _drawableGameComponents[i].GetHashCode(),
+                string.Join(", ", _drawableGameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
                 _drawableGameComponents[i].Enabled,
                 _drawableGameComponents[i].Visible);
-                content.AppendLine();
             }
 
             return content.ToString();

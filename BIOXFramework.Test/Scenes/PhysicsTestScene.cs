@@ -71,7 +71,6 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
-
             switch (e.Key)
             {
                 case Keys.W:

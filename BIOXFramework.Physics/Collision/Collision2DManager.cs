@@ -70,7 +70,7 @@ namespace BIOXFramework.Physics2D.Collision
             return componentsCollided;
         }
 
-        public bool IsColliding(I2DCollidableComponent component, params GameComponent[] ExclusionList)
+        public bool IsColliding(I2DCollidableComponent component, params GameComponent[] exclusionList)
         {
             if (component == null
                || !component.EnableCollisionDetection
@@ -83,7 +83,7 @@ namespace BIOXFramework.Physics2D.Collision
 
             for (int x = 0; x < Components.Count; x++)
             {
-                if (Components[x] == null || Components[x] == component || ExclusionList.Contains(Components[x]))
+                if (Components[x] == null || Components[x] == component || exclusionList.Contains(Components[x]))
                     continue;
 
                 I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
