@@ -77,7 +77,6 @@ namespace BIOXFramework.Utility
             SetRegion(regions.FirstOrDefault().Name); //set first region with default
         }
 
-
         public AnimatedTexture(AnimatedTexture at)
             : base(at.Game)
         {

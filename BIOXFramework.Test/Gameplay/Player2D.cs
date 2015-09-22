@@ -67,14 +67,15 @@ namespace BIOXFramework.Test.Gameplay
             if (!directionsAvailable.Contains(direction))
                 directionsAvailable.Add(direction);
         }
+
         public Player2D MoveEmulate(PlayerDirections direction)
         {
             Player2D t = new Player2D(this);
             t.Move(direction);
             t.AnimatedTexture.Update(null);
-
             return t;
         }
+
         public void Move(PlayerDirections direction)
         {
             this.direction = direction;
