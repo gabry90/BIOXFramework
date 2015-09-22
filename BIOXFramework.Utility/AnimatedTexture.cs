@@ -41,6 +41,7 @@ namespace BIOXFramework.Utility
         #region vars
 
         public bool AutoAnimated = false;
+        public bool AnimateAllRegions = false;
         public int AnimationSpeed = 100;
         public Vector2 Position = Vector2.Zero;
 
@@ -173,7 +174,15 @@ namespace BIOXFramework.Utility
 
                     currentFrame++;
                     if (currentFrame >= currentRegion.Columns)
+                    {
+                        if (AnimateAllRegions)
+                        {
+                            var nextRegion = regions.FirstOrDefault(x => x.Row == currentRegion.Row + 1);
+                            currentRegion = (nextRegion != null) ? nextRegion : regions.First(x => x.Row == 1);
+                        }
                         currentFrame = 0;
+                    }
+
                 }
             }
 

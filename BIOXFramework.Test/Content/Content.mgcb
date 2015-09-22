@@ -35,3 +35,14 @@
 /processorParam:TextureFormat=Color
 /build:UI image/texture_atlas_example.png
 
+#begin UI image/explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:UI image/explosion.png
+
