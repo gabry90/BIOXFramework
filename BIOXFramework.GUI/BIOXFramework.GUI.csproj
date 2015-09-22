@@ -45,6 +45,7 @@
     <Compile Include="Components\Label.cs" />
     <Compile Include="Components\Picture.cs" />
     <Compile Include="Components\StaticGuiBase.cs" />
+    <Compile Include="Components\TextBox.cs" />
     <Compile Include="GuiEvents.cs" />
     <Compile Include="GuiExceptions.cs" />
     <Compile Include="GuiManager.cs" />

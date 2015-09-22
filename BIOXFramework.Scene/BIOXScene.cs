@@ -94,7 +94,7 @@ IsPaused: {3}
 
             content.AppendFormat(@"
 Game Components: {0}
-------------------------------------------------", _drawableGameComponents.Count);
+------------------------------------------------", _gameComponents.Count);
 
             for (int i = 0; i < _gameComponents.Count; i++)
             {
