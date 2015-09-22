@@ -74,7 +74,7 @@ namespace BIOXFramework.Test
 
             //set cursor for all scenes
             guiManager = this.Services.GetService<GuiManager>();
-            guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"));
+            guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"), Vector2.Zero);
 
             //load input scene with first scene
             sceneManager.Load<Physics2DTestScene>();

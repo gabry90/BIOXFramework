@@ -6,20 +6,12 @@ using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class Button : GuiBase
+    public class Button : AnimatedGuiBase
     {
         #region constructors
 
-        public Button(Game game)
-            : base(game)
-        { }
-
-        public Button(Game game, Texture2D texture)
-            : base(game, texture)
-        { }
-
-        public Button(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
-            : base(game, texture, regions)
+        public Button(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
+            : base(game, animatedTexture, animations, position)
         { }
 
         #endregion

@@ -24,9 +24,6 @@ namespace BIOXFramework.GUI.Components
         public Texture2D Texture;
         public Vector2 Position = Vector2.Zero;
 
-        protected AnimatedTexture animatedTexture;
-
-        protected bool isAnimatedTexture = false;
         protected bool mouseInner = false;
         protected bool focused = false;
         protected SpriteBatch spriteBatch;
@@ -43,26 +40,13 @@ namespace BIOXFramework.GUI.Components
             InitGuiBase(game);
         }
 
-        public GuiBase(Game game, Texture2D texture)
+        public GuiBase(Game game, Texture2D texture, Vector2 position)
             : base(game)
         {
             Texture = texture;
+            Position = position;
             InitGuiBase(game);
         }
-
-        public GuiBase(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
-            : base(game)
-        {
-            isAnimatedTexture = true;
-            animatedTexture = new AnimatedTexture(game, texture, regions);
-            InitGuiBase(game);
-        }
-
-        #endregion
-
-        #region public methods
-
-
 
         #endregion
 
@@ -126,26 +110,6 @@ namespace BIOXFramework.GUI.Components
                 throw new GuiException("position is null!");
 
             return new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-        }
-
-        #endregion
-
-        #region component implementations
-
-        public override void Update(GameTime gameTime)
-        {
-            if (isAnimatedTexture && animatedTexture != null)
-                animatedTexture.Update(gameTime);
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            if (isAnimatedTexture && animatedTexture != null)
-                animatedTexture.Draw(gameTime);
-
-            base.Draw(gameTime);
         }
 
         #endregion
@@ -279,6 +243,9 @@ namespace BIOXFramework.GUI.Components
                 if (disposing)
                 {
                     DetachGUIEventsHandlers();
+
+                    if (Texture != null)
+                        Texture.Dispose();
 
                     if (Click != null) Click = null;
                     if (MouseEnter != null) MouseEnter = null;

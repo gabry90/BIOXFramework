@@ -38,9 +38,11 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\AnimatedGuiBase.cs" />
     <Compile Include="Components\Button.cs" />
     <Compile Include="Components\Cursor.cs" />
     <Compile Include="Components\GuiBase.cs" />
+    <Compile Include="Components\StaticGuiBase.cs" />
     <Compile Include="GuiEvents.cs" />
     <Compile Include="GuiExceptions.cs" />
     <Compile Include="GuiManager.cs" />

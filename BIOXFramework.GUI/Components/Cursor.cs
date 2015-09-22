@@ -7,16 +7,12 @@ using BIOXFramework.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
-    public class Cursor : GuiBase, IPersistentComponent
+    public class Cursor : StaticGuiBase, IPersistentComponent
     {
         #region constructors
 
-        public Cursor(Game game, Texture2D texture)
-            : base(game, texture)
-        { }
-
-        public Cursor(Game game, Texture2D texture, List<AnimatedTextureRegion> regions)
-            : base(game, texture, regions)
+        public Cursor(Game game, Texture2D texture, Vector2 position)
+            : base(game, texture, position)
         { }
 
         #endregion
@@ -29,22 +25,6 @@ namespace BIOXFramework.GUI.Components
                 Position = new Vector2(e.Position.X, e.Position.Y);
 
             base.OnMousePositionChanged(sender, e);
-        }
-
-        #endregion
-
-        #region game implementations
-
-        public override void Draw(GameTime gameTime)
-        {
-            if (Texture == null || (isAnimatedTexture && animatedTexture != null))
-                return;
-
-            spriteBatch.Begin();
-            spriteBatch.Draw(Texture, Position, Color.White);
-            spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         #endregion
