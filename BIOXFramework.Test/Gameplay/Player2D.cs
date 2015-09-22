@@ -20,7 +20,7 @@ namespace BIOXFramework.Test.Gameplay
         public AnimatedTexture AnimatedTexture;
         public Texture2D Texture { get { return AnimatedTexture.Texture; } }
         public Rectangle Rectangle { get { return AnimatedTexture.Rectangle; } }
-        public Rectangle InnerRectangle { get { return AnimatedTexture.InnerRectangle; } }
+        public Nullable<Rectangle> InnerRectangle { get { return AnimatedTexture.InnerRectangle; } }
         public bool EnableCollisionDetection { get; set; }
         public PlayerDirections PlayerDirection { get { return direction; } }
         public bool EnableMovement { get; set; }

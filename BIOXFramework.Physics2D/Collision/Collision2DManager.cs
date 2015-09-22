@@ -70,6 +70,40 @@ namespace BIOXFramework.Physics2D.Collision
             return componentsCollided;
         }
 
+        public bool IsColliding(I2DCollidableComponent component, params GameComponent[] ExclusionList)
+        {
+            if (component == null
+               || !component.EnableCollisionDetection
+               || component.Rectangle == Rectangle.Empty
+               || component.Texture.Bounds == Rectangle.Empty)
+                return false;
+
+            Rectangle rect1 = component.Rectangle;
+            Nullable<Rectangle> innerRect1 = component.InnerRectangle;
+
+            for (int x = 0; x < Components.Count; x++)
+            {
+                if (Components[x] == null || Components[x] == component || ExclusionList.Contains(Components[x]))
+                    continue;
+
+                I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
+                if (component2 == null
+                    || !component2.EnableCollisionDetection
+                    || component2.Rectangle == Rectangle.Empty
+                    || component2.Texture.Bounds == Rectangle.Empty)
+                {
+                    continue;
+                }
+
+                Rectangle rect2 = component2.Rectangle;
+                Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
+
+                if (DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component.Texture, component2.Texture))
+                    return true;
+            }
+            return false;
+        }
+
         public bool DetectFullCollision(I2DCollidableComponent component1, I2DCollidableComponent component2)
         {
             if (component1 == null 

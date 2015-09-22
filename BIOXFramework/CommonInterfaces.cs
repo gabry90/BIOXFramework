@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework
@@ -13,7 +14,7 @@ namespace BIOXFramework
     public interface I2DCollidableComponent 
     {
         Rectangle Rectangle { get; }
-        Rectangle InnerRectangle { get; }
+        Nullable<Rectangle> InnerRectangle { get; }
         Texture2D Texture { get; }
         bool EnableCollisionDetection { get; set; }
     }

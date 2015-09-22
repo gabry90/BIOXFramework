@@ -27,35 +27,35 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.W:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Up), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Up), player1))
                         player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Down), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Down), player1))
                         player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Left), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Left), player1))
                         player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Right), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Right), player1))
                         player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Up), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Up), player2))
                         player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Down), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Down), player2))
                         player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Left), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Left), player2))
                         player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Right), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Right), player2))
                         player2.Move(PlayerDirections.Right);
                     break;
                 case Keys.Left:
@@ -75,35 +75,35 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.W:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Up), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Up), player1))
                         player1.Move(PlayerDirections.Up);
                     break;
                 case Keys.S:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Down), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Down), player1))
                         player1.Move(PlayerDirections.Down);
                     break;
                 case Keys.A:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Left), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Left), player1))
                         player1.Move(PlayerDirections.Left);
                     break;
                 case Keys.D:
-                    if (collision2DManager.GetCollidedComponents(player1.MoveEmulate(PlayerDirections.Right), player1).Count == 0)
+                    if (!collision2DManager.IsColliding(player1.MoveEmulate(PlayerDirections.Right), player1))
                         player1.Move(PlayerDirections.Right);
                     break;
                 case Keys.I:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Up), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Up), player2))
                         player2.Move(PlayerDirections.Up);
                     break;
                 case Keys.K:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Down), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Down), player2))
                         player2.Move(PlayerDirections.Down);
                     break;
                 case Keys.J:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Left), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Left), player2))
                         player2.Move(PlayerDirections.Left);
                     break;
                 case Keys.L:
-                    if (collision2DManager.GetCollidedComponents(player2.MoveEmulate(PlayerDirections.Right), player2).Count == 0)
+                    if (!collision2DManager.IsColliding(player2.MoveEmulate(PlayerDirections.Right), player2))
                         player2.Move(PlayerDirections.Right);
                     break;
                 case Keys.Left:
