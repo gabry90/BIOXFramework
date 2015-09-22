@@ -168,7 +168,7 @@ namespace BIOXFramework.Utility
                 if (oldProcessFrameDate == null)
                     oldProcessFrameDate = oldProcessFrameDate.Subtract(TimeSpan.FromMilliseconds(AnimationSpeed));
 
-                if (currentFrameProcessDate.Subtract(oldProcessFrameDate).TotalMilliseconds >= AnimationSpeed)
+                if (AnimationSpeed == 0 || currentFrameProcessDate.Subtract(oldProcessFrameDate).TotalMilliseconds >= AnimationSpeed)
                 {
                     oldProcessFrameDate = currentFrameProcessDate;
 
