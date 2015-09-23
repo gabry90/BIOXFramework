@@ -19,6 +19,17 @@ namespace BIOXFramework
         bool EnableCollisionDetection { get; set; }
     }
 
+    //implement this interface for disabling all movement (including gravity)
+    public interface IImmovableComponent { }
+
+    //implement this interface for enable gravity on component
+    public interface IGravitableComponent 
+    {
+        float Mass { get; }
+        bool IgnoreGravity { get; }
+    }
+
+
     //implement this interface for enable collision detector for 3D object
     public interface I3DCollidableComponent 
     {
