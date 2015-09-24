@@ -14,7 +14,7 @@ namespace BIOXFramework
     public interface I2DCollidableComponent 
     {
         Rectangle Rectangle { get; }
-        Nullable<Rectangle> InnerRectangle { get; }
+        Rectangle? InnerRectangle { get; }
         Texture2D Texture { get; }
         bool EnableCollisionDetection { get; set; }
     }
@@ -25,10 +25,16 @@ namespace BIOXFramework
     //implement this interface for enable gravity on component
     public interface IGravitableComponent 
     {
-        float Mass { get; }
+        double Mass { get; }
+        Texture2D Texture { get; }
+        Rectangle Rectangle { get; set; }
+        Rectangle? InnerRectangle { get; }
+        double OrizzontalForce { get; set; }
+        double VerticalForce { get; set; }
+        bool IsOrizzontalForcePersistence { get; set; }
+        bool IsVerticalForcePersistence { get; set; }
         bool IgnoreGravity { get; }
     }
-
 
     //implement this interface for enable collision detector for 3D object
     public interface I3DCollidableComponent 
