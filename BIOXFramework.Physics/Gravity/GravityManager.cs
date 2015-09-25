@@ -106,7 +106,7 @@ namespace BIOXFramework.Physics.Gravity
             for (int i = 0; i < components.Count; i++)
             {
                 if (components[i] is IImmovableComponent)
-                    continue; //ignoring immvable components
+                    continue; //ignoring immovable components
 
                 IGravitableComponent component = components[i] as IGravitableComponent;
                 if (component == null || component.IgnoreGravity)

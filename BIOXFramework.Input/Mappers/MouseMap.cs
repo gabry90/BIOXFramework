@@ -19,6 +19,6 @@ namespace BIOXFramework.Input.Mappers
     {
         public string Name { get; set; }
         public MouseButtons? Button { get; set; }
-        public DateTime PressedTime { get; set; }
+        internal DateTime PressedTime { get; set; }
     }
 }

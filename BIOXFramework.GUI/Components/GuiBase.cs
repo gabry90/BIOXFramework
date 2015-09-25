@@ -59,7 +59,7 @@ namespace BIOXFramework.GUI.Components
             AttachGUIEventsHandlers();
         }
 
-        protected virtual void InitializeServices()
+        private void InitializeServices()
         {
             if (guiManager == null)
             {

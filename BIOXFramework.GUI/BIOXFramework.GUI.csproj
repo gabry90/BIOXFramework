@@ -46,8 +46,10 @@
     <Compile Include="Components\Picture.cs" />
     <Compile Include="Components\StaticGuiBase.cs" />
     <Compile Include="Components\TextBox.cs" />
+    <Compile Include="TextProcessor.cs" />
     <Compile Include="GuiEvents.cs" />
     <Compile Include="GuiExceptions.cs" />
+    <Compile Include="GUIHelper.cs" />
     <Compile Include="GuiManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
