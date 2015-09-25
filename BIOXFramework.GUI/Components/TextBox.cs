@@ -16,8 +16,9 @@ namespace BIOXFramework.GUI.Components
 
         public Color TextColor = Color.White;
         public SpriteFont Font;
-        public TextAlignements TextAlignement = TextAlignements.Center;
+        public TextAlignments TextAlignement = TextAlignments.Center;
         public int SpacingFromBorder = 5;
+        public int MaxLenght = 255;
         public string Text
         {
             get { return inputTextProcessor.CurrentText; }
@@ -62,22 +63,26 @@ namespace BIOXFramework.GUI.Components
         {
             Vector2 position = Vector2.Zero;
             Rectangle rect = GetRectangle();
+            string visibleText = Text;
 
             switch (TextAlignement)
             {
-                case TextAlignements.Center:
-                    position = TextAlignementHelper.AlignCenter(rect, Font, Text);
+                case TextAlignments.Center:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, Text, 0);
+                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText, 0);
                     break;
-                case TextAlignements.Left:
-                    position = TextAlignementHelper.AlignLeft(rect, Font, Text, SpacingFromBorder);
+                case TextAlignments.Left:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText, SpacingFromBorder);
+                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text, SpacingFromBorder);
                     break;
-                case TextAlignements.Right:
-                    position = TextAlignementHelper.AlignRight(rect, Font, Text, SpacingFromBorder);
+                case TextAlignments.Right:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText, SpacingFromBorder);
+                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text, SpacingFromBorder);
                     break;
             }
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(Font, Text, position, TextColor);
+            spriteBatch.DrawString(Font, visibleText, position, TextColor);
             spriteBatch.End();
 
             base.Draw(gameTime);

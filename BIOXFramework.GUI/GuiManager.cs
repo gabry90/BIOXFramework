@@ -10,12 +10,7 @@ namespace BIOXFramework.GUI
 
         public Cursor CurrentCursor 
         {
-            get 
-            { 
-                if (_cursor == null)
-                    throw new GuiException("cursor cannot be null!");
-                return _cursor; 
-            }
+            get { return _cursor; }
             set
             {
                 if (value == null)
