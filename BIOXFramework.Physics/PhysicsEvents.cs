@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace BIOXFramework.Physics2D
+namespace BIOXFramework.Physics
 {
     public class Collide2DEventArgs : EventArgs
     {
@@ -13,5 +13,15 @@ namespace BIOXFramework.Physics2D
 
         public GameComponent Component1 { get; private set; }
         public GameComponent Component2 { get; private set; }
+    }
+
+    public class GravityEventArgs : EventArgs
+    {
+        public GravityEventArgs(GameComponent component)
+        {
+            Component = component;
+        }
+
+        public GameComponent Component { get; private set; }
     }
 }

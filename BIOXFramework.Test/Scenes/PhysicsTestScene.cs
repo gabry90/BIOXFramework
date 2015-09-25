@@ -6,7 +6,7 @@ using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
-using BIOXFramework.Physics2D;
+using BIOXFramework.Physics;
 using BIOXFramework.Test.Gameplay;
 
 namespace BIOXFramework.Test.Scenes

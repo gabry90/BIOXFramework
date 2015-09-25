@@ -9,8 +9,9 @@ using BIOXFramework.Input.Events;
 using System.Text;
 using BIOXFramework.GUI;
 using Microsoft.Xna.Framework.Content;
-using BIOXFramework.Physics2D.Collision;
-using BIOXFramework.Physics2D;
+using BIOXFramework.Physics.Collision;
+using BIOXFramework.Physics;
+using BIOXFramework.Physics.Gravity;
 
 namespace BIOXFramework.Scene
 {
@@ -31,6 +32,7 @@ namespace BIOXFramework.Scene
         protected static KeyboardManager keyboardManager;
         protected static MouseManager mouseManager;
         protected static Collision2DManager collision2DManager;
+        protected static GravityManager gravityManager;
 
         protected ContentManager SceneContent;
         protected Game game;
@@ -197,6 +199,13 @@ Visibile:   {4}
 
                 collision2DManager.EnableCollisionDetection = false; //disable for default
             }
+
+            if (gravityManager == null)
+            {
+                gravityManager = game.Services.GetService<GravityManager>();
+                if (gravityManager == null)
+                    gravityManager = new GravityManager(game);
+            }
         }
 
         protected void AddGameComponent(GameComponent component)
@@ -206,7 +215,7 @@ Visibile:   {4}
                 if (component != null && !_gameComponents.Contains(component))
                 {
                     _gameComponents.Add(component);
-                    collision2DManager.Components.Add(component);
+                    collision2DManager.AddComponent(component);
                 }
             }
         }
@@ -217,7 +226,7 @@ Visibile:   {4}
             {
                 if (component != null && _gameComponents.Contains(component))
                 {
-                    collision2DManager.Components.Remove(component);
+                    collision2DManager.RemoveComponent(component);
                     if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                         component.Dispose();
                     _gameComponents.Remove(component);
@@ -231,7 +240,7 @@ Visibile:   {4}
             {
                 if (component != null && !_drawableGameComponents.Contains(component))
                 {
-                    collision2DManager.Components.Add(component);
+                    collision2DManager.AddComponent(component);
                     _drawableGameComponents.Add(component);
                 }
             }
@@ -243,7 +252,7 @@ Visibile:   {4}
             {
                 if (component != null && _drawableGameComponents.Contains(component))
                 {
-                    collision2DManager.Components.Remove(component);
+                    collision2DManager.RemoveComponent(component);
                     if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
                         component.Dispose();
 
@@ -278,10 +287,11 @@ Visibile:   {4}
             mouseManager.WhellDown += OnMouseWhellDown;
             mouseManager.PositionChanged += OnMousePositionChanged;
 
-            //attach physics 2D events
+            //attach physics events
             collision2DManager.Collide += On2DObjectCollide;
             collision2DManager.InCollision += On2DObjectInCollision;
             collision2DManager.OutCollision += On2DObjectOutCollision;
+            gravityManager.Falling += OnFallingComponent;
         }
 
         protected virtual void DetachSceneEventHandlers()
@@ -310,10 +320,11 @@ Visibile:   {4}
             mouseManager.WhellDown -= OnMouseWhellDown;
             mouseManager.PositionChanged -= OnMousePositionChanged;
 
-            //detach physics 2D events
+            //detach physics events
             collision2DManager.Collide -= On2DObjectCollide;
             collision2DManager.InCollision -= On2DObjectInCollision;
             collision2DManager.OutCollision -= On2DObjectOutCollision;
+            gravityManager.Falling -= OnFallingComponent;
         }
 
         protected virtual void OnGameExiting(object sender, EventArgs e)
@@ -416,7 +427,7 @@ Visibile:   {4}
 
         #endregion
 
-        #region physics 2D events
+        #region physics events
 
         protected virtual void On2DObjectCollide(object sender, Collide2DEventArgs e)
         {
@@ -429,6 +440,11 @@ Visibile:   {4}
         }
 
         protected virtual void On2DObjectOutCollision(object sender, Collide2DEventArgs e)
+        {
+
+        }
+
+        protected virtual void OnFallingComponent(object sender, GravityEventArgs e)
         {
 
         }
@@ -515,7 +531,7 @@ Visibile:   {4}
                     DetachSceneEventHandlers();
 
                     //clear collission components reference for this scene
-                    collision2DManager.Components.Clear();
+                    collision2DManager.ClearComponents();
 
                     //disposing all game component
                     lock (_gameComponents)

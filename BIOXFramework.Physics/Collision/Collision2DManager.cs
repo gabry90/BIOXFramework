@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BIOXFramework.Physics2D.Collision
+namespace BIOXFramework.Physics.Collision
 {
     public sealed class Collision2DManager : GameComponent
     {
@@ -13,10 +13,10 @@ namespace BIOXFramework.Physics2D.Collision
         public event EventHandler<Collide2DEventArgs> Collide;
         public event EventHandler<Collide2DEventArgs> InCollision;
         public event EventHandler<Collide2DEventArgs> OutCollision;
-        public List<GameComponent> Components;  
         public bool EnableCollisionDetection = true;
 
         private List<Tuple<GameComponent, GameComponent>> collidedComponents;
+        private List<GameComponent> components;  
 
         #endregion
 
@@ -25,13 +25,48 @@ namespace BIOXFramework.Physics2D.Collision
         public Collision2DManager(Game game)
             : base(game)
         {
-            Components = new List<GameComponent>();
+            components = new List<GameComponent>();
             collidedComponents = new List<Tuple<GameComponent,GameComponent>>();
         }
 
         #endregion
 
         #region public methods
+
+        public void AddComponent(GameComponent component)
+        {
+            if (component == null)
+                return;
+
+            lock (components)
+            {
+                int componentInListIndex = components.IndexOf(component);
+                if (componentInListIndex != -1)
+                    components[componentInListIndex] = component;
+                else
+                    components.Add(component);
+            }
+        }
+
+        public void RemoveComponent(GameComponent component)
+        {
+            if (component == null)
+                return;
+
+            lock (components)
+            {
+                if (components.Contains(component))
+                    components.Remove(component);
+            }
+        }
+
+        public void ClearComponents()
+        {
+            lock (components)
+            {
+                components.Clear();
+            }
+        }
 
         public List<GameComponent> GetCollidedComponents(I2DCollidableComponent component, params GameComponent[] exclusionList)
         {
@@ -46,12 +81,12 @@ namespace BIOXFramework.Physics2D.Collision
             Rectangle rect1 = component.Rectangle;
             Nullable<Rectangle> innerRect1 = component.InnerRectangle;
 
-            for (int x = 0; x < Components.Count; x++)
+            for (int x = 0; x < components.Count; x++)
             {
-                if (Components[x] == null || Components[x] == component || exclusionList.Contains(Components[x]))
+                if (components[x] == null || components[x] == component || exclusionList.Contains(components[x]))
                     continue;
 
-                I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
+                I2DCollidableComponent component2 = components[x] as I2DCollidableComponent;
                 if (component2 == null
                     || !component2.EnableCollisionDetection
                     || component2.Rectangle == Rectangle.Empty
@@ -64,7 +99,7 @@ namespace BIOXFramework.Physics2D.Collision
                 Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
 
                 if (DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component.Texture, component2.Texture))
-                    componentsCollided.Add(Components[x]);
+                    componentsCollided.Add(components[x]);
             }
 
             return componentsCollided;
@@ -81,12 +116,12 @@ namespace BIOXFramework.Physics2D.Collision
             Rectangle rect1 = component.Rectangle;
             Nullable<Rectangle> innerRect1 = component.InnerRectangle;
 
-            for (int x = 0; x < Components.Count; x++)
+            for (int x = 0; x < components.Count; x++)
             {
-                if (Components[x] == null || Components[x] == component || exclusionList.Contains(Components[x]))
+                if (components[x] == null || components[x] == component || exclusionList.Contains(components[x]))
                     continue;
 
-                I2DCollidableComponent component2 = Components[x] as I2DCollidableComponent;
+                I2DCollidableComponent component2 = components[x] as I2DCollidableComponent;
                 if (component2 == null
                     || !component2.EnableCollisionDetection
                     || component2.Rectangle == Rectangle.Empty
@@ -191,39 +226,39 @@ namespace BIOXFramework.Physics2D.Collision
 
             List<GameComponent> processedComponents = new List<GameComponent>();
              
-            for (int x = 0; x < Components.Count; x++)
+            for (int x = 0; x < components.Count; x++)
             {
-                if (Components[x] == null || processedComponents.Contains(Components[x]))
+                if (components[x] == null || processedComponents.Contains(components[x]))
                     continue;
 
-                I2DCollidableComponent component1 = Components[x] as I2DCollidableComponent;
+                I2DCollidableComponent component1 = components[x] as I2DCollidableComponent;
                 if (component1 == null
                     || !component1.EnableCollisionDetection
                     || component1.Rectangle == Rectangle.Empty
                     || component1.Texture.Bounds == Rectangle.Empty)
                 {
-                    processedComponents.Add(Components[x]);
+                    processedComponents.Add(components[x]);
                     continue;
                 }
 
-                processedComponents.Add(Components[x]);
+                processedComponents.Add(components[x]);
 
-                for (int y = 0; y < Components.Count; y++)
+                for (int y = 0; y < components.Count; y++)
                 {
-                    if (Components[y] == null || processedComponents.Contains(Components[y]))
+                    if (components[y] == null || processedComponents.Contains(components[y]))
                         continue;
 
-                    I2DCollidableComponent component2 = Components[y] as I2DCollidableComponent;
+                    I2DCollidableComponent component2 = components[y] as I2DCollidableComponent;
                     if (component2 == null
                         || !component2.EnableCollisionDetection
                         || component2.Rectangle == Rectangle.Empty
                         || component2.Texture.Bounds == Rectangle.Empty)
                     {
-                        processedComponents.Add(Components[y]);
+                        processedComponents.Add(components[y]);
                         continue;
                     }
 
-                    processedComponents.Add(Components[y]);
+                    processedComponents.Add(components[y]);
 
                     Rectangle rect1 = component1.Rectangle;
                     Rectangle rect2 = component2.Rectangle;
@@ -231,19 +266,19 @@ namespace BIOXFramework.Physics2D.Collision
                     Nullable<Rectangle> innerRect2 = component2.InnerRectangle;
 
                     bool collided = DetectFullCollision(ref rect1, ref rect2, ref innerRect1, ref innerRect2, component1.Texture, component2.Texture);
-                    var inCollision = collidedComponents.FirstOrDefault(z => z.Item1 == Components[x] && z.Item2 == Components[y]);
+                    var inCollision = collidedComponents.FirstOrDefault(z => z.Item1 == components[x] && z.Item2 == components[y]);
 
                     if (collided && inCollision != null)        //collision persistent
-                        InCollisionEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
+                        InCollisionEventDispatcher(new Collide2DEventArgs(components[x], components[y]));
                     else if (collided && inCollision == null)   //collision for first time
                     {
-                        collidedComponents.Add(new Tuple<GameComponent, GameComponent>(Components[x], Components[y]));
-                        CollideEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
+                        collidedComponents.Add(new Tuple<GameComponent, GameComponent>(components[x], components[y]));
+                        CollideEventDispatcher(new Collide2DEventArgs(components[x], components[y]));
                     }
                     else if (!collided && inCollision != null)  //out of collision (only after collide)
                     {
                         collidedComponents.Remove(inCollision);
-                        OutCollisionEventDispatcher(new Collide2DEventArgs(Components[x], Components[y]));
+                        OutCollisionEventDispatcher(new Collide2DEventArgs(components[x], components[y]));
                     }
                 }
             }
@@ -291,7 +326,7 @@ namespace BIOXFramework.Physics2D.Collision
                     if (Collide != null) Collide = null;
                     if (InCollision != null) InCollision = null;
                     if (OutCollision != null) OutCollision = null;
-                    lock (Components) { Components.Clear(); }
+                    ClearComponents();
                     lock (collidedComponents) { collidedComponents.Clear(); }
                 }
             }

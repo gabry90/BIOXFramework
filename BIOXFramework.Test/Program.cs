@@ -8,7 +8,8 @@ using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using BIOXFramework.Physics2D.Collision;
+using BIOXFramework.Physics.Collision;
+using BIOXFramework.Physics.Gravity;
 
 namespace BIOXFramework.Test
 {
@@ -46,6 +47,7 @@ namespace BIOXFramework.Test
             game.Services.AddService<GamepadManager>(new GamepadManager(game));
             game.Services.AddService<GuiManager>(new GuiManager(game));
             game.Services.AddService<Collision2DManager>(new Collision2DManager(game));
+            game.Services.AddService<GravityManager>(new GravityManager(game));
         }
 
         private static void InitScenes(GameTest game)
