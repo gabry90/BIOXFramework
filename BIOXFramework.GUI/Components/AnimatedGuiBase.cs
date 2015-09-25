@@ -84,6 +84,11 @@ namespace BIOXFramework.GUI.Components
 
         #region overridden base methods
 
+        protected override Rectangle GetRectangle()
+        {
+           return new Rectangle((int)Position.X, (int)Position.Y, animatedTexture.Rectangle.Width, animatedTexture.Rectangle.Height);
+        }
+
         protected override void OnClick(object sender, EventArgs e)
         {
             AnimatedGuiAnimations animation = animations.FirstOrDefault(x => x.Event == AnimatedGuiEvents.OnClick);
@@ -125,6 +130,7 @@ namespace BIOXFramework.GUI.Components
 
         public override void Update(GameTime gameTime)
         {
+            animatedTexture.Position = Position;
             animatedTexture.Update(gameTime);
             base.Update(gameTime);
         }

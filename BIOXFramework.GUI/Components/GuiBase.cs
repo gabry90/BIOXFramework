@@ -100,7 +100,7 @@ namespace BIOXFramework.GUI.Components
             mouseManager.PositionChanged -= OnMousePositionChanged;
         }
 
-        protected Rectangle GetRectangle()
+        protected virtual Rectangle GetRectangle()
         {
             if (Texture == null)
                 throw new GuiException("texture is null!");

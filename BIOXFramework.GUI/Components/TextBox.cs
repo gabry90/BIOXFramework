@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
+using BIOXFramework.Input.Utility;
+using BIOXFramework.GUI.Utility;
 
 namespace BIOXFramework.GUI.Components
 {
@@ -15,14 +17,14 @@ namespace BIOXFramework.GUI.Components
         public Color TextColor = Color.White;
         public SpriteFont Font;
         public TextAlignements TextAlignement = TextAlignements.Center;
+        public int SpacingFromBorder = 5;
         public string Text
         {
-            get { return text; }
-            set { text = value; }
+            get { return inputTextProcessor.CurrentText; }
+            set { inputTextProcessor.CurrentText = value; }
         }
 
-        private string text;
-        private TextProcessor textpProcessor;
+        private InputTextProcessor inputTextProcessor;
 
         #endregion
 
@@ -31,7 +33,7 @@ namespace BIOXFramework.GUI.Components
         public TextBox(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position, SpriteFont font, string text = "")
             : base(game, animatedTexture, animations, position)
         {
-            textpProcessor = new TextProcessor(game);
+            inputTextProcessor = new InputTextProcessor(game);
             Text = text;
             Font = font;
         }
@@ -42,13 +44,13 @@ namespace BIOXFramework.GUI.Components
 
         protected override void OnFocused(object sender, EventArgs e)
         {
-            textpProcessor.Process();
+            inputTextProcessor.Process();
             base.OnFocused(sender, e);
         }
 
         protected override void OnLostFocus(object sender, EventArgs e)
         {
-            textpProcessor.Unprocess();
+            inputTextProcessor.Unprocess();
             base.OnLostFocus(sender, e);
         }
 
@@ -56,13 +58,28 @@ namespace BIOXFramework.GUI.Components
 
         #region component implementation
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         public override void Draw(GameTime gameTime)
         {
+            Vector2 position = Vector2.Zero;
+            Rectangle rect = GetRectangle();
+
+            switch (TextAlignement)
+            {
+                case TextAlignements.Center:
+                    position = TextAlignementHelper.AlignCenter(rect, Font, Text);
+                    break;
+                case TextAlignements.Left:
+                    position = TextAlignementHelper.AlignLeft(rect, Font, Text, SpacingFromBorder);
+                    break;
+                case TextAlignements.Right:
+                    position = TextAlignementHelper.AlignRight(rect, Font, Text, SpacingFromBorder);
+                    break;
+            }
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(Font, Text, position, TextColor);
+            spriteBatch.End();
+
             base.Draw(gameTime);
         }
 
@@ -88,7 +105,7 @@ namespace BIOXFramework.GUI.Components
                 if (disposing)
                 {
                     if (TextChanged != null) TextChanged = null;
-                    textpProcessor.Dispose();
+                    inputTextProcessor.Dispose();
                 }
             }
             finally
