@@ -50,6 +50,7 @@ namespace BIOXFramework.GUI.Components
         public AnimatedGuiBase(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
             : base(game, animatedTexture.Texture, position)
         {
+            this.animations = animations;
             this.animatedTexture = animatedTexture;
             this.animatedTexture.Position = position;
         }

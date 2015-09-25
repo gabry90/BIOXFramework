@@ -145,7 +145,7 @@ namespace BIOXFramework.GUI.Components
             if (!Enabled || Texture == null)
                 return; //avoid null value
 
-            Rectangle textureRect = GetRectangle();
+            Rectangle textureRect = this.GetRectangle();
             Rectangle cursorRect = guiManager.CurrentCursor.GetRectangle();
             Rectangle mouseRect = new Rectangle(e.Position.X, e.Position.Y, cursorRect.Size.X, cursorRect.Size.Y);
 

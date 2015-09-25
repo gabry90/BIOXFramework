@@ -26,6 +26,7 @@ namespace BIOXFramework.GUI.Components
         }
 
         private InputTextProcessor inputTextProcessor;
+        private string lastText;
 
         #endregion
 
@@ -58,6 +59,20 @@ namespace BIOXFramework.GUI.Components
         #endregion
 
         #region component implementation
+
+        public override void Update(GameTime gameTime)
+        {
+            if (lastText == null)
+                lastText = Text;
+
+            if (!string.Equals(lastText, Text))
+            {
+                TextChangedEventDispatcher(new TextChangedEventArgs(lastText, Text));
+                lastText = Text;
+            }
+
+            base.Update(gameTime);
+        }
 
         public override void Draw(GameTime gameTime)
         {

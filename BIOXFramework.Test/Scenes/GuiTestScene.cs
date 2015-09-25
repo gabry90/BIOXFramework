@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
 using BIOXFramework.GUI;
 using BIOXFramework.GUI.Components;
-using Microsoft.Xna.Framework.Graphics;
+using BIOXFramework.Utility;
 
 namespace BIOXFramework.Test.Scenes
 {
     public class GuiTestScene : BIOXScene
     {
         private Label label;
+        private TextBox textbox;
 
         public GuiTestScene(GameTest game)
             : base(game)
@@ -45,8 +48,22 @@ namespace BIOXFramework.Test.Scenes
 
         protected override void LoadContent()
         {
+            List<AnimatedTextureRegion> regions = new List<AnimatedTextureRegion>
+            {
+                new AnimatedTextureRegion("non_focused", 1, 1, 311, 55),
+                new AnimatedTextureRegion("focused", 2, 1, 311, 55)
+            };
+            List<AnimatedGuiAnimations> animations = new List<AnimatedGuiAnimations>()
+            {
+                new AnimatedGuiAnimations(AnimatedGuiEvents.OnFocused, "focused"),
+                new AnimatedGuiAnimations(AnimatedGuiEvents.OnLostFocus, "non_focused")
+            };
+            AnimatedTexture textBoxTexture = new AnimatedTexture(game, SceneContent.Load<Texture2D>("UI image/textbox_example"), regions);
+
             label = new Label(game, SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
+            textbox = new TextBox(game, textBoxTexture, animations, new Vector2(200, 200), SceneContent.Load<SpriteFont>("Fonts/curier_new"));
             AddDrawableGameComponent(label);
+            AddDrawableGameComponent(textbox);
             base.LoadContent();
         }
 

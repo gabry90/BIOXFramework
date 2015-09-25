@@ -33,11 +33,19 @@ namespace BIOXFramework.GUI.Utility
 
         public static string GetVisibleText(int rectWidth, SpriteFont font, string text, int spacingFromBorder)
         {
-            Vector2 textDimens = font.MeasureString(text);
+            if (rectWidth <= (0 + spacingFromBorder))
+                return "";
 
             while ((font.MeasureString(text).X) + spacingFromBorder >= rectWidth)
+            {
+                if (text.Length == 1)
+                {
+                    text = "";
+                    break;
+                }
                 text = text.Remove(0, 1);
-
+            }
+            
             return text;
         }
     }
