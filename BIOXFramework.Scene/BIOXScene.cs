@@ -136,6 +136,24 @@ IsPaused: {3}
             this.isPaused);
 
             content.AppendFormat(@"
+GUI Components: {0}
+------------------------------------------------", guiComponents.Count);
+
+            for (int i = 0; i < guiComponents.Count; i++)
+            {
+                content.AppendFormat(@"
+Type:       {0}
+HashCode:   {1}
+Interfaces: {2}     
+Enabled:    {3}
+------------------------------------------------",
+                guiComponents[i].GetType().FullName,
+                string.Join(", ", guiComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
+                guiComponents[i].GetHashCode(),
+                guiComponents[i].Enabled);
+            }
+
+            content.AppendFormat(@"
 Game Components: {0}
 ------------------------------------------------", gameComponents.Count);
 

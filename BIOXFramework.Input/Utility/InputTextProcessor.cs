@@ -59,7 +59,7 @@ namespace BIOXFramework.Input.Utility
 
         #region vars
 
-        public string CurrentText { get; set; }
+        public string CurrentText = "";
         public bool IsMaiuscActive 
         { 
             get { return KeyPressedEnumerator.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift) || Console.CapsLock; } 
@@ -97,7 +97,7 @@ namespace BIOXFramework.Input.Utility
         public InputTextProcessor(Game game) 
         {
             manager = new KeyboardManager(game);
-            manager.PressingDelay = 500;
+            manager.PressingDelay = 100;
             manager.Pressed += OnKeyPressed;
             manager.Pressing += OnKeyPressing;
             manager.Released += OnKeyRelease;

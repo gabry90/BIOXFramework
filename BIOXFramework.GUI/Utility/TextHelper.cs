@@ -13,34 +13,40 @@ namespace BIOXFramework.GUI.Utility
 
     public static class TextHelper
     {
-        public static Vector2 GetPositionAligned(TextAlignments alignement, Rectangle rect, SpriteFont font, string text, int spacingFromBorder)
+        public static Vector2 GetPositionAligned(TextAlignments alignment, Rectangle rect, SpriteFont font, string text)
         {
+            if (string.IsNullOrEmpty(text))
+                return Vector2.Zero;
+
             Vector2 textDimens = font.MeasureString(text);
 
-            int midRectWidth = (rect.X + rect.Width) / 2;
-            int midRectHeight = (rect.Y + rect.Height) / 2;
+            int midRectPosX = rect.X + (rect.Width / 2);
+            int midRectPosY = rect.Y + (rect.Height / 2);
             int midTextWidth = (int)textDimens.X / 2;
             int midTextHeight = (int)textDimens.Y / 2;
             
-            switch (alignement)
+            switch (alignment)
             {
-                case TextAlignments.Center: return new Vector2(midRectWidth - midTextWidth, midRectHeight - midTextHeight);
-                case TextAlignments.Left: return new Vector2(rect.X + spacingFromBorder, midRectHeight - midTextHeight);
-                case TextAlignments.Right: return new Vector2((rect.X + rect.Width) - textDimens.X - spacingFromBorder, midRectHeight - midTextHeight);
+                case TextAlignments.Center: return new Vector2(midRectPosX - midTextWidth, midRectPosY - midTextHeight);
+                case TextAlignments.Left: return new Vector2(rect.X, midRectPosY - midTextHeight);
+                case TextAlignments.Right: return new Vector2((rect.X + rect.Width) - textDimens.X, midRectPosY - midTextHeight);
                 default : return Vector2.Zero;
             }
         }
 
-        public static string GetVisibleText(int rectWidth, SpriteFont font, string text, int spacingFromBorder)
+        public static string GetVisibleText(int rectWidth, SpriteFont font, string text)
         {
-            if (rectWidth <= (0 + spacingFromBorder))
+            if (rectWidth <= 0)
                 return "";
+
+            if (string.IsNullOrEmpty(text))
+                return text;
 
             string visibleText = text;
 
             try
             {
-                while ((font.MeasureString(visibleText).X) + spacingFromBorder >= rectWidth)
+                while (font.MeasureString(visibleText).X >= rectWidth)
                 {
                     if (visibleText.Length == 1)
                     {

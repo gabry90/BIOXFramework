@@ -27,6 +27,8 @@ namespace BIOXFramework.GUI.Components
 
         private InputTextProcessor inputTextProcessor;
         private string lastText;
+        private string visibleText = "";
+        private Vector2 textPosition = Vector2.Zero;
 
         #endregion
 
@@ -42,7 +44,7 @@ namespace BIOXFramework.GUI.Components
 
         #endregion
 
-        #region gui base implementation
+        #region base implementation
 
         protected override void OnFocused(object sender, EventArgs e)
         {
@@ -71,36 +73,42 @@ namespace BIOXFramework.GUI.Components
                 lastText = Text;
             }
 
+            Rectangle rect = GetRectangle();
+
+            if (SpacingFromBorder > 0)
+            {
+                rect.Width = rect.Width - (SpacingFromBorder * 2);
+                rect.X = rect.X + SpacingFromBorder;
+            }
+
+            visibleText = Text;
+
+            switch (TextAlignement)
+            {
+                case TextAlignments.Center:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, Text);
+                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText);
+                    break;
+                case TextAlignments.Left:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText);
+                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text);
+                    break;
+                case TextAlignments.Right:
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText);
+                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text);
+                    break;
+            }
+
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            Vector2 position = Vector2.Zero;
-            Rectangle rect = GetRectangle();
-            string visibleText = Text;
-
-            switch (TextAlignement)
-            {
-                case TextAlignments.Center:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, Text, 0);
-                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText, 0);
-                    break;
-                case TextAlignments.Left:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText, SpacingFromBorder);
-                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text, SpacingFromBorder);
-                    break;
-                case TextAlignments.Right:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText, SpacingFromBorder);
-                    position = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text, SpacingFromBorder);
-                    break;
-            }
+            base.Draw(gameTime);
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(Font, visibleText, position, TextColor);
+            spriteBatch.DrawString(Font, visibleText, textPosition, TextColor);
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         #endregion

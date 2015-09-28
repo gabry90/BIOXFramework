@@ -27,10 +27,12 @@ namespace BIOXFramework.Test.Scenes
             switch (e.Key)
             {
                 case Keys.A:
-                    IsCursorVisible = false;
+                    if (!textbox.IsFocused)
+                        IsCursorVisible = false;
                     break;
                 case Keys.B:
-                    IsCursorVisible = true;
+                    if (!textbox.IsFocused)
+                        IsCursorVisible = true;
                     break;
                 case Keys.C:
                     Console.WriteLine(this);
@@ -67,9 +69,26 @@ namespace BIOXFramework.Test.Scenes
 
             label = new Label(game, "label1", SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
             textbox = new TextBox(game, "textbox1", textBoxTexture, animations, new Vector2(200, 200), SceneContent.Load<SpriteFont>("Fonts/curier_new"));
+            textbox.SpacingFromBorder = 20;
+            textbox.TextChanged += OnTextChanged;
             AddGuiComponent(label);
             AddGuiComponent(textbox);
             base.LoadContent();
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Console.WriteLine(string.Format(@"TEXT CHANGED:
+BEFORE: {0}
+AFTER:  {1}", 
+            e.PreviusText, 
+            e.NewText));
+        }
+
+        protected override void DetachSceneEventHandlers()
+        {
+            textbox.TextChanged -= OnTextChanged;
+            base.DetachSceneEventHandlers();
         }
 
         public override void Draw(GameTime gameTime)
