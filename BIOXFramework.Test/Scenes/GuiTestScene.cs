@@ -35,6 +35,9 @@ namespace BIOXFramework.Test.Scenes
                 case Keys.C:
                     Console.WriteLine(this);
                     break;
+                case Keys.D:
+                    textbox.Focus();
+                    break;
                 case Keys.Left:
                     if (!textbox.IsFocused)
                         sceneManager.Load<AudioTestScene>();

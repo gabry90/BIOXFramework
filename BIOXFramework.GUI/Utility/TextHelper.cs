@@ -21,7 +21,7 @@ namespace BIOXFramework.GUI.Utility
             int midRectHeight = (rect.Y + rect.Height) / 2;
             int midTextWidth = (int)textDimens.X / 2;
             int midTextHeight = (int)textDimens.Y / 2;
-
+            
             switch (alignement)
             {
                 case TextAlignments.Center: return new Vector2(midRectWidth - midTextWidth, midRectHeight - midTextHeight);
@@ -36,17 +36,22 @@ namespace BIOXFramework.GUI.Utility
             if (rectWidth <= (0 + spacingFromBorder))
                 return "";
 
-            while ((font.MeasureString(text).X) + spacingFromBorder >= rectWidth)
+            string visibleText = text;
+
+            try
             {
-                if (text.Length == 1)
+                while ((font.MeasureString(visibleText).X) + spacingFromBorder >= rectWidth)
                 {
-                    text = "";
-                    break;
+                    if (visibleText.Length == 1)
+                    {
+                        visibleText = "";
+                        break;
+                    }
+                    visibleText = visibleText.Remove(0, 1);
                 }
-                text = text.Remove(0, 1);
             }
-            
-            return text;
+            catch { visibleText = text; }
+            return visibleText;
         }
     }
 }

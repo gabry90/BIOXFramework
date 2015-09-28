@@ -81,7 +81,6 @@ namespace BIOXFramework.Scene
                 {
                     CurrentCursor.Dispose();
                     cursorContent.Unload();
-                    guiComponents.Remove(CurrentCursor);
                 }
 
                 try
@@ -100,8 +99,6 @@ namespace BIOXFramework.Scene
                 {
                     throw new SceneManagerException(ex.Message);
                 }
-
-                guiComponents.Add(currentCursor);
             }
         }
 
@@ -537,6 +534,9 @@ Visibile:   {4}
 
         public override void Update(GameTime gameTime)
         {
+            if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
+                currentCursor.Update(gameTime); //make sure update before all components
+
             //update all game component
             for (int i = 0; i < gameComponents.Count; i ++)
             {
@@ -578,9 +578,6 @@ Visibile:   {4}
 
             if (EnableGui)
             {
-                if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
-                    currentCursor.DrawOrder = 1;    //make sure cursor at top of all components
-
                 //draw all GuiBase component
                 for (int i = 0; i < guiComponents.Count; i++)
                 {
@@ -588,6 +585,9 @@ Visibile:   {4}
                         guiComponents[i].Draw(gameTime);
                 }
             }
+
+            if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
+                currentCursor.Draw(gameTime);    //make sure cursor at top of all components
 
             base.Draw(gameTime);
 
@@ -643,6 +643,9 @@ Visibile:   {4}
                         }
                         guiComponents.Clear();
                     }
+
+                    if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
+                        currentCursor.Dispose();    //dispose cursor
 
                     //dispatch unloaded event
                     sceneManager.SceneUnloadedEventDispatcher(new SceneEventArgs(this.GetType()));
