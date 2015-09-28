@@ -23,6 +23,7 @@ namespace BIOXFramework.Input.Utility
                 case Keys.G: return (maiusc) ? 'G' : 'g';
                 case Keys.H: return (maiusc) ? 'H' : 'h';
                 case Keys.I: return (maiusc) ? 'I' : 'i';
+                case Keys.J: return (maiusc) ? 'J' : 'j';
                 case Keys.K: return (maiusc) ? 'K' : 'k';
                 case Keys.L: return (maiusc) ? 'L' : 'l';
                 case Keys.M: return (maiusc) ? 'M' : 'm';
@@ -30,7 +31,7 @@ namespace BIOXFramework.Input.Utility
                 case Keys.O: return (maiusc) ? 'O' : 'o';
                 case Keys.P: return (maiusc) ? 'P' : 'p';
                 case Keys.Q: return (maiusc) ? 'Q' : 'q';
-                case Keys.R: return (maiusc) ? 'R' : 's';
+                case Keys.R: return (maiusc) ? 'R' : 'r';
                 case Keys.S: return (maiusc) ? 'S' : 's';
                 case Keys.T: return (maiusc) ? 'T' : 't';
                 case Keys.U: return (maiusc) ? 'U' : 'u';

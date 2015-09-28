@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
 using BIOXFramework.Input.Utility;
 using BIOXFramework.GUI.Utility;
+using System.Text;
 
 namespace BIOXFramework.GUI.Components
 {
@@ -18,6 +19,7 @@ namespace BIOXFramework.GUI.Components
         public SpriteFont Font;
         public TextAlignments TextAlignement = TextAlignments.Center;
         public int SpacingFromBorder = 5;
+        public bool IsPassword = false;
         public int MaxLenght = 255;
         public string Text
         {
@@ -64,6 +66,9 @@ namespace BIOXFramework.GUI.Components
 
         public override void Update(GameTime gameTime)
         {
+            if (Text.Length > MaxLenght)
+                Text = Text.Remove(Text.Length - 1);
+
             if (lastText == null)
                 lastText = Text;
 
@@ -78,24 +83,35 @@ namespace BIOXFramework.GUI.Components
             if (SpacingFromBorder > 0)
             {
                 rect.Width = rect.Width - (SpacingFromBorder * 2);
+                if (rect.Width < 0) rect.Width = 0;
                 rect.X = rect.X + SpacingFromBorder;
             }
 
-            visibleText = Text;
+            string finalText = "";
+
+            if (IsPassword)
+            {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < Text.Length; i++)
+                    builder.Append("*");
+                finalText = builder.ToString();
+            }
+            else
+                finalText = Text;
 
             switch (TextAlignement)
             {
                 case TextAlignments.Center:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, Text);
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, finalText);
                     textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText);
                     break;
                 case TextAlignments.Left:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText);
-                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text);
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, finalText);
+                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText);
                     break;
                 case TextAlignments.Right:
-                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, visibleText);
-                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, Text);
+                    visibleText = TextHelper.GetVisibleText(rect.Width, Font, finalText);
+                    textPosition = TextHelper.GetPositionAligned(TextAlignement, rect, Font, visibleText);
                     break;
             }
 

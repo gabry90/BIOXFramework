@@ -59,7 +59,30 @@ namespace BIOXFramework.Input.Utility
 
         #region vars
 
-        public string CurrentText = "";
+        public string CurrentText
+        {
+            get { return currentText; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    currentText = "";
+                    inputTextPosition = 0;
+                }
+                else
+                {
+                    if (value.Length > currentText.Length)
+                        inputTextPosition = value.Length;
+                    else
+                    {
+                        if (value.Length < inputTextPosition)
+                            inputTextPosition = value.Length;
+                    }
+                    currentText = value;
+                }
+            }
+        }
+            
         public bool IsMaiuscActive 
         { 
             get { return KeyPressedEnumerator.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift) || Console.CapsLock; } 
@@ -86,6 +109,7 @@ namespace BIOXFramework.Input.Utility
             }
         }
 
+        private string currentText;
         private int inputTextPosition = 0;
         private KeyboardManager manager;
         private Game game;
@@ -150,22 +174,32 @@ namespace BIOXFramework.Input.Utility
         {
             if (key == Keys.Back && inputTextPosition > 0)
             {
-                CurrentText = CurrentText.Length == 0 ? "" : CurrentText.Remove(inputTextPosition - 1, 1);
-                inputTextPosition--;
+                currentText = currentText.Length == 0 ? "" : currentText.Remove(inputTextPosition - 1, 1);
+                if (inputTextPosition > currentText.Length) inputTextPosition--;
                 return;
             }
 
             if (key == Keys.Delete && inputTextPosition < CurrentText.Length)
             {
-                CurrentText = CurrentText.Length == 0 ? "" : CurrentText.Remove(inputTextPosition, 1);
+                currentText = currentText.Length == 0 ? "" : currentText.Remove(inputTextPosition, 1);
                 return;
             }
 
             Char? text = KeyboardHelper.ConvertKeyToChar(key, IsMaiuscActive);
             if (text.HasValue)
             {
-                CurrentText = string.Concat(CurrentText == null ? "" : CurrentText, text.Value);
-                inputTextPosition++;
+                if (currentText == null)
+                    currentText = "";
+                else
+                {
+                    if (inputTextPosition < currentText.Length)
+                        currentText = currentText.Insert(inputTextPosition, text.Value.ToString());
+                    else
+                    {
+                        currentText = string.Concat(currentText, text.Value);
+                        inputTextPosition++;
+                    }
+                }
             }
         }
 
