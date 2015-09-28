@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Content;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
-using System.Text;
 using BIOXFramework.GUI;
-using Microsoft.Xna.Framework.Content;
 using BIOXFramework.Physics.Collision;
 using BIOXFramework.Physics;
 using BIOXFramework.Physics.Gravity;
+using BIOXFramework.GUI.Components;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework.Scene
 {
@@ -21,12 +22,16 @@ namespace BIOXFramework.Scene
 
         public bool IsCursorVisible
         {
-            get { return guiManager.CurrentCursor.Visible; }
-            set { guiManager.CurrentCursor.Visible = value; }
+            get { return CurrentCursor == null ? false : CurrentCursor.Visible; }
+            set { if (CurrentCursor != null) CurrentCursor.Visible = value; }
         }
+        public Cursor CurrentCursor 
+        {
+            get { return currentCursor; }
+        }
+        public bool EnableGui = true;
 
         protected static SceneManager sceneManager;
-        protected static GuiManager guiManager;
         protected static SongManager songManager;
         protected static SoundManager soundManager;
         protected static KeyboardManager keyboardManager;
@@ -39,8 +44,11 @@ namespace BIOXFramework.Scene
         protected bool isPaused = false;
         protected bool exitGameRequest = false;
 
-        private List<GameComponent> _gameComponents;
-        private List<DrawableGameComponent> _drawableGameComponents;
+        private Cursor currentCursor;
+        private ContentManager cursorContent;
+        private List<GameComponent> gameComponents;
+        private List<DrawableGameComponent> drawableGameComponents;
+        private List<GuiBase> guiComponents;
 
         #endregion
 
@@ -52,8 +60,9 @@ namespace BIOXFramework.Scene
             this.game = game;
             Visible = true;
             Enabled = true;
-            _gameComponents = new List<GameComponent>();
-            _drawableGameComponents = new List<DrawableGameComponent>();
+            gameComponents = new List<GameComponent>();
+            drawableGameComponents = new List<DrawableGameComponent>();
+            guiComponents = new List<GuiBase>();
             InitializeServices();
         }
 
@@ -61,18 +70,53 @@ namespace BIOXFramework.Scene
 
         #region public methods
 
+        public void SetCursor(string path, bool lastValidPosition = true)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            lock (guiComponents)
+            {
+                if (currentCursor != null && !currentCursor.IsDisposed)
+                {
+                    CurrentCursor.Dispose();
+                    cursorContent.Unload();
+                    guiComponents.Remove(CurrentCursor);
+                }
+
+                try
+                {
+                    currentCursor = new Cursor(game, cursorContent.Load<Texture2D>(path), Vector2.Zero);
+                    if (lastValidPosition)
+                        currentCursor.Position = new Vector2(mouseManager.MousePosition.X, mouseManager.MousePosition.Y);
+                    else
+                    {
+                        currentCursor.Position = new Vector2(
+                            (game.GraphicsDevice.Viewport.Bounds.Size.X / 2) + (currentCursor.Rectangle.Width / 2),
+                            (game.GraphicsDevice.Viewport.Bounds.Size.Y / 2) + (currentCursor.Rectangle.Height / 2));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new SceneManagerException(ex.Message);
+                }
+
+                guiComponents.Add(currentCursor);
+            }
+        }
+
         public virtual void Pause()
         {
             if (isPaused) return;
             isPaused = true;
-            sceneManager.ScenePausedEventDispatcher(new ScenePausedEventArgs(this.GetType()));
+            sceneManager.ScenePausedEventDispatcher(new SceneEventArgs(this.GetType()));
         }
 
         public virtual void Resume()
         {
             if (!isPaused) return;
             isPaused = false;
-            sceneManager.SceneResumedEventDispatcher(new SceneResumedEventArgs(this.GetType()));
+            sceneManager.SceneResumedEventDispatcher(new SceneEventArgs(this.GetType()));
         }
 
         public override string ToString()
@@ -96,9 +140,9 @@ IsPaused: {3}
 
             content.AppendFormat(@"
 Game Components: {0}
-------------------------------------------------", _gameComponents.Count);
+------------------------------------------------", gameComponents.Count);
 
-            for (int i = 0; i < _gameComponents.Count; i++)
+            for (int i = 0; i < gameComponents.Count; i++)
             {
                 content.AppendFormat(@"
 Type:       {0}
@@ -106,17 +150,17 @@ HashCode:   {1}
 Interfaces: {2}     
 Enabled:    {3}
 ------------------------------------------------",
-                _gameComponents[i].GetType().FullName,
-                string.Join(", ", _gameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
-                _gameComponents[i].GetHashCode(),
-                _gameComponents[i].Enabled);
+                gameComponents[i].GetType().FullName,
+                string.Join(", ", gameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
+                gameComponents[i].GetHashCode(),
+                gameComponents[i].Enabled);
             }
 
             content.AppendFormat(@"
 Drawable Game Components: {0}
-------------------------------------------------", _drawableGameComponents.Count);
+------------------------------------------------", drawableGameComponents.Count);
 
-            for (int i = 0; i < _drawableGameComponents.Count; i++)
+            for (int i = 0; i < drawableGameComponents.Count; i++)
             {
                 content.AppendFormat(@"
 Type:       {0}
@@ -125,11 +169,11 @@ Interfaces: {2}
 Enabled:    {3}
 Visibile:   {4}
 ------------------------------------------------",
-                _drawableGameComponents[i].GetType().FullName,
-                _drawableGameComponents[i].GetHashCode(),
-                string.Join(", ", _drawableGameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
-                _drawableGameComponents[i].Enabled,
-                _drawableGameComponents[i].Visible);
+                drawableGameComponents[i].GetType().FullName,
+                drawableGameComponents[i].GetHashCode(),
+                string.Join(", ", drawableGameComponents[i].GetType().GetInterfaces().Select(x => x.Name)),
+                drawableGameComponents[i].Enabled,
+                drawableGameComponents[i].Visible);
             }
 
             return content.ToString();
@@ -147,6 +191,7 @@ Visibile:   {4}
                 if (content == null)
                     throw new SceneManagerException("the BIOXScene required ContentManager game service!");
                 SceneContent = new ContentManager(content.ServiceProvider, content.RootDirectory);
+                cursorContent = new ContentManager(content.ServiceProvider, content.RootDirectory);
             }
 
             if (sceneManager == null)
@@ -154,13 +199,6 @@ Visibile:   {4}
                 sceneManager = game.Services.GetService<SceneManager>();
                 if (sceneManager == null)
                     throw new SceneManagerException("the BIOXScene required SceneManager game service!");
-            }
-
-            if (guiManager == null)
-            {
-                guiManager = game.Services.GetService<GuiManager>();
-                if (guiManager == null)
-                    throw new SceneManagerException("the BIOXScene required GuiManager game service!");
             }
 
             if (songManager == null)
@@ -210,11 +248,11 @@ Visibile:   {4}
 
         protected void AddGameComponent(GameComponent component)
         {
-            lock (_gameComponents)
+            lock (gameComponents)
             {
-                if (component != null && !_gameComponents.Contains(component))
+                if (component != null && !(component is GuiBase) && gameComponents.Contains(component))
                 {
-                    _gameComponents.Add(component);
+                    gameComponents.Add(component);
                     collision2DManager.AddComponent(component);
                 }
             }
@@ -222,43 +260,54 @@ Visibile:   {4}
 
         protected void RemoveGameComponent(GameComponent component)
         {
-            lock (_gameComponents)
+            lock (gameComponents)
             {
-                if (component != null && _gameComponents.Contains(component))
+                if (component != null && !(component is GuiBase) && gameComponents.Contains(component))
                 {
                     collision2DManager.RemoveComponent(component);
-                    if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                    if (!(component is IPersistentComponent))
                         component.Dispose();
-                    _gameComponents.Remove(component);
+                    gameComponents.Remove(component);
                 }
             }
         }
 
         protected void AddDrawableGameComponent(DrawableGameComponent component)
         {
-            lock (_drawableGameComponents)
+            lock (drawableGameComponents)
             {
-                if (component != null && !_drawableGameComponents.Contains(component))
+                if (component != null && !(component is GuiBase) && !drawableGameComponents.Contains(component))
                 {
                     collision2DManager.AddComponent(component);
-                    _drawableGameComponents.Add(component);
+                    drawableGameComponents.Add(component);
                 }
             }
         }
 
         protected void RemoveDrawableGameComponent(DrawableGameComponent component)
         {
-            lock (_drawableGameComponents)
+            lock (drawableGameComponents)
             {
-                if (component != null && _drawableGameComponents.Contains(component))
+                if (component != null && !(component is GuiBase) && drawableGameComponents.Contains(component))
                 {
                     collision2DManager.RemoveComponent(component);
-                    if (!component.GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
+                    if (!(component is IPersistentComponent))
                         component.Dispose();
-
-                    _drawableGameComponents.Remove(component);
+                    drawableGameComponents.Remove(component);
                 }
             }
+        }
+
+        protected void AddGuiComponent(GuiBase gui)
+        {
+            if (gui != null && !(gui is Cursor) && !guiComponents.Exists(x => string.Equals(x.Name, gui.Name)))
+                guiComponents.Add(gui);
+        }
+
+        protected void RemoveGuiComponent(GuiBase gui)
+        {
+            if (gui != null && !(gui is Cursor) && guiComponents.Exists(x => string.Equals(x.Name, gui.Name)))
+                guiComponents.Remove(gui);
         }
 
         protected virtual void AttachSceneEventHandlers()
@@ -459,62 +508,91 @@ Visibile:   {4}
             AttachSceneEventHandlers();
 
             //add game component to scene
-            _gameComponents.Add(soundManager);
-            _gameComponents.Add(keyboardManager);
-            _gameComponents.Add(mouseManager);
-            _gameComponents.Add(collision2DManager);
+            gameComponents.Add(soundManager);
+            gameComponents.Add(keyboardManager);
+            gameComponents.Add(mouseManager);
+            gameComponents.Add(collision2DManager);
+
+            //dispatch scene initialized event
+            sceneManager.SceneInitializedEventDispatcher(new SceneEventArgs(this.GetType()));
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            //add common logic here...
-            base.LoadContent();
-
-            //add cursor over all drawable game component
-            _drawableGameComponents.Add(guiManager.CurrentCursor);
-
             //dispatch scene loaded event
-            sceneManager.SceneLoadedEventDispatcher(new SceneLoadedEventArgs(this.GetType()));
+            sceneManager.SceneLoadedEventDispatcher(new SceneEventArgs(this.GetType()));
+
+            base.LoadContent();
         }
 
         protected override void UnloadContent()
         {
-            //unload current scene content
+            //unload current scene contents
             SceneContent.Unload();
+            cursorContent.Unload();
             base.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             //update all game component
-            for (int i = 0; i < _gameComponents.Count; i ++)
+            for (int i = 0; i < gameComponents.Count; i ++)
             {
-                if (_gameComponents[i].Enabled && (!isPaused || (isPaused && _gameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
-                    _gameComponents[i].Update(gameTime);
+                if (gameComponents[i].Enabled && (!isPaused || (isPaused && gameComponents[i] is INonPausableComponent)))
+                    gameComponents[i].Update(gameTime);
             }
 
             //update all drawable component
-            for (int i = 0; i < _drawableGameComponents.Count; i++)
+            for (int i = 0; i < drawableGameComponents.Count; i++)
             {
-                if (_drawableGameComponents[i].Enabled && (!isPaused || (isPaused && _drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
-                    _drawableGameComponents[i].Update(gameTime);
+                if (drawableGameComponents[i].Enabled && (!isPaused || (isPaused && drawableGameComponents[i] is INonPausableComponent)))
+                    drawableGameComponents[i].Update(gameTime);
+            }
+
+            if (EnableGui)
+            {
+                //update all GuiBase component
+                for (int i = 0; i < guiComponents.Count; i++)
+                {
+                    if (guiComponents[i].Enabled && (!isPaused || (isPaused && guiComponents[i] is INonPausableComponent)))
+                        guiComponents[i].Update(gameTime);
+                }
             }
 
             base.Update(gameTime);
+
+            //dispatch scene updated event
+            sceneManager.SceneUpdatedEventDispatcher(new SceneEventArgs(this.GetType()));
         }
 
         public override void Draw(GameTime gameTime)
         {
             //draw all drawable game component
-            for (int i = 0; i < _drawableGameComponents.Count; i++)
+            for (int i = 0; i < drawableGameComponents.Count; i++)
             {
-                if ( _drawableGameComponents[i].Enabled && (!isPaused || (isPaused && _drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(INonPausableComponent)))))
-                    _drawableGameComponents[i].Draw(gameTime);
+                if (drawableGameComponents[i].Enabled && (!isPaused || (isPaused && drawableGameComponents[i] is INonPausableComponent)))
+                    drawableGameComponents[i].Draw(gameTime);
+            }
+
+            if (EnableGui)
+            {
+                if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
+                    currentCursor.DrawOrder = 1;    //make sure cursor at top of all components
+
+                //draw all GuiBase component
+                for (int i = 0; i < guiComponents.Count; i++)
+                {
+                    if (guiComponents[i].Enabled && (!isPaused || (isPaused && guiComponents[i] is INonPausableComponent)))
+                        guiComponents[i].Draw(gameTime);
+                }
             }
 
             base.Draw(gameTime);
+
+            //dispatch scene drawed event
+            sceneManager.SceneDrawedEventDispatcher(new SceneEventArgs(this.GetType()));
         }
 
         #endregion
@@ -534,29 +612,40 @@ Visibile:   {4}
                     collision2DManager.ClearComponents();
 
                     //disposing all game component
-                    lock (_gameComponents)
+                    lock (gameComponents)
                     {
-                        for (int i = 0; i < _gameComponents.Count; i++)
+                        for (int i = 0; i < gameComponents.Count; i++)
                         {
-                            if (exitGameRequest || !_gameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
-                                _gameComponents[i].Dispose();
+                            if (exitGameRequest || !(gameComponents[i] is IPersistentComponent))
+                                gameComponents[i].Dispose();
                         }
-                        _gameComponents.Clear();
+                        gameComponents.Clear();
                     }
 
                     //disposing all drawable game component
-                    lock (_drawableGameComponents)
+                    lock (drawableGameComponents)
                     {
-                        for (int i = 0; i < _drawableGameComponents.Count; i++)
+                        for (int i = 0; i < drawableGameComponents.Count; i++)
                         {
-                            if (exitGameRequest || !_drawableGameComponents[i].GetType().GetInterfaces().Contains(typeof(IPersistentComponent)))
-                                _drawableGameComponents[i].Dispose();
+                            if (exitGameRequest || !(drawableGameComponents[i] is IPersistentComponent))
+                                drawableGameComponents[i].Dispose();
                         }
-                        _drawableGameComponents.Clear();
+                        drawableGameComponents.Clear();
+                    }
+
+                    //disposing all GuiBase component
+                    lock (guiComponents)
+                    {
+                        for (int i = 0; i < guiComponents.Count; i++)
+                        {
+                            if (exitGameRequest || !(guiComponents[i] is IPersistentComponent))
+                                guiComponents[i].Dispose();
+                        }
+                        guiComponents.Clear();
                     }
 
                     //dispatch unloaded event
-                    sceneManager.SceneUnloadedEventDispatcher(new SceneUnloadedEventArgs(this.GetType()), game);
+                    sceneManager.SceneUnloadedEventDispatcher(new SceneEventArgs(this.GetType()));
                 }
             }
             finally

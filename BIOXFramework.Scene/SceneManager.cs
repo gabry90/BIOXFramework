@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Scene
 {
@@ -9,10 +10,13 @@ namespace BIOXFramework.Scene
     {
         #region vars
 
-        public event EventHandler<SceneLoadedEventArgs> Loaded;
-        public event EventHandler<SceneUnloadedEventArgs> Unloaded;
-        public event EventHandler<ScenePausedEventArgs> Paused;
-        public event EventHandler<SceneResumedEventArgs> Resumed;
+        public event EventHandler<SceneEventArgs> Initialized;
+        public event EventHandler<SceneEventArgs> Loaded;
+        public event EventHandler<SceneEventArgs> Unloaded;
+        public event EventHandler<SceneEventArgs> Updated;
+        public event EventHandler<SceneEventArgs> Drawed;
+        public event EventHandler<SceneEventArgs> Paused;
+        public event EventHandler<SceneEventArgs> Resumed;
 
         public Game GameObj = null;
 
@@ -104,28 +108,49 @@ namespace BIOXFramework.Scene
 
         #region dispatchers
 
-        internal void SceneLoadedEventDispatcher(SceneLoadedEventArgs e)
+        internal void SceneInitializedEventDispatcher(SceneEventArgs e)
+        {
+            var h = Initialized;
+            if (h != null)
+                h(this, e);
+        }
+
+        internal void SceneLoadedEventDispatcher(SceneEventArgs e)
         {
             var h = Loaded;
             if (h != null)
                 h(null, e);
         }
 
-        internal void SceneUnloadedEventDispatcher(SceneUnloadedEventArgs e, Game game)
+        internal void SceneUnloadedEventDispatcher(SceneEventArgs e)
         {
             var h = Unloaded;
             if (h != null)
                 h(null, e);
         }
 
-        internal void ScenePausedEventDispatcher(ScenePausedEventArgs e)
+        internal void SceneUpdatedEventDispatcher(SceneEventArgs e)
+        {
+            var h = Updated;
+            if (h != null)
+                h(null, e);
+        }
+
+        internal void SceneDrawedEventDispatcher(SceneEventArgs e)
+        {
+            var h = Drawed;
+            if (h != null)
+                h(null, e);
+        }
+
+        internal void ScenePausedEventDispatcher(SceneEventArgs e)
         {
             var h = Paused;
             if (h != null)
                 h(null, e);
         }
 
-        internal void SceneResumedEventDispatcher(SceneResumedEventArgs e)
+        internal void SceneResumedEventDispatcher(SceneEventArgs e)
         {
             var h = Resumed;
             if (h != null)
@@ -143,9 +168,13 @@ namespace BIOXFramework.Scene
                 if (disposing)
                 {
                     Unload();
+                    if (Initialized != null) Initialized = null;
                     if (Loaded != null) Loaded = null;
                     if (Unloaded != null) Unloaded = null;
+                    if (Updated != null) Updated = null;
+                    if (Drawed != null) Drawed = null;
                     if (Paused != null) Paused = null;
+                    if (Resumed != null) Resumed = null;
                     lock (_scenes) { _scenes.Clear(); }
                 }
             }

@@ -47,8 +47,8 @@ namespace BIOXFramework.GUI.Components
 
         #region constructors
 
-        public AnimatedGuiBase(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
-            : base(game, animatedTexture.Texture, position)
+        public AnimatedGuiBase(Game game, string name, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
+            : base(game, name, animatedTexture.Texture, position)
         {
             this.animations = animations;
             this.animatedTexture = animatedTexture;

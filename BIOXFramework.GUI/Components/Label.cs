@@ -16,8 +16,8 @@ namespace BIOXFramework.GUI.Components
 
         #region constructors
 
-        public Label(Game game, SpriteFont font, string text, Vector2 position)
-            : base(game, null, position)
+        public Label(Game game, string name, SpriteFont font, string text, Vector2 position)
+            : base(game, name, null, position)
         {
             Text = text;
             Font = font;

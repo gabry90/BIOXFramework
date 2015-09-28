@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Audio;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Test.Scenes
 {

@@ -12,7 +12,7 @@ namespace BIOXFramework.GUI.Components
         #region constructors
 
         public Cursor(Game game, Texture2D texture, Vector2 position)
-            : base(game, texture, position)
+            : base(game, null, texture, position)
         { }
 
         #endregion

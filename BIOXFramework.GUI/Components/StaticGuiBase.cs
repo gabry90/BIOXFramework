@@ -8,8 +8,8 @@ namespace BIOXFramework.GUI.Components
     {
         #region constructors
 
-        public StaticGuiBase(Game game, Texture2D texture, Vector2 position)
-            : base(game, texture, position)
+        public StaticGuiBase(Game game, string name, Texture2D texture, Vector2 position)
+            : base(game, name, texture, position)
         { }
 
         #endregion

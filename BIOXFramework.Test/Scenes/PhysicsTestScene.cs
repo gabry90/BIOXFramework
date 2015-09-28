@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
 using BIOXFramework.Physics;
 using BIOXFramework.Test.Gameplay;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Test.Scenes
 {

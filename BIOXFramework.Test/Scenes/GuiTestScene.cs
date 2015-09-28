@@ -36,10 +36,12 @@ namespace BIOXFramework.Test.Scenes
                     Console.WriteLine(this);
                     break;
                 case Keys.Left:
-                    sceneManager.Load<AudioTestScene>();
+                    if (!textbox.IsFocused)
+                        sceneManager.Load<AudioTestScene>();
                     break;
                 case Keys.Right:
-                    sceneManager.Load<PhysicsTestScene>();
+                    if (!textbox.IsFocused)
+                        sceneManager.Load<PhysicsTestScene>();
                     break;
             }
 
@@ -60,10 +62,10 @@ namespace BIOXFramework.Test.Scenes
             };
             AnimatedTexture textBoxTexture = new AnimatedTexture(game, SceneContent.Load<Texture2D>("UI image/textbox_example"), regions);
 
-            label = new Label(game, SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
-            textbox = new TextBox(game, textBoxTexture, animations, new Vector2(200, 200), SceneContent.Load<SpriteFont>("Fonts/curier_new"));
-            AddDrawableGameComponent(label);
-            AddDrawableGameComponent(textbox);
+            label = new Label(game, "label1", SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
+            textbox = new TextBox(game, "textbox1", textBoxTexture, animations, new Vector2(200, 200), SceneContent.Load<SpriteFont>("Fonts/curier_new"));
+            AddGuiComponent(label);
+            AddGuiComponent(textbox);
             base.LoadContent();
         }
 

@@ -32,8 +32,8 @@ namespace BIOXFramework.GUI.Components
 
         #region constructors
 
-        public TextBox(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position, SpriteFont font, string text = "")
-            : base(game, animatedTexture, animations, position)
+        public TextBox(Game game, string name, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position, SpriteFont font, string text = "")
+            : base(game, name, animatedTexture, animations, position)
         {
             inputTextProcessor = new InputTextProcessor(game);
             Text = text;

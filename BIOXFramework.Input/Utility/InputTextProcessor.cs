@@ -31,12 +31,12 @@ namespace BIOXFramework.Input.Utility
 
             public static bool ContainsAll(params Keys[] keys)
             {
-                return keys.Count(x => keys.Contains(x)) == keys.Count();
+                return KeyPressedEnumerator.keys.Count(x => keys.Contains(x)) == keys.Count();
             }
 
             public static bool ContainsOneOrMore(params Keys[] keys)
             {
-                return keys.Count(x => keys.Contains(x)) > 0;
+                return KeyPressedEnumerator.keys.Count(x => keys.Contains(x)) > 0;
             }
 
             public static Keys? Get(int index)
@@ -72,8 +72,23 @@ namespace BIOXFramework.Input.Utility
                 return Int32.TryParse(CurrentText, out num);
             }
         }
+        public int InputTextPosition
+        {
+            get { return inputTextPosition; }
+            set
+            {
+                if (value < 0)
+                    inputTextPosition = 0;
+                else if (value > CurrentText.Length)
+                    inputTextPosition = CurrentText.Length;
+                else
+                    inputTextPosition = value;
+            }
+        }
 
+        private int inputTextPosition = 0;
         private KeyboardManager manager;
+        private Game game;
 
         #endregion
 
@@ -82,11 +97,13 @@ namespace BIOXFramework.Input.Utility
         public InputTextProcessor(Game game) 
         {
             manager = new KeyboardManager(game);
-            manager.PressingDelay = 100;
+            manager.PressingDelay = 500;
             manager.Pressed += OnKeyPressed;
             manager.Pressing += OnKeyPressing;
             manager.Released += OnKeyRelease;
             manager.EnableCapture = false;
+            game.Components.Add(manager);
+            this.game = game;
         }
 
         #endregion
@@ -107,11 +124,49 @@ namespace BIOXFramework.Input.Utility
 
         #region private methods
 
+        private void UpdateTextPosition(Keys key)
+        {
+            //update input text index position
+            switch (key)
+            {
+                case Keys.Left:
+                {
+                    inputTextPosition--;
+                    if (inputTextPosition < 0)
+                        inputTextPosition = 0;
+                    break;
+                }
+                case Keys.Right:
+                {
+                    inputTextPosition++;
+                    if (inputTextPosition > CurrentText.Length)
+                        inputTextPosition = CurrentText.Length;
+                    break;
+                }
+            }
+        }
+
         private void UpdateText(Keys key)
         {
+            if (key == Keys.Back && inputTextPosition > 0)
+            {
+                CurrentText = CurrentText.Length == 0 ? "" : CurrentText.Remove(inputTextPosition - 1, 1);
+                inputTextPosition--;
+                return;
+            }
+
+            if (key == Keys.Delete && inputTextPosition < CurrentText.Length)
+            {
+                CurrentText = CurrentText.Length == 0 ? "" : CurrentText.Remove(inputTextPosition, 1);
+                return;
+            }
+
             Char? text = KeyboardHelper.ConvertKeyToChar(key, IsMaiuscActive);
             if (text.HasValue)
-                CurrentText = string.Concat(CurrentText == null ? "" : CurrentText, text);
+            {
+                CurrentText = string.Concat(CurrentText == null ? "" : CurrentText, text.Value);
+                inputTextPosition++;
+            }
         }
 
         #endregion
@@ -121,19 +176,20 @@ namespace BIOXFramework.Input.Utility
         private void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
             KeyPressedEnumerator.Add(e.Key);
+            UpdateTextPosition(e.Key);
             UpdateText(e.Key);
         }
 
         private void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
             KeyPressedEnumerator.Add(e.Key);
+            UpdateTextPosition(e.Key);
             UpdateText(e.Key);
         }
 
         private void OnKeyRelease(object sender, KeyboardReleasedEventArgs e)
         {
             KeyPressedEnumerator.Remove(e.Key);
-            UpdateText(e.Key);
         }
 
         #endregion
@@ -146,6 +202,7 @@ namespace BIOXFramework.Input.Utility
             manager.Pressing -= OnKeyPressing;
             manager.Released -= OnKeyRelease;
             manager.Dispose();
+            game.Components.Remove(manager);
             KeyPressedEnumerator.Clear();
         }
 

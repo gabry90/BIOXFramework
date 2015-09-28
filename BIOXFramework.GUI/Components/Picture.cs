@@ -9,8 +9,8 @@ namespace BIOXFramework.GUI.Components
     {
         #region constructors
 
-        public Picture(Game game, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
-            : base(game, animatedTexture, animations, position)
+        public Picture(Game game, string name, AnimatedTexture animatedTexture, List<AnimatedGuiAnimations> animations, Vector2 position)
+            : base(game, name, animatedTexture, animations, position)
         { }
 
         #endregion

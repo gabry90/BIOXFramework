@@ -18,6 +18,7 @@ namespace BIOXFramework.Input
         public event EventHandler<MousePositionChangedEventArgs> PositionChanged;
         public event EventHandler WhellUp;
         public event EventHandler WhellDown;
+        public Point MousePosition { get; private set; }
         public bool EnableCapture;
         public int PressingDelay
         {
@@ -117,7 +118,7 @@ namespace BIOXFramework.Input
 
         #endregion
 
-        #region game implementations
+        #region component implementations
 
         public override void Update(GameTime gameTime)
         {
@@ -168,7 +169,10 @@ namespace BIOXFramework.Input
             {
                 //mouse position changed if is inside window
                 if (game.GraphicsDevice.Viewport.Bounds.Contains(currentMouseState.Position))
+                {
+                    MousePosition = currentMouseState.Position;
                     MousePositionChangedEventDispatcher(new MousePositionChangedEventArgs(currentMouseState.Position));
+                }
             }
 
             if (currentMouseState.ScrollWheelValue > _oldMouseState.ScrollWheelValue)

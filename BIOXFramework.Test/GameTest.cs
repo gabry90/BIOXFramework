@@ -29,7 +29,6 @@ namespace BIOXFramework.Test
         public SpriteBatch spriteBatch;
 
         private SceneManager sceneManager;
-        private GuiManager guiManager;
         private KeyboardManager keyboardManager;
 
         public GameTest()
@@ -41,14 +40,20 @@ namespace BIOXFramework.Test
             TargetElapsedTime = TimeSpan.FromMilliseconds(24);
         }
 
-        private void OnSceneLoaded(object sender, SceneLoadedEventArgs e)
+        private void OnSceneInitialized(object sender, SceneEventArgs e)
         {
-            Console.WriteLine("SCENE LOADED:   " + e.Type.FullName);
+            sceneManager.GetCurrentScene().SetCursor("UI image/cursor");
+            Console.WriteLine("SCENE INITIALIZED:   " + e.Type.FullName);
         }
 
-        private void OnSceneUnloaded(object sender, SceneUnloadedEventArgs e)
+        private void OnSceneLoaded(object sender, SceneEventArgs e)
         {
-            Console.WriteLine("SCENE UNLOADED: " + e.Type.FullName);
+            Console.WriteLine("SCENE LOADED:        " + e.Type.FullName);
+        }
+
+        private void OnSceneUnloaded(object sender, SceneEventArgs e)
+        {
+            Console.WriteLine("SCENE UNLOADED:      " + e.Type.FullName);
         }
 
         private void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
@@ -61,6 +66,7 @@ namespace BIOXFramework.Test
         {
             sceneManager = this.Services.GetService<SceneManager>();
             sceneManager.GameObj = this;
+            sceneManager.Initialized += OnSceneInitialized;
             sceneManager.Loaded += OnSceneLoaded;
             sceneManager.Unloaded += OnSceneUnloaded;
 
@@ -70,10 +76,6 @@ namespace BIOXFramework.Test
             //add spriteBatch to services
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.Services.AddService(typeof(SpriteBatch), spriteBatch);
-
-            //set cursor for all scenes
-            guiManager = this.Services.GetService<GuiManager>();
-            guiManager.CurrentCursor = new Cursor(this, Content.Load<Texture2D>("UI image/cursor"), Vector2.Zero);
 
             //load input scene with first scene
             sceneManager.Load<PhysicsTestScene>();
@@ -93,6 +95,7 @@ namespace BIOXFramework.Test
             {
                 if (disposing)
                 {
+                    sceneManager.Initialized -= OnSceneInitialized;
                     sceneManager.Loaded -= OnSceneLoaded;
                     sceneManager.Unloaded -= OnSceneUnloaded;
                     keyboardManager.Pressed -= OnKeyPressed;

@@ -7,6 +7,7 @@ using BIOXFramework.Input.Events;
 using BIOXFramework.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Physics.Collision;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Test.Scenes
 {

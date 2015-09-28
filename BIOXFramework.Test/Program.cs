@@ -45,7 +45,6 @@ namespace BIOXFramework.Test
             game.Services.AddService<KeyboardManager>(new KeyboardManager(game));
             game.Services.AddService<MouseManager>(new MouseManager(game));
             game.Services.AddService<GamepadManager>(new GamepadManager(game));
-            game.Services.AddService<GuiManager>(new GuiManager(game));
             game.Services.AddService<Collision2DManager>(new Collision2DManager(game));
             game.Services.AddService<GravityManager>(new GravityManager(game));
         }

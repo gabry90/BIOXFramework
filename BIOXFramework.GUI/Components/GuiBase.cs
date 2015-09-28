@@ -12,48 +12,66 @@ namespace BIOXFramework.GUI.Components
     {
         #region vars
 
-        protected static GuiManager guiManager;
-        protected static MouseManager mouseManager;
-
         public event EventHandler Click;
         public event EventHandler MouseEnter;
         public event EventHandler MouseLeave;
         public event EventHandler Focused;
         public event EventHandler LostFocus;
-
+        public string Name;
         public Texture2D Texture;
         public Vector2 Position = Vector2.Zero;
+        public Rectangle Rectangle { get { return GetRectangle(); } }
+        public bool IsFocused { get { return focused; } }
+        public bool IsDisposed { get; private set; }
+        public Cursor CurrentCursor { protected get; set; }
 
-        protected bool mouseInner = false;
-        protected bool focused = false;
+        protected static MouseManager mouseManager;
         protected SpriteBatch spriteBatch;
         protected Game game;
+
+        private bool mouseInner = false;
+        private bool focused = false;
 
         #endregion
 
         #region constructors
 
-        public GuiBase(Game game)
+        public GuiBase(Game game, string name)
             : base(game)
         {
-            InitGuiBase(game);
+            InitGuiBase(game, name);
         }
 
-        public GuiBase(Game game, Texture2D texture, Vector2 position)
+        public GuiBase(Game game, string name, Texture2D texture, Vector2 position)
             : base(game)
         {
             Texture = texture;
             Position = position;
-            InitGuiBase(game);
+            InitGuiBase(game, name);
+        }
+
+        #endregion
+
+        #region public methods
+
+        public void Focus()
+        {
+            if (focused)
+                return;
+
+            focused = true;
+            FocusedEventDispatcher(EventArgs.Empty);
         }
 
         #endregion
 
         #region private / protected methods
 
-        private void InitGuiBase(Game game)
+        private void InitGuiBase(Game game, string name)
         {
             this.game = game;
+            Name = name;
+            IsDisposed = false;
             spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
             InitializeServices();
             AttachGUIEventsHandlers();
@@ -61,13 +79,6 @@ namespace BIOXFramework.GUI.Components
 
         private void InitializeServices()
         {
-            if (guiManager == null)
-            {
-                guiManager = game.Services.GetService<GuiManager>();
-                if (guiManager == null)
-                    throw new GuiException("the GuiBase required GuiManager game service!");
-            }
-
             if (mouseManager == null)
             {
                 mouseManager = game.Services.GetService<MouseManager>();
@@ -142,14 +153,13 @@ namespace BIOXFramework.GUI.Components
 
         protected virtual void OnMousePositionChanged(object sender, MousePositionChangedEventArgs e)
         {
-            if (!Enabled || Texture == null)
-                return; //avoid null value
+            if (!Enabled || Texture == null || this is Cursor)
+                return; //avoid null value and cursor rendoundant event
 
             Rectangle textureRect = this.GetRectangle();
-            Rectangle cursorRect = guiManager.CurrentCursor.GetRectangle();
-            Rectangle mouseRect = new Rectangle(e.Position.X, e.Position.Y, cursorRect.Size.X, cursorRect.Size.Y);
+            Rectangle cursorRect = CurrentCursor == null ? new Rectangle(e.Position.X, e.Position.Y, 16, 16) : new Rectangle(e.Position.X, e.Position.Y, CurrentCursor.Rectangle.Width, CurrentCursor.Rectangle.Height);
 
-            if (mouseRect.Intersects(textureRect))
+            if (cursorRect.Intersects(textureRect))
             {
                 if (!mouseInner)
                 {
@@ -251,6 +261,8 @@ namespace BIOXFramework.GUI.Components
                     if (MouseLeave != null) MouseLeave = null;
                     if (Focused != null) Focused = null;
                     if (LostFocus != null) LostFocus = null;
+
+                    IsDisposed = true;
                 }
             }
             finally

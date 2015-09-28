@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Scene;
 using BIOXFramework.Input.Events;
+using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Test.Scenes
 {
