@@ -67,16 +67,16 @@ namespace BIOXFramework.Input.Utility
                 if (string.IsNullOrEmpty(value))
                 {
                     currentText = "";
-                    inputTextPosition = 0;
+                    cursorPosition = 0;
                 }
                 else
                 {
                     if (value.Length > currentText.Length)
-                        inputTextPosition = value.Length;
+                        cursorPosition = value.Length;
                     else
                     {
-                        if (value.Length < inputTextPosition)
-                            inputTextPosition = value.Length;
+                        if (value.Length < cursorPosition)
+                            cursorPosition = value.Length;
                     }
                     currentText = value;
                 }
@@ -95,22 +95,22 @@ namespace BIOXFramework.Input.Utility
                 return Int32.TryParse(CurrentText, out num);
             }
         }
-        public int InputTextPosition
+        public int CursorPosition
         {
-            get { return inputTextPosition; }
+            get { return cursorPosition; }
             set
             {
                 if (value < 0)
-                    inputTextPosition = 0;
+                    cursorPosition = 0;
                 else if (value > CurrentText.Length)
-                    inputTextPosition = CurrentText.Length;
+                    cursorPosition = CurrentText.Length;
                 else
-                    inputTextPosition = value;
+                    cursorPosition = value;
             }
         }
 
         private string currentText;
-        private int inputTextPosition = 0;
+        private int cursorPosition = 0;
         private KeyboardManager manager;
         private Game game;
 
@@ -155,16 +155,16 @@ namespace BIOXFramework.Input.Utility
             {
                 case Keys.Left:
                 {
-                    inputTextPosition--;
-                    if (inputTextPosition < 0)
-                        inputTextPosition = 0;
+                    cursorPosition--;
+                    if (cursorPosition < 0)
+                        cursorPosition = 0;
                     break;
                 }
                 case Keys.Right:
                 {
-                    inputTextPosition++;
-                    if (inputTextPosition > CurrentText.Length)
-                        inputTextPosition = CurrentText.Length;
+                    cursorPosition++;
+                    if (cursorPosition > CurrentText.Length)
+                        cursorPosition = CurrentText.Length;
                     break;
                 }
             }
@@ -172,16 +172,16 @@ namespace BIOXFramework.Input.Utility
 
         private void UpdateText(Keys key)
         {
-            if (key == Keys.Back && inputTextPosition > 0)
+            if (key == Keys.Back && cursorPosition > 0)
             {
-                currentText = currentText.Length == 0 ? "" : currentText.Remove(inputTextPosition - 1, 1);
-                if (inputTextPosition > currentText.Length) inputTextPosition--;
+                currentText = currentText.Length == 0 ? "" : currentText.Remove(cursorPosition - 1, 1);
+                if (cursorPosition >= currentText.Length) cursorPosition--;
                 return;
             }
 
-            if (key == Keys.Delete && inputTextPosition < CurrentText.Length)
+            if (key == Keys.Delete && cursorPosition < CurrentText.Length)
             {
-                currentText = currentText.Length == 0 ? "" : currentText.Remove(inputTextPosition, 1);
+                currentText = currentText.Length == 0 ? "" : currentText.Remove(cursorPosition, 1);
                 return;
             }
 
@@ -192,12 +192,12 @@ namespace BIOXFramework.Input.Utility
                     currentText = "";
                 else
                 {
-                    if (inputTextPosition < currentText.Length)
-                        currentText = currentText.Insert(inputTextPosition, text.Value.ToString());
+                    if (cursorPosition < currentText.Length)
+                        currentText = currentText.Insert(cursorPosition, text.Value.ToString());
                     else
                     {
                         currentText = string.Concat(currentText, text.Value);
-                        inputTextPosition++;
+                        cursorPosition++;
                     }
                 }
             }
