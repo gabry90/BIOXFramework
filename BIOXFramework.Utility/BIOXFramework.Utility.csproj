@@ -40,7 +40,11 @@
   <ItemGroup>
     <Compile Include="AnimatedTexture.cs" />
     <Compile Include="Extensions\SerializationEx.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Extensions\OperationExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\ComparisonHelper.cs" />
+    <Compile Include="Extensions\PropertyExtension.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="UtilityExceptions.cs" />
   </ItemGroup>
