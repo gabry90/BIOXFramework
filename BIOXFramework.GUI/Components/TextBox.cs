@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Utility;
 using BIOXFramework.Input.Utility;
 using BIOXFramework.GUI.Utility;
-using System.Text;
 
 namespace BIOXFramework.GUI.Components
 {

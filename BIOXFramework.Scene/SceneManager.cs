@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using BIOXFramework.GUI.Components;
 
 namespace BIOXFramework.Scene
 {

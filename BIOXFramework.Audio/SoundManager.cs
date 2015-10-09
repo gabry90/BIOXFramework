@@ -249,7 +249,7 @@ namespace BIOXFramework.Audio
 
         #endregion
 
-        #region game implementations
+        #region component implementations
 
         public override void Update(GameTime gameTime)
         {

@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Linq;
-using BIOXFramework.Utility.Extensions;
 using Microsoft.Xna.Framework;
+using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.Settings
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Input;
-using BIOXFramework.Input.Mappers;
 
 namespace BIOXFramework.Input.Events
 {

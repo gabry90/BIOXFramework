@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
+﻿using Microsoft.Xna.Framework;
 
 namespace BIOXFramework.Input
 {

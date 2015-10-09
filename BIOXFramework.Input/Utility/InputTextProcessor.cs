@@ -3,9 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
-using System.Runtime.InteropServices;
 
 namespace BIOXFramework.Input.Utility
 {

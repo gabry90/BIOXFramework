@@ -4,15 +4,14 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using BIOXFramework.Audio;
 using BIOXFramework.Input;
 using BIOXFramework.Input.Events;
-using BIOXFramework.GUI;
 using BIOXFramework.Physics.Collision;
 using BIOXFramework.Physics;
 using BIOXFramework.Physics.Gravity;
 using BIOXFramework.GUI.Components;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace BIOXFramework.Scene
 {

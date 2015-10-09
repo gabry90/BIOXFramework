@@ -22,7 +22,7 @@ namespace BIOXFramework.Utility.Extensions
             Type type = self.GetType();
 
             var property = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).FirstOrDefault(x => string.Equals(x.Name, propertyName));
-            if (property == null)
+            if (property == null || !property.CanRead)
                 return null;
 
             if (onlyAttribute.Length > 0 && onlyAttribute.Count(x => Attribute.IsDefined(property, x)) != onlyAttribute.Length)
@@ -31,13 +31,16 @@ namespace BIOXFramework.Utility.Extensions
             return property.GetValue(self, null);
         }
 
-        public static Dictionary<string, object> GetPropertieValues<T>(this T self, params Type[] onlyAttribute)
+        public static Dictionary<string, object> GetPropertiesValues<T>(this T self, params Type[] onlyAttribute)
         {
             Type type = self.GetType();
 
             Dictionary<string, object> properties = new Dictionary<string, object>();
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy))
             {
+                if (!property.CanRead)
+                    continue;   //the property cannot readable
+
                 if (onlyAttribute.Length > 0 && onlyAttribute.Count(x => Attribute.IsDefined(property, x)) != onlyAttribute.Length)
                     continue;   //no attributes match
 
@@ -52,21 +55,25 @@ namespace BIOXFramework.Utility.Extensions
                 return null;    //avoid null object
 
             Type type = self.GetType();
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
             if (type != original.GetType())
                 return null;    //no type match
 
             Dictionary<string, object> properties = new Dictionary<string, object>();
 
-            foreach (var self_prop in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy))
+            foreach (var self_prop in type.GetProperties(flags))
             {
+                if (!self_prop.CanRead)
+                    continue;   //the property cannot readable
+
                 if (Attribute.IsDefined(self_prop, typeof(ExcludeFromPropertyConflict)))
                     continue;   //skip excluded element
 
                 if (onlyAttribute.Length > 0 && onlyAttribute.Count(x => Attribute.IsDefined(self_prop, x)) != onlyAttribute.Length)
                     continue;   //no attributes match
 
-                var original_prop = original.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).FirstOrDefault(x => string.Equals(x.Name, self_prop.Name));
+                var original_prop = original.GetType().GetProperties(flags).FirstOrDefault(x => string.Equals(x.Name, self_prop.Name));
                 if (original_prop == null)
                     continue;   //no property match
 
@@ -96,7 +103,7 @@ namespace BIOXFramework.Utility.Extensions
             Type type = self.GetType();
 
             var property = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).FirstOrDefault(x => string.Equals(x.Name, propertyName));
-            if (property != null)
+            if (property != null && property.CanWrite)
                 property.SetValue(self, Convert.ChangeType(propertyValue, property.PropertyType), null);
         }
 
@@ -106,13 +113,17 @@ namespace BIOXFramework.Utility.Extensions
                 return;
 
             Type type = self.GetType();
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
-            foreach (var self_prop in type.GetProperties())
+            foreach (var self_prop in type.GetProperties(flags))
             {
+                if (!self_prop.CanRead || !self_prop.CanWrite)
+                    continue;   //the property is not accessible
+
                 if (Attribute.IsDefined(self_prop, typeof(ExcludeFromPropertCopy)))
                     continue;   //skip excluded element
 
-                var target_prop = target.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy).FirstOrDefault(x => string.Equals(x.Name, self_prop.Name));
+                var target_prop = target.GetType().GetProperties(flags).FirstOrDefault(x => string.Equals(x.Name, self_prop.Name));
                 if (target_prop == null)
                     continue;
 
@@ -121,6 +132,17 @@ namespace BIOXFramework.Utility.Extensions
 
                 object self_value = self_prop.GetValue(self, null);
                 target_prop.SetValue(target, Convert.ChangeType(self_value, target_prop.PropertyType), null);
+            }
+        }
+
+        public static void ResetProperties<T>(this T self)
+        {
+            Type type = self.GetType();
+
+            foreach (var property in  type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy))
+            {
+                if (property.CanWrite)
+                    property.SetValue(self, property.PropertyType.GetDefaultValue(), null);
             }
         }
 
