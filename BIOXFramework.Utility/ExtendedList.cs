@@ -87,6 +87,10 @@ namespace BIOXFramework.Utility
 
         public new void RemoveAt(int index)
         {
+            int total = this.Count();
+            if (total == 0 || index < 0 || index >= total)
+                return;
+
             try
             {
                 if (EnableRaisingEvents)
@@ -133,11 +137,31 @@ namespace BIOXFramework.Utility
 
         #region CUSTOM METHODS
 
-        public List<Y> GetBy<Y>()
+        public void AddExclusive(T item)
+        {
+            if (!this.Contains(item))
+                Add(item);
+        }
+
+        public List<Y> GetByType<Y>()
         {
             List<Y> list = new List<Y>();
             return (List<Y>)this.Where(x => x.GetType() == typeof(Y));
         }
+
+        public bool ContainsAll(params T[] items)
+        {
+            return this.Count(x => items.Contains(x)) == items.Count();
+        }
+
+        public bool ContainsOneOrMore(params T[] items)
+        {
+            return this.Count(x => items.Contains(x)) > 0;
+        }
+
+        #endregion
+
+        #region dispatchers
 
         private void CollectionChangedDispatcher(ExtendedListCollectionChangedArgs<T> e)
         {
@@ -145,6 +169,10 @@ namespace BIOXFramework.Utility
             if (h != null)
                 h(this, e);
         }
+
+        #endregion
+
+        #region interface implementations
 
         public object Clone()
         {

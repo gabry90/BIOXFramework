@@ -4,57 +4,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Input.Events;
+using BIOXFramework.Utility;
 
 namespace BIOXFramework.Input.Utility
 {
     public class InputTextProcessor : IDisposable
     {
-        #region keys pressed enumerator
-
-        private static class KeyPressedEnumerator
-        {
-            private static List<Keys> keys = new List<Keys>();
-
-            public static void Add(Keys key)
-            {
-                if (!keys.Contains(key))
-                    keys.Add(key);
-            }
-
-            public static void Remove(Keys key)
-            {
-                if (keys.Contains(key))
-                    keys.Remove(key);
-            }
-
-            public static bool ContainsAll(params Keys[] keys)
-            {
-                return KeyPressedEnumerator.keys.Count(x => keys.Contains(x)) == keys.Count();
-            }
-
-            public static bool ContainsOneOrMore(params Keys[] keys)
-            {
-                return KeyPressedEnumerator.keys.Count(x => keys.Contains(x)) > 0;
-            }
-
-            public static Keys? Get(int index)
-            {
-                return (index >= keys.Count || index < 0) ? null : (Keys?)keys[index];
-            }
-
-            public static List<Keys> Get()
-            {
-                return keys.Select(x => x).ToList();
-            }
-
-            public static void Clear()
-            {
-                keys.Clear();
-            }
-        }
-
-        #endregion
-
         #region vars
 
         public string CurrentText
@@ -83,7 +38,7 @@ namespace BIOXFramework.Input.Utility
             
         public bool IsMaiuscActive 
         { 
-            get { return KeyPressedEnumerator.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift) || Console.CapsLock; } 
+            get { return keys.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift) || Console.CapsLock; } 
         }
         public bool IsNumber
         {
@@ -107,6 +62,7 @@ namespace BIOXFramework.Input.Utility
             }
         }
 
+        private ExtendedList<Keys> keys;
         private string currentText;
         private int cursorPosition = 0;
         private KeyboardManager manager;
@@ -118,6 +74,8 @@ namespace BIOXFramework.Input.Utility
 
         public InputTextProcessor(Game game) 
         {
+            keys = new ExtendedList<Keys>();
+            keys.EnableRaisingEvents = false;
             manager = new KeyboardManager(game);
             manager.PressingDelay = 100;
             manager.Pressed += OnKeyPressed;
@@ -207,21 +165,21 @@ namespace BIOXFramework.Input.Utility
 
         private void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
-            KeyPressedEnumerator.Add(e.Key);
+            keys.AddExclusive(e.Key);
             UpdateTextPosition(e.Key);
             UpdateText(e.Key);
         }
 
         private void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
-            KeyPressedEnumerator.Add(e.Key);
+            keys.AddExclusive(e.Key);
             UpdateTextPosition(e.Key);
             UpdateText(e.Key);
         }
 
         private void OnKeyRelease(object sender, KeyboardReleasedEventArgs e)
         {
-            KeyPressedEnumerator.Remove(e.Key);
+            keys.Remove(e.Key);
         }
 
         #endregion
@@ -235,7 +193,7 @@ namespace BIOXFramework.Input.Utility
             manager.Released -= OnKeyRelease;
             manager.Dispose();
             game.Components.Remove(manager);
-            KeyPressedEnumerator.Clear();
+            keys.Dispose();
         }
 
         #endregion
