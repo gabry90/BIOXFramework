@@ -33,7 +33,7 @@ namespace BIOXFramework.Utility
 
     public class ExtendedList<T> : List<T>, ICloneable, IDisposable
     {
-        #region VARS
+        #region vars
 
         public event EventHandler<ExtendedListCollectionChangedArgs<T>> CollectionChanged;
 
@@ -41,7 +41,7 @@ namespace BIOXFramework.Utility
 
         #endregion
 
-        #region CONSTRUCTORS
+        #region constructors
 
         public ExtendedList()
             : base()
@@ -57,7 +57,7 @@ namespace BIOXFramework.Utility
 
         #endregion
 
-        #region NEW IMPLEMENTATIONS
+        #region new implementations
 
         public new void Add(T item)
         {
@@ -135,7 +135,7 @@ namespace BIOXFramework.Utility
 
         #endregion
 
-        #region CUSTOM METHODS
+        #region custom methods
 
         public void AddExclusive(T item)
         {

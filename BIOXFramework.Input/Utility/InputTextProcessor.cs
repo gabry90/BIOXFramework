@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Utility;
+using System.Globalization;
 
 namespace BIOXFramework.Input.Utility
 {
@@ -15,31 +14,22 @@ namespace BIOXFramework.Input.Utility
         public string CurrentText
         {
             get { return currentText; }
-            set
+            set 
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    currentText = "";
-                    cursorPosition = 0;
-                }
-                else
-                {
-                    if (value.Length > currentText.Length)
-                        cursorPosition = value.Length;
-                    else
-                    {
-                        if (value.Length < cursorPosition)
-                            cursorPosition = value.Length;
-                    }
-                    currentText = value;
-                }
+                currentText = value;
+                UpdateCursorPosition(null);
             }
         }
             
         public bool IsMaiuscActive 
         { 
-            get { return keys.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift) || Console.CapsLock; } 
+            get 
+            { 
+                bool shifted = keys.ContainsOneOrMore(Keys.LeftShift, Keys.RightShift);
+                return ((Console.CapsLock && !shifted) || (!Console.CapsLock && shifted)); 
+            } 
         }
+
         public bool IsNumber
         {
             get 
@@ -48,23 +38,20 @@ namespace BIOXFramework.Input.Utility
                 return Int32.TryParse(CurrentText, out num);
             }
         }
-        public int CursorPosition
+
+        public float CursorPosition
         {
             get { return cursorPosition; }
-            set
+            set 
             {
-                if (value < 0)
-                    cursorPosition = 0;
-                else if (value > CurrentText.Length)
-                    cursorPosition = CurrentText.Length;
-                else
-                    cursorPosition = value;
+                UpdateCursorPosition(value);
+                FixCursorPosition();
             }
         }
 
         private ExtendedList<Keys> keys;
         private string currentText;
-        private int cursorPosition = 0;
+        private float cursorPosition = -0.5f;
         private KeyboardManager manager;
         private Game game;
 
@@ -104,59 +91,91 @@ namespace BIOXFramework.Input.Utility
 
         #region private methods
 
-        private void UpdateTextPosition(Keys key)
+        private int GetDecimalPart(float number)
         {
-            //update input text index position
+            return Int32.Parse(number.ToString("0.0######", CultureInfo.InvariantCulture).Split('.')[1]);
+        }
+
+        private int GetIntPart(float number)
+        {
+            return Int32.Parse(number.ToString("0.0", CultureInfo.InvariantCulture).Split('.')[0]);
+        }
+
+        private Tuple<int, int> GetIndexesFromCursorPosition()
+        {
+            int intPart = GetIntPart(cursorPosition);
+            return new Tuple<int, int>(cursorPosition < 0f ? 0 : intPart, cursorPosition < 0f ? 0 : intPart + 1);
+        }
+
+        private void FixCursorPosition()
+        {
+            int decimalPart = GetDecimalPart(cursorPosition);
+            if (decimalPart != 5)
+                cursorPosition = Convert.ToSingle(string.Concat(GetIntPart(cursorPosition), decimalPart));
+        }
+
+        //update cursor position from new or current position
+        private void UpdateCursorPosition(float? pos = null)
+        {
+            float newPosition = pos.HasValue ? pos.Value : cursorPosition;
+
+            if (newPosition < -0.5f)
+                cursorPosition = -0.5f;
+            else if (newPosition > ((float)currentText.Length - 0.5f))
+                cursorPosition = (float)currentText.Length - 0.5f;
+            else
+                cursorPosition = newPosition;
+        }
+
+        //update cursor position by key
+        private void UpdateCursorPosition(Keys key)
+        {
+            float currentPosition = cursorPosition;
             switch (key)
             {
                 case Keys.Left:
-                {
-                    cursorPosition--;
-                    if (cursorPosition < 0)
-                        cursorPosition = 0;
+                    currentPosition--;
                     break;
-                }
                 case Keys.Right:
-                {
-                    cursorPosition++;
-                    if (cursorPosition > CurrentText.Length)
-                        cursorPosition = CurrentText.Length;
+                    currentPosition++;
                     break;
-                }
             }
+            UpdateCursorPosition(currentPosition);
         }
 
         private void UpdateText(Keys key)
         {
-            if (key == Keys.Back && cursorPosition > 0)
+            Tuple<int, int> indexes = GetIndexesFromCursorPosition();
+
+            if (key == Keys.Back && currentText.Length > 0 && cursorPosition > -0.5f)
             {
-                currentText = currentText.Length == 0 ? "" : currentText.Remove(cursorPosition - 1, 1);
-                if (cursorPosition >= currentText.Length) cursorPosition--;
+                currentText = currentText.Remove(indexes.Item1, 1);
+                UpdateCursorPosition();
                 return;
             }
 
-            if (key == Keys.Delete && cursorPosition < CurrentText.Length)
+            if (key == Keys.Delete && currentText.Length > 0 && cursorPosition < (float)currentText.Length - 1f)
             {
-                currentText = currentText.Length == 0 ? "" : currentText.Remove(cursorPosition, 1);
+                currentText = currentText.Remove(indexes.Item2, 1);
+                UpdateCursorPosition();
                 return;
             }
 
             Char? text = KeyboardHelper.ConvertKeyToChar(key, IsMaiuscActive);
-            if (text.HasValue)
+            if (!text.HasValue)
+                return;
+
+            if (currentText == null || currentText.Length == 0)
+                currentText = text.Value.ToString();
+            else
             {
-                if (currentText == null)
-                    currentText = "";
-                else
-                {
-                    if (cursorPosition < currentText.Length)
-                        currentText = currentText.Insert(cursorPosition, text.Value.ToString());
-                    else
-                    {
-                        currentText = string.Concat(currentText, text.Value);
-                        cursorPosition++;
-                    }
-                }
+                if (cursorPosition < (float)currentText.Length - 1f) 
+                    currentText = currentText.Insert(indexes.Item1, text.Value.ToString());
+                else 
+                    currentText = string.Concat(currentText, text.Value);
             }
+
+            UpdateCursorPosition(cursorPosition + 1f);
         }
 
         #endregion
@@ -166,14 +185,14 @@ namespace BIOXFramework.Input.Utility
         private void OnKeyPressed(object sender, KeyboardPressedEventArgs e)
         {
             keys.AddExclusive(e.Key);
-            UpdateTextPosition(e.Key);
+            UpdateCursorPosition(e.Key);
             UpdateText(e.Key);
         }
 
         private void OnKeyPressing(object sender, KeyboardPressingEventArgs e)
         {
             keys.AddExclusive(e.Key);
-            UpdateTextPosition(e.Key);
+            UpdateCursorPosition(e.Key);
             UpdateText(e.Key);
         }
 

@@ -13,7 +13,7 @@ namespace BIOXFramework.Utility.Extensions
 
         public static void DisposeEx<T>(this T self)
         {
-            //if is dispose call normal interface member
+            //if is IDisposable call standard interface member
             if (self is IDisposable)
             {
                 ((IDisposable)self).Dispose();
