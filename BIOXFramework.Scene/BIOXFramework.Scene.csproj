@@ -61,6 +61,10 @@
       <Project>{c09b0ef7-d8d6-47c7-b635-c6bb0630621b}</Project>
       <Name>BIOXFramework.Physics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BIOXFramework.Utility\BIOXFramework.Utility.csproj">
+      <Project>{e529133e-9e7e-492b-a779-373f88d8c623}</Project>
+      <Name>BIOXFramework.Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIOXFramework\BIOXFramework.csproj">
       <Project>{a42f125f-6c12-4a67-9047-027ef6e42089}</Project>
       <Name>BIOXFramework</Name>

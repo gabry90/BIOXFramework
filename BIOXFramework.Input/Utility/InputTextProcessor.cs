@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using BIOXFramework.Input.Events;
 using BIOXFramework.Utility;
-using System.Globalization;
+using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.Input.Utility
 {
@@ -91,27 +91,17 @@ namespace BIOXFramework.Input.Utility
 
         #region private methods
 
-        private int GetDecimalPart(float number)
-        {
-            return Int32.Parse(number.ToString("0.0######", CultureInfo.InvariantCulture).Split('.')[1]);
-        }
-
-        private int GetIntPart(float number)
-        {
-            return Int32.Parse(number.ToString("0.0", CultureInfo.InvariantCulture).Split('.')[0]);
-        }
-
         private Tuple<int, int> GetIndexesFromCursorPosition()
         {
-            int intPart = GetIntPart(cursorPosition);
+            int intPart = cursorPosition.GetIntPart();
             return new Tuple<int, int>(cursorPosition < 0f ? 0 : intPart, cursorPosition < 0f ? 0 : intPart + 1);
         }
 
         private void FixCursorPosition()
         {
-            int decimalPart = GetDecimalPart(cursorPosition);
+            int decimalPart = cursorPosition.GetDecimalPart();
             if (decimalPart != 5)
-                cursorPosition = Convert.ToSingle(string.Concat(GetIntPart(cursorPosition), decimalPart));
+                cursorPosition = Convert.ToSingle(string.Concat(cursorPosition.GetIntPart(), decimalPart));
         }
 
         //update cursor position from new or current position

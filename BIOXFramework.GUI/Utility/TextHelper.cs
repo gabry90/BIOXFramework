@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.GUI.Utility
 {
@@ -57,6 +59,13 @@ namespace BIOXFramework.GUI.Utility
             }
             catch { visibleText = text; }
             return visibleText;
+        }
+
+        public static Vector2 GetCursorPosition(float cursorIndex, Vector2 textPosition, SpriteFont font, string text)
+        {
+            int cursorIndexFixed = Convert.ToInt32(cursorIndex - 0.5f);
+            string textUntilCursor = cursorIndexFixed < 0 ? "" : text.Substring(0, cursorIndexFixed + 1);
+            return new Vector2(font.MeasureString(textUntilCursor).X + (font.Spacing / 2f), textPosition.Y);
         }
     }
 }

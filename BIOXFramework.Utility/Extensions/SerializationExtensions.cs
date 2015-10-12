@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace BIOXFramework.Utility.Extensions
 {
-    public static class SerializationEx
+    public static class SerializationExtensions
     {
         public static string XmlSerialize<T>(this T self)
         {

@@ -6,6 +6,11 @@ namespace BIOXFramework.Utility.Extensions
 {
     public static class OperationExtension
     {
+        public static T CallMethod<T>(this T self, string methodName, params object[] parameters)
+        {
+            return (T)self.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).Invoke(self, parameters);
+        }
+
         public static T CloneEx<T>(this T self)
         {
             return self is ICloneable ? (T)((ICloneable)self).Clone() : (T)self.GetType().GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(self, null);

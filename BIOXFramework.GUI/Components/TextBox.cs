@@ -30,6 +30,7 @@ namespace BIOXFramework.GUI.Components
         private InputTextProcessor inputTextProcessor;
         private string lastText;
         private string visibleText = "";
+        private Vector2 cursorPosition = Vector2.Zero;
         private Vector2 textPosition = Vector2.Zero;
 
         #endregion
@@ -62,9 +63,9 @@ namespace BIOXFramework.GUI.Components
 
         #endregion
 
-        #region component implementation
+        #region private methods
 
-        public override void Update(GameTime gameTime)
+        private void UpdateLogic()
         {
             if (Text.Length > MaxLenght)
                 Text = Text.Remove(Text.Length - 1);
@@ -115,6 +116,24 @@ namespace BIOXFramework.GUI.Components
                     break;
             }
 
+            cursorPosition = TextHelper.GetCursorPosition(inputTextProcessor.CursorPosition, textPosition, Font, visibleText);
+        }
+
+        #endregion
+
+        #region component implementation
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            UpdateLogic();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (IsFocused)
+                UpdateLogic();
+
             base.Update(gameTime);
         }
 
@@ -124,6 +143,7 @@ namespace BIOXFramework.GUI.Components
 
             spriteBatch.Begin();
             spriteBatch.DrawString(Font, visibleText, textPosition, TextColor);
+            if (IsFocused) spriteBatch.DrawString(Font, "|", cursorPosition, TextColor);
             spriteBatch.End();
         }
 

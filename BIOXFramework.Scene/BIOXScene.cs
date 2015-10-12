@@ -12,6 +12,7 @@ using BIOXFramework.Physics.Collision;
 using BIOXFramework.Physics;
 using BIOXFramework.Physics.Gravity;
 using BIOXFramework.GUI.Components;
+using BIOXFramework.Utility.Extensions;
 
 namespace BIOXFramework.Scene
 {
@@ -266,6 +267,7 @@ Visibile:   {4}
             {
                 if (component != null && !(component is GuiBase) && gameComponents.Contains(component))
                 {
+                    component.Initialize();
                     gameComponents.Add(component);
                     collision2DManager.AddComponent(component);
                 }
@@ -279,9 +281,9 @@ Visibile:   {4}
                 if (component != null && !(component is GuiBase) && gameComponents.Contains(component))
                 {
                     collision2DManager.RemoveComponent(component);
+                    gameComponents.Remove(component);
                     if (!(component is IPersistentComponent))
                         component.Dispose();
-                    gameComponents.Remove(component);
                 }
             }
         }
@@ -292,6 +294,8 @@ Visibile:   {4}
             {
                 if (component != null && !(component is GuiBase) && !drawableGameComponents.Contains(component))
                 {
+                    component.Initialize();
+                    component.CallMethod("LoadContent", null);
                     collision2DManager.AddComponent(component);
                     drawableGameComponents.Add(component);
                 }
@@ -305,9 +309,12 @@ Visibile:   {4}
                 if (component != null && !(component is GuiBase) && drawableGameComponents.Contains(component))
                 {
                     collision2DManager.RemoveComponent(component);
-                    if (!(component is IPersistentComponent))
-                        component.Dispose();
                     drawableGameComponents.Remove(component);
+                    if (!(component is IPersistentComponent))
+                    {
+                        component.CallMethod("UnloadContent", null);
+                        component.Dispose();
+                    }
                 }
             }
         }
@@ -315,13 +322,21 @@ Visibile:   {4}
         protected void AddGuiComponent(GuiBase gui)
         {
             if (gui != null && !(gui is Cursor) && !guiComponents.Exists(x => string.Equals(x.Name, gui.Name)))
+            {
+                gui.Initialize();
+                gui.CallMethod("LoadContent", null);
                 guiComponents.Add(gui);
+            }
         }
 
         protected void RemoveGuiComponent(GuiBase gui)
         {
             if (gui != null && !(gui is Cursor) && guiComponents.Exists(x => string.Equals(x.Name, gui.Name)))
+            {
                 guiComponents.Remove(gui);
+                gui.CallMethod("UnloadContent", null);
+                gui.Dispose();
+            }
         }
 
         protected virtual void AttachSceneEventHandlers()

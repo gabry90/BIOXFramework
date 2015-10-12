@@ -40,8 +40,9 @@
   <ItemGroup>
     <Compile Include="AnimatedTexture.cs" />
     <Compile Include="ExtendedList.cs" />
-    <Compile Include="Extensions\SerializationEx.cs" />
-    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Extensions\NumericExtensions.cs" />
+    <Compile Include="Extensions\SerializationExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\OperationExtension.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
