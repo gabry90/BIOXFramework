@@ -7,6 +7,8 @@ namespace BIOXFramework.Input.Mappers
     {
         public string Name { get; set; }
         public Keys? Key { get; set; }
-        internal DateTime PressedTime { get; set; }
+
+        internal DateTime LastPressedTime { get; set; }
+        internal DateTime LastFrequencyTime { get; set; }
     }
 }

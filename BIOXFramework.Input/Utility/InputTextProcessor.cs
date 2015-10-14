@@ -64,7 +64,8 @@ namespace BIOXFramework.Input.Utility
             keys = new ExtendedList<Keys>();
             keys.EnableRaisingEvents = false;
             manager = new KeyboardManager(game);
-            manager.PressingDelay = 100;
+            manager.PressingDelay = 1000;
+            manager.PressingFrequency = 60;
             manager.Pressed += OnKeyPressed;
             manager.Pressing += OnKeyPressing;
             manager.Released += OnKeyRelease;

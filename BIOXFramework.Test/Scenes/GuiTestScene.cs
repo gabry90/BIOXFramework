@@ -70,7 +70,7 @@ namespace BIOXFramework.Test.Scenes
             label = new Label(game, "label1", SceneContent.Load<SpriteFont>("Fonts/curier_new"), "prova", Vector2.Zero);
             textbox = new TextBox(game, "textbox1", textBoxTexture, animations, new Vector2(200, 200), SceneContent.Load<SpriteFont>("Fonts/curier_new"));
             textbox.SpacingFromBorder = 20;
-            textbox.MaxLenght = 5;
+            textbox.MaxLenght = 15;
             textbox.TextChanged += OnTextChanged;
             AddGuiComponent(label);
             AddGuiComponent(textbox);

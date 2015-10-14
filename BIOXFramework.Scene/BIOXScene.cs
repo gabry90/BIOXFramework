@@ -265,7 +265,7 @@ Visibile:   {4}
         {
             lock (gameComponents)
             {
-                if (component != null && !(component is GuiBase) && gameComponents.Contains(component))
+                if (component != null && !(component is GuiBase) && !gameComponents.Contains(component))
                 {
                     component.Initialize();
                     gameComponents.Add(component);
@@ -559,15 +559,15 @@ Visibile:   {4}
         protected override void UnloadContent()
         {
             //unload current scene contents
-            SceneContent.Unload();
             cursorContent.Unload();
+            SceneContent.Unload();
             base.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
-                currentCursor.Update(gameTime); //make sure update before all components
+                currentCursor.Update(gameTime); //make sure update cursor before all components
 
             //update all game component
             for (int i = 0; i < gameComponents.Count; i ++)
@@ -593,10 +593,10 @@ Visibile:   {4}
                 }
             }
 
-            base.Update(gameTime);
-
             //dispatch scene updated event
             sceneManager.SceneUpdatedEventDispatcher(new SceneEventArgs(this.GetType()));
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -619,12 +619,12 @@ Visibile:   {4}
             }
 
             if (currentCursor != null && !currentCursor.IsDisposed && IsCursorVisible)
-                currentCursor.Draw(gameTime);    //make sure cursor at top of all components
-
-            base.Draw(gameTime);
+                currentCursor.Draw(gameTime);    //make sure draw cursor at top of all components
 
             //dispatch scene drawed event
             sceneManager.SceneDrawedEventDispatcher(new SceneEventArgs(this.GetType()));
+
+            base.Draw(gameTime); 
         }
 
         #endregion

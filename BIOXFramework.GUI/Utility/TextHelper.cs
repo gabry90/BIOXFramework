@@ -65,7 +65,7 @@ namespace BIOXFramework.GUI.Utility
         {
             int cursorIndexFixed = Convert.ToInt32(cursorIndex - 0.5f);
             string textUntilCursor = cursorIndexFixed < 0 ? "" : text.Substring(0, cursorIndexFixed + 1);
-            return new Vector2(font.MeasureString(textUntilCursor).X + (font.Spacing / 2f), textPosition.Y);
+            return new Vector2(textPosition.X + font.MeasureString(textUntilCursor).X + (font.Spacing / 2f), textPosition.Y);
         }
     }
 }

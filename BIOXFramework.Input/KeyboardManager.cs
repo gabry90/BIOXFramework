@@ -16,15 +16,23 @@ namespace BIOXFramework.Input
         public event EventHandler<KeyboardPressingEventArgs> Pressing;
         public event EventHandler<KeyboardReleasedEventArgs> Released;
         public bool EnableCapture;
-        public int PressingDelay
+
+        public int PressingFrequency
         {
-            get { return _pressingDelay; }
-            set { _pressingDelay = value > 0 ? value : 1000; }  //default 1 seconds of delay
+            get { return pressingFrequency; }
+            set { pressingFrequency = value > 0 ? value : 500; } //default 500 milliseconds of frequency
         }
 
-        private List<KeyboardMap> _maps;
-        private int _pressingDelay;
-        private KeyboardState _oldKeyboardState;
+        public int PressingDelay
+        {
+            get { return pressingDelay; }
+            set { pressingDelay = value > 0 ? value : 100; }  //default 100 milliseconds of delay
+        }
+
+        private List<KeyboardMap> maps;
+        private int pressingDelay;
+        private int pressingFrequency;
+        private KeyboardState oldKeyboardState;
 
         #endregion
 
@@ -33,10 +41,11 @@ namespace BIOXFramework.Input
         public KeyboardManager(Game game)
             : base (game)
         {
-            _maps = new List<KeyboardMap>();
+            maps = new List<KeyboardMap>();
             SetDefaultMaps();
             EnableCapture = true;
-            _pressingDelay = 1000;
+            pressingDelay = 1000;
+            pressingFrequency = 100;
         }
 
         #endregion
@@ -45,11 +54,11 @@ namespace BIOXFramework.Input
 
         public void SetDefaultMaps()
         {
-            lock (_maps)
+            lock (maps)
             {
-                _maps.Clear();
+                maps.Clear();
                 foreach (Keys key in Enum.GetValues(typeof(Keys)))
-                    _maps.Add(new KeyboardMap { Name = key.ToString(), Key = key });
+                    maps.Add(new KeyboardMap { Name = key.ToString(), Key = key });
             }
         }
 
@@ -58,13 +67,13 @@ namespace BIOXFramework.Input
             if (string.IsNullOrEmpty(mapName))
                 throw new KeyboardManagerException("map name is null or empty!");
 
-            if (_maps.FirstOrDefault(x => string.Equals(x.Name, mapName)) != null)
+            if (maps.FirstOrDefault(x => string.Equals(x.Name, mapName)) != null)
                 throw new KeyboardManagerException(string.Format("the map \"{0}\" is already registered!", mapName));
 
-            if (_maps.FirstOrDefault(x => string.Equals(x.Key, key)) != null)
+            if (maps.FirstOrDefault(x => string.Equals(x.Key, key)) != null)
                 throw new KeyboardManagerException(string.Format("the key \"{0}\" is already registered in \"{1}\" map!", key.ToString(), mapName));
 
-            lock (_maps) { _maps.Add(new KeyboardMap { Name = mapName, Key = key }); }
+            lock (maps) { maps.Add(new KeyboardMap { Name = mapName, Key = key }); }
         }
 
         public void Unregister(string mapName)
@@ -72,11 +81,11 @@ namespace BIOXFramework.Input
             if (string.IsNullOrEmpty(mapName))
                 throw new KeyboardManagerException("map name is null or empty!");
 
-            KeyboardMap map = _maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
+            KeyboardMap map = maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
             if (map == null)
                 throw new KeyboardManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            lock (_maps) { _maps.Remove(map); }
+            lock (maps) { maps.Remove(map); }
         }
 
         public void UpdateMap(string mapName, Keys? key)
@@ -84,11 +93,11 @@ namespace BIOXFramework.Input
             if (string.IsNullOrEmpty(mapName))
                 throw new KeyboardManagerException("map name is null or empty!");
 
-            KeyboardMap map = _maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
+            KeyboardMap map = maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
             if (map == null)
                 throw new KeyboardManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
-            lock (_maps) { map.Key = key; }
+            lock (maps) { map.Key = key; }
         }
 
         public Keys? GetMap(string mapName)
@@ -96,7 +105,7 @@ namespace BIOXFramework.Input
             if (string.IsNullOrEmpty(mapName))
                 throw new KeyboardManagerException("map name is null or empty!");
 
-            KeyboardMap map = _maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
+            KeyboardMap map = maps.FirstOrDefault(x => string.Equals(x.Name, mapName));
             if (map == null)
                 throw new KeyboardManagerException(string.Format("the map \"{0}\" is not registered!", mapName));
 
@@ -106,13 +115,13 @@ namespace BIOXFramework.Input
         public List<KeyboardMap> GetMaps()
         {
             List<KeyboardMap> maps = new List<KeyboardMap>();
-            foreach(KeyboardMap map in _maps) { maps.Add(new KeyboardMap { Name = map.Name, Key = map.Key }); };
+            foreach(KeyboardMap map in maps) { maps.Add(new KeyboardMap { Name = map.Name, Key = map.Key }); };
             return maps;
         }
 
         #endregion
 
-        #region game implementations
+        #region component implementations
 
         public override void Update(GameTime gameTime)
         {
@@ -123,13 +132,13 @@ namespace BIOXFramework.Input
             KeyboardState currentKeyboardState = Keyboard.GetState();
 
             //init old keyboard state
-            if (_oldKeyboardState == null)
-                _oldKeyboardState = currentKeyboardState;
+            if (oldKeyboardState == null)
+                oldKeyboardState = currentKeyboardState;
 
             //check key pressed, pressing and released events for each mapped keys
-            for (int i = 0; i < _maps.Count; i++)
+            for (int i = 0; i < maps.Count; i++)
             {
-                KeyboardMap map = _maps[i];
+                KeyboardMap map = maps[i];
 
                 /*
                     skip if
@@ -139,10 +148,12 @@ namespace BIOXFramework.Input
                 if (map == null || map.Key == null)
                     continue;
 
-                if (_oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
+                if (oldKeyboardState.IsKeyUp(map.Key.Value) && currentKeyboardState.IsKeyDown(map.Key.Value))
                 {
                     //key is pressed for first time
-                    map.PressedTime = DateTime.Now;
+                    DateTime current = DateTime.Now;
+                    map.LastPressedTime = current;
+                    map.LastFrequencyTime = DateTime.MinValue;
                     KeyboardPressedEventDispatcher(new KeyboardPressedEventArgs(map.Name, map.Key.Value));
                     continue;
                 }
@@ -151,16 +162,21 @@ namespace BIOXFramework.Input
                 {
                     //key is continous pressing
                     DateTime currentTime = DateTime.Now;
-                    if (currentTime.Subtract(map.PressedTime).TotalMilliseconds >= _pressingDelay)
+                    if (currentTime.Subtract(map.LastPressedTime).TotalMilliseconds >= pressingDelay)
                     {
-                        //delay pressing time is over then pressing delay
-                        map.PressedTime = currentTime;
-                        KeyboardPressingEventDispatcher(new KeyboardPressingEventArgs(map.Name, map.Key.Value));
+                        if (map.LastFrequencyTime == DateTime.MinValue)
+                            map.LastFrequencyTime = currentTime.Subtract(TimeSpan.FromMilliseconds(pressingFrequency));
+
+                        if (currentTime.Subtract(map.LastFrequencyTime).TotalMilliseconds >= pressingFrequency)
+                        {
+                            map.LastFrequencyTime = currentTime;
+                            KeyboardPressingEventDispatcher(new KeyboardPressingEventArgs(map.Name, map.Key.Value));
+                        }    
                     }
                     continue;
                 }
 
-                if (_oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyUp(map.Key.Value))
+                if (oldKeyboardState.IsKeyDown(map.Key.Value) && currentKeyboardState.IsKeyUp(map.Key.Value))
                 {
                     //key is released
                     KeyboardReleasedEventDispatcher(new KeyboardReleasedEventArgs(map.Name, map.Key.Value));
@@ -168,7 +184,7 @@ namespace BIOXFramework.Input
             }
 
             //update old keyboard state
-            _oldKeyboardState = currentKeyboardState;
+            oldKeyboardState = currentKeyboardState;
 
             base.Update(gameTime);
         }
@@ -208,7 +224,7 @@ namespace BIOXFramework.Input
             {
                 if (disposing)
                 {
-                    lock (_maps) { _maps.Clear(); }
+                    lock (maps) { maps.Clear(); }
                     if (Pressed != null) Pressed = null;
                     if (Pressing != null) Pressing = null;
                     if (Released != null) Released = null;
