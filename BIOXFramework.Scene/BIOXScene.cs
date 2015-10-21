@@ -220,35 +220,50 @@ Visibile:   {4}
             {
                 songManager = game.Services.GetService<SongManager>();
                 if (songManager == null)
+                {
                     songManager = new SongManager(game);
+                    songManager.Initialize();
+                }
             }
                 
             if (soundManager == null)
             {
                 soundManager = game.Services.GetService<SoundManager>();
                 if (soundManager == null)
+                {
                     soundManager = new SoundManager(game);
+                    soundManager.Initialize();
+                }
             }
 
             if (keyboardManager == null)
             {
                 keyboardManager = game.Services.GetService<KeyboardManager>();
                 if (keyboardManager == null)
+                {
                     keyboardManager = new KeyboardManager(game);
+                    keyboardManager.Initialize();
+                }
             }
 
             if (mouseManager == null)
             {
                 mouseManager = game.Services.GetService<MouseManager>();
                 if (mouseManager == null)
+                {
                     mouseManager = new MouseManager(game);
+                    mouseManager.Initialize();
+                }
             }
 
             if (collision2DManager == null)
             {
                 collision2DManager = game.Services.GetService<Collision2DManager>();
                 if (collision2DManager == null)
+                {
                     collision2DManager = new Collision2DManager(game);
+                    collision2DManager.Initialize();
+                }
 
                 collision2DManager.EnableCollisionDetection = false; //disable for default
             }
@@ -257,7 +272,10 @@ Visibile:   {4}
             {
                 gravityManager = game.Services.GetService<GravityManager>();
                 if (gravityManager == null)
+                {
                     gravityManager = new GravityManager(game);
+                    gravityManager.Initialize();
+                }
             }
         }
 
