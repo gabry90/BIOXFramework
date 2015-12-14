@@ -14,6 +14,53 @@ namespace BIOXFramework.Utility.Extensions
 
     public static class PropertyExtensions
     {
+        public enum PropertyCopyOptions
+        {
+            Included,
+            Excluded
+        }
+
+        public static void CopyProperties<T>(this T self, T target, PropertyCopyOptions option, params string[] properties) where T : class
+        {
+            if (target == null)
+                return;
+
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+
+            foreach (var self_property in self.GetType().GetProperties(flags))
+            {
+                if (!self_property.CanRead)
+                    continue;
+
+                var target_property = target.GetType().GetProperties(flags).FirstOrDefault(x => string.Equals(x.Name, self_property.Name));
+                if (target_property == null || !target_property.CanRead || !target_property.CanWrite)
+                    continue;
+
+                //skip property that not allow to copy
+                if (properties != null)
+                {
+                    if (option == PropertyCopyOptions.Included)
+                    {
+                        if (!properties.Contains(target_property.Name))
+                            continue;
+                    }
+                    else
+                    {
+                        if (properties.Contains(target_property.Name))
+                            continue;
+                    }
+                }
+
+                object self_value = self_property.GetValue(self, null);
+                object target_value = target_property.GetValue(target, null);
+
+                if (target_value != null)
+                    target_value.DisposeEx();
+
+                target_property.SetValue(target, Convert.ChangeType(self_value, target_property.PropertyType), null);
+            }
+        }
+
         public static object GetPropertyValue<T>(this T self, string propertyName, params Type[] onlyAttribute)
         {
             if (string.IsNullOrEmpty(propertyName))

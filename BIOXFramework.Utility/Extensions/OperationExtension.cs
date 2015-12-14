@@ -25,13 +25,6 @@ namespace BIOXFramework.Utility.Extensions
                 return;
             }
 
-            /*
-             * if not is IDisposable try to reset manually all members
-             */
-
-            //set to default all properties
-            self.ResetProperties();
-
             Type type = self.GetType();
 
             //dispose events
