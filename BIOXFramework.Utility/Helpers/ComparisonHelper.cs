@@ -30,7 +30,7 @@ namespace BIOXFramework.Utility.Helpers
                 return object.Equals(obj1, obj2);
 
             //check enum
-            if (t1 == typeof(Enum))
+            if (t1.IsEnum)
                 return (Enum)obj1 == (Enum)obj2;
 
             //check string
